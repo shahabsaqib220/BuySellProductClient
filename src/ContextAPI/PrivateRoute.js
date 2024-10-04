@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../ContextAPI/AuthContext'; // Adjust the import path as necessary
+import { useAuth } from '../ContextAPI/AuthContext';
 
 const PrivateRoute = ({ element }) => {
   const { isLoggedIn } = useAuth();

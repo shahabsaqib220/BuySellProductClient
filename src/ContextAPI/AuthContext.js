@@ -22,29 +22,11 @@ export function AuthProvider({ children }) {
     if (storedToken) {
       setToken(storedToken);
       setIsLoggedIn(true);
-
       if (storedUser) {
         setUser(JSON.parse(storedUser));
-      } else {
-        fetchUserProfile(storedToken);
       }
     }
   }, []);
-
-  const fetchUserProfile = async (storedToken) => {
-    try {
-      const response = await fetch('http://localhost:5000/api/profile-image/profile-image', {
-        headers: {
-          Authorization: `Bearer ${storedToken}`,
-        },
-      });
-      const userData = await response.json();
-      setUser(userData);
-      localStorage.setItem('user', JSON.stringify(userData));
-    } catch (error) {
-      console.error('Error fetching user profile:', error);
-    }
-  };
 
   const login = async (userData) => {
     localStorage.setItem('token', userData.token);
@@ -52,8 +34,6 @@ export function AuthProvider({ children }) {
     setIsLoggedIn(true);
     setUser(userData);
     setToken(userData.token);
-  
-    fetchUserProfile(userData.token);
   };
 
   const logout = () => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Alert, Collapse } from '@mui/material'; // MUI components
 import { useAuth } from '../../ContextAPI/AuthContext'; // Import AuthContext
@@ -11,7 +11,14 @@ function SignIn() {
   const [showAlert, setShowAlert] = useState(false); // to show/hide the alert
 
   const navigate = useNavigate();
-  const { login } = useAuth(); // Use login function from AuthContext
+  const { isLoggedIn, login } = useAuth(); // Use login function from AuthContext
+
+  // Redirect to profile page if already logged in
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/profile');
+    }
+  }, [isLoggedIn, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,21 +39,21 @@ function SignIn() {
         setAlertMessage('Login successful!');
         setAlertType('success');
         setShowAlert(true);
-        
+
         // Clear alert after 3 seconds
         setTimeout(() => setShowAlert(false), 3000);
-        
-        localStorage.setItem('token', data.token);
+
+        // Use the login method from AuthContext
         login({ name: data.user.name, email: data.user.email, token: data.token });
-        
-        // Redirect to the profile page after alert disappears
-        setTimeout(() => navigate('/profile'), 3000);
+
+        // Redirect to the profile page immediately after login
+        navigate('/profile');
       } else {
         // Show error alert for invalid credentials
         setAlertMessage(data.message || 'Invalid credentials. Please try again.');
         setAlertType('error');
         setShowAlert(true);
-        
+
         // Clear alert after 3 seconds
         setTimeout(() => setShowAlert(false), 3000);
       }
@@ -55,7 +62,7 @@ function SignIn() {
       setAlertMessage('Something went wrong. Please try again later.');
       setAlertType('error');
       setShowAlert(true);
-      
+
       // Clear alert after 3 seconds
       setTimeout(() => setShowAlert(false), 3000);
     }
@@ -69,7 +76,6 @@ function SignIn() {
 
       <div className="bg-white shadow-lg rounded-lg p-8 max-w-sm w-full">
         <Collapse in={showAlert} className="mb-4" style={{ minHeight: showAlert ? '48px' : '0px' }}>
-          {/* MUI Alert component */}
           {showAlert && (
             <Alert severity={alertType} onClose={() => setShowAlert(false)}>
               {alertMessage}

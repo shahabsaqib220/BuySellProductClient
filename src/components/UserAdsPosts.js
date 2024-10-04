@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Button, TextField, Select, MenuItem, InputLabel, FormControl, Alert } from "@mui/material";
+import { useAuth } from '../../src/ContextAPI/AuthContext';
 import { Divider } from '@mui/material';
 import axios from "axios";
+import { NavLink, useNavigate } from 'react-router-dom';
 import { BiSolidCategoryAlt } from "react-icons/bi";
 
 
@@ -25,11 +27,16 @@ const ProductForm = () => {
   const [latitude, setLatitude] = useState(null);
 
   const token = localStorage.getItem('token');
+  const navigate = useNavigate();
+  const { isLoggedIn, login } = useAuth(); 
 
   useEffect(() => {
-    // Log the token on initial render
-    console.log('Token:', token);
-  }, [token]);
+    if (isLoggedIn) {
+      navigate('/postad');
+    }
+  }, [isLoggedIn, navigate, token]);
+
+ 
 
 
 
