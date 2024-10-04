@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Button, TextField, Select, MenuItem, InputLabel, FormControl, Alert } from "@mui/material";
-import { useAuth } from '../../src/ContextAPI/AuthContext';
+import {  Alert } from "@mui/material";
 import { Divider } from '@mui/material';
 import axios from "axios";
-import { NavLink, useNavigate } from 'react-router-dom';
-import { BiSolidCategoryAlt } from "react-icons/bi";
+
+import useAxiosInstance from '../ContextAPI/AxiosInstance';
 
 
 const ProductForm = () => {
@@ -12,6 +11,7 @@ const ProductForm = () => {
   const [brands, setBrands] = useState([]);
   const [models, setModels] = useState([]);
   const [selectedBrand, setSelectedBrand] = useState("");
+  const axiosInstance = useAxiosInstance(); 
   const [selectedModel, setSelectedModel] = useState("");
   const [selectedCondition, setSelectedCondition] = useState("");
   const [description, setDescription] = useState("");
@@ -27,16 +27,11 @@ const ProductForm = () => {
   const [latitude, setLatitude] = useState(null);
 
   const token = localStorage.getItem('token');
-  const navigate = useNavigate();
-  const { isLoggedIn, login } = useAuth(); 
 
   useEffect(() => {
-    if (isLoggedIn) {
-      navigate('/postad');
-    }
-  }, [isLoggedIn, navigate, token]);
-
- 
+    // Log the token on initial render
+    console.log('Token:', token);
+  }, [token]);
 
 
 
@@ -1893,19 +1888,20 @@ const ProductForm = () => {
     });
   
     try {
-      await fetch('http://localhost:5000/api/usersads/postads', {
-        method: 'POST',
+      // Use axiosInstance to post ad data
+      await axiosInstance.post('/usersads/postads', formData, {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data', // Required for file uploads
         },
-        body: formData,
       });
+      
       setAlert({ message: "Ad posted successfully!", severity: "success" });
     } catch (error) {
       setAlert({ message: "Failed to post ad.", severity: "error" });
     } finally {
       setLoading(false);
     }
+    
   };
   
 

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import useAxiosInstance from '../ContextAPI/AxiosInstance';
+
 
 const UserAdsTable = () => {
   const [ads, setAds] = useState([]);
@@ -11,23 +13,21 @@ const UserAdsTable = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showSoldOutModal, setShowSoldOutModal] = useState(false);
   const [adToDelete, setAdToDelete] = useState(null);
+  const axiosInstance = useAxiosInstance(); 
+
 
   const [adToMarkSold, setAdToMarkSold] = useState(null);
-
   useEffect(() => {
     const fetchUserAds = async () => {
-      const token = localStorage.getItem('token');
       setLoading(true); // Set loading to true when starting the fetch
   
       try {
-        const response = await fetch('http://localhost:5000/api/viewsads/myads', {
-          method: 'GET',
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        // Use axiosInstance to get ads data
+        const response = await axiosInstance.get('/viewsads/myads');
   
-        const data = await response.json();
-  
-        if (response.ok) {
+        if (response.status === 200) {
+          const data = response.data;
+          
           if (data.ads.length === 0) {
             setError('No ads posted yet'); // Set "No ads posted yet" error message
             setAds([]); // Ensure ads is set to an empty array
@@ -36,18 +36,18 @@ const UserAdsTable = () => {
             setError(null); // Clear any previous errors
           }
         } else {
-          setError(data.message || 'Error fetching ads');
+          setError(response.data.message || 'Error fetching ads');
         }
-  
-        setLoading(false); // Set loading to false after fetching data
       } catch (error) {
         setError('Error fetching ads'); // Handle any network or server errors
-        setLoading(false); // Set loading to false after error
+      } finally {
+        setLoading(false); // Set loading to false after fetching data
       }
     };
   
     fetchUserAds();
-  }, []);
+  }, [axiosInstance]);
+  
   
   
   
@@ -78,16 +78,15 @@ const UserAdsTable = () => {
 
   const markAsSold = async (adId) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/userproducts/solded/soldout/${adId}`, {
-        method: 'PUT',
+      // Use axiosInstance to send the PUT request
+      const response = await axiosInstance.put(`/userproducts/solded/soldout/${adId}`, {}, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
         },
       });
   
-      if (!response.ok) throw new Error('Error marking ad as sold');
+      // Check if the request was successful
+      if (response.status !== 200) throw new Error('Error marking ad as sold');
   
       // Update ads in the state
       setAds((prevAds) =>
@@ -104,27 +103,31 @@ const UserAdsTable = () => {
   
   
   
+  
 
   // Confirm deletion of an ad
   const handleDeleteAd = async () => {
     if (adToDelete) {
       try {
-        const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:5000/api/deletead/deletead/${adToDelete}`, {
-          method: 'DELETE',
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (!response.ok) throw new Error('Error deleting ad');
-
+        // Use axiosInstance to send the DELETE request
+        const response = await axiosInstance.delete(`/deletead/deletead/${adToDelete}`);
+  
+        // Check if the request was successful
+        if (response.status !== 200) throw new Error('Error deleting ad');
+  
+        // Update the ads in the state by removing the deleted ad
         setAds((prevAds) => prevAds.filter((ad) => ad._id !== adToDelete));
+        
+        // Close the delete modal and reset adToDelete
         setShowDeleteModal(false);
         setAdToDelete(null);
+        
       } catch (error) {
-        console.error('Error:', error);
+        console.error('Error deleting ad:', error);
       }
     }
   };
+  
 
   const toggleDropdown = (adId) => setActiveDropdown((prev) => (prev === adId ? null : adId));
 

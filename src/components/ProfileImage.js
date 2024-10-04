@@ -3,6 +3,7 @@ import { useAuth } from '../../src/ContextAPI/AuthContext';
 import { FaEdit } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import useAxiosInstance from '../ContextAPI/AxiosInstance';
+import { FaSpinner } from 'react-icons/fa'; // Import spinner icon
 
 const ProfileImage = () => {
   const { user } = useAuth(); 
@@ -11,17 +12,16 @@ const ProfileImage = () => {
   const [username, setUsername] = useState(user?.username || ''); // State for username
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // Initial loading when fetching profile data
   const [newName, setNewName] = useState(username);
+  const [uploading, setUploading] = useState(false); // Loading state for image upload
   const axiosInstance = useAxiosInstance(); 
 
   // Fetch the user profile only if the user is logged in
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        // Use axiosInstance to make the API call
         const response = await axiosInstance.get('/profile-image/profile-image');
-
         if (response.status === 200) {
           const data = response.data;
           setProfileImage(data.profileImageUrl);
@@ -43,14 +43,11 @@ const ProfileImage = () => {
   const handleEdit = async () => {
     if (newName) {
       try {
-        // Use the axios instance to send the PUT request
         const response = await axiosInstance.put('/profile-image/update-username', {
           newName,
         });
-  
         if (response.status === 200) {
           const data = response.data;
-          console.log('Username updated successfully:', data.username);
           setUsername(newName); // Update username locally
         } else {
           console.error('Error updating username:', response.data.message);
@@ -65,7 +62,6 @@ const ProfileImage = () => {
       console.log('New username is required');
     }
   };
-  
 
   const handleImageChange = (e) => {
     setFile(e.target.files[0]);
@@ -80,17 +76,15 @@ const ProfileImage = () => {
 
   const handleImageUpload = async () => {
     const formData = new FormData();
-    formData.append('profileImage', file); // Assuming 'file' is the selected image file
-  
+    formData.append('profileImage', file); 
+
+    setUploading(true); // Set uploading to true when starting the upload
     try {
-      // Use axiosInstance for the API call
       const response = await axiosInstance.post('/profile-image/profile-photo', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data', // Important for file uploads
+          'Content-Type': 'multipart/form-data', 
         },
       });
-  
-      // Check the response status
       if (response.status === 200) {
         const data = response.data;
         setProfileImage(data.profileImageUrl); // Update the profile image
@@ -100,9 +94,10 @@ const ProfileImage = () => {
       }
     } catch (err) {
       console.error('Error updating profile image', err);
+    } finally {
+      setUploading(false); // Reset the uploading state after the process
     }
   };
-  
 
   return (
     <div className="flex flex-col items-center p-4 bg-white rounded-lg shadow-md max-w-sm mx-auto mt-8">
@@ -127,10 +122,16 @@ const ProfileImage = () => {
 
       <button
         onClick={handleImageUpload}
-        disabled={!file}
-        className={`w-full py-2 px-4 rounded-lg text-white ${file ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed'} transition-colors font-semibold`}
+        disabled={!file || uploading} // Disable the button when there's no file or during uploading
+        className={`w-full py-2 px-4 rounded-lg text-white ${file && !uploading ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed'} transition-colors font-semibold`}
       >
-        Update Image
+        {uploading ? ( 
+          <div className="flex items-center justify-center">
+            <FaSpinner className="animate-spin mr-2" /> Uploading...
+          </div>
+        ) : (
+          'Update Image'
+        )}
       </button>
 
       <h6 className="text-lg -ml-32 mt-9 font-bold dark:text-white">Change your Username</h6>

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Disclosure, Menu } from '@headlessui/react';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+
 import { FaCartArrowDown } from "react-icons/fa";
 import { RxAvatar } from "react-icons/rx";
 import { NavLink, useNavigate } from 'react-router-dom';
+import useAxiosInstance from '../../ContextAPI/AxiosInstance';
+
 import { useAuth } from '../../ContextAPI/AuthContext'; // Assuming you have an AuthContext for managing auth state
 
 const Navbar = () => {
@@ -12,13 +14,10 @@ const Navbar = () => {
   const navigate = useNavigate(); // Hook for navigation
   const [cartItemCount, setCartItemCount] = useState(0); 
   const [isBadgeVisible, setIsBadgeVisible] = useState(false); 
+  const axiosInstance = useAxiosInstance(); 
 
   // Define navigation array for mobile menu
-  const navigation = [
-    { name: 'Dashboard', href: '/dashboard', current: true },
-    { name: 'Profile', href: '/profile', current: false },
-    { name: 'Settings', href: '/settings', current: false },
-  ];
+ 
 
   // Utility function to conditionally apply class names
   const classNames = (...classes) => {
@@ -27,28 +26,27 @@ const Navbar = () => {
 
   useEffect(() => {
     // Fetch profile image if user is logged in
-    if (isLoggedIn && token) {
-      fetch('http://localhost:5000/api/profile-image/profile-image', {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`, // Send token in authorization header
-          'Content-Type': 'application/json',
-        },
-      })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Failed to fetch profile image');
+    const fetchProfileImage = async () => {
+      if (isLoggedIn && token) {
+        try {
+          // Use axiosInstance for API call
+          const response = await axiosInstance.get('/profile-image/profile-image');
+  
+          if (response.status === 200) {
+            const data = response.data;
+            setProfileImage(data.profileImageUrl); // Store the profile image URL in state
+          } else {
+            console.error('Failed to fetch profile image:', response.data.message);
           }
-          return response.json();
-        })
-        .then(data => {
-          setProfileImage(data.profileImageUrl); // Store the profile image URL in state
-        })
-        .catch(error => {
+        } catch (error) {
           console.error('Error fetching profile image:', error);
-        });
-    }
-  }, [isLoggedIn, token]);
+        }
+      }
+    };
+  
+    fetchProfileImage();
+  }, [isLoggedIn, token, axiosInstance]); // Include axiosInstance in the dependency array
+  
 
 
   // const intervalId = setInterval(() => {
@@ -59,21 +57,20 @@ const Navbar = () => {
 
   const fetchCartItemCount = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/usercart/item/cart', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      if (response.ok) {
+      // Use axiosInstance for the API request
+      const response = await axiosInstance.get('/usercart/item/cart');
+      
+      if (response.status === 200) {
+        const data = response.data;
         setCartItemCount(data.length); // Assuming data contains the cart items array
       } else {
-        console.error('Error fetching cart items:', data.message);
+        console.error('Error fetching cart items:', response.data.message);
       }
     } catch (error) {
       console.error('Error fetching cart items:', error);
     }
   };
+  
 
   // Function to handle cart icon click
   const handleCartClick = () => {
@@ -145,7 +142,7 @@ const Navbar = () => {
                     <div className="relative">
                       <FaCartArrowDown
                         onClick={handleCartClick}
-                        className="text-white w-6 h-6 cursor-pointer"
+                        className="text-white w-8 h-8 cursor-pointer text-yellow-400"
                       />
                       {cartItemCount > 0 && (
                         <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-semibold rounded-full px-2 py-1">
@@ -238,6 +235,21 @@ const Navbar = () => {
                       <Menu.Item>
                         <NavLink to="/profile" className="block px-4 py-2 text-sm text-gray-700">
                           Your Profile
+                        </NavLink>
+                      </Menu.Item>
+                      <Menu.Item>
+                        <NavLink to="/postad" className="block px-4 py-2 text-sm text-gray-700">
+                          Post Ad
+                        </NavLink>
+                      </Menu.Item>
+                      <Menu.Item>
+                        <NavLink to="/viewads" className="block px-4 py-2 text-sm text-gray-700">
+                          View Posted Ads
+                        </NavLink>
+                      </Menu.Item>
+                      <Menu.Item>
+                        <NavLink to="/soldoutproducts" className="block px-4 py-2 text-sm text-gray-700">
+                          Your soldout products
                         </NavLink>
                       </Menu.Item>
                       <Menu.Item>
