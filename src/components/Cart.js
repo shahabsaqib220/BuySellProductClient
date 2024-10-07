@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
 import { FaTrashAlt } from 'react-icons/fa';
 import { useAuth } from '../ContextAPI/AuthContext';
+import useAxiosInstance from '../ContextAPI/AxiosInstance';
+
 
 const CartComponent = () => {
   const { isLoggedIn, token } = useAuth();
   const [cartItems, setCartItems] = useState([]);
-  
-  const navigate = useNavigate(); // Initialize useNavigate hook
+  const axiosInstance = useAxiosInstance();
+  const navigate = useNavigate();
+  const { adId } = useParams();
+  const [ads, setAds] = useState(null);
+  const [error, setError] = useState(null);
+
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -16,34 +22,60 @@ const CartComponent = () => {
     }
   }, [isLoggedIn]);
 
-  const fetchCartItems = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/api/usercart/item/cart', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      if (response.ok) {
-        setCartItems(data);
-      } else {
-        console.error("Error fetching cart items:", data.message);
-      }
-    } catch (error) {
-      console.error("Error fetching cart items:", error);
-    }
-  };
+const fetchCartItems = async () => {
+  try {
+    // Make API request using axios
+    const response = await axiosInstance.get('/usercart/item/cart');
+    
+    // Log the response data to see its structure
+    
+    // Assuming you want to store the cart items in state
+    setCartItems(response.data);
+    
+    // Check if adId exists in the response and access its _id
+    
+ 
+    
+  } catch (error) {
+    // Log error details
+    console.error("Error fetching cart items:", error.response?.data?.message || error.message);
+  }
+};
+
+const handleClick = async (cartId) => {
+  try {
+    // Call the backend endpoint to fetch the adId using the cartId
+    const response = await fetch(`http://localhost:5000/api/usercart/navigate/adId/${cartId}`);
+    const data = await response.json();
+
+    // Navigate to the product details page with the fetched adId
+    navigate(`/product/${data.adId}`);
+  } catch (error) {
+    console.error('Error fetching adId:', error);
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   const getFirstThreeWords = (location) => {
     if (!location) return '';
     const words = location.split(' ');
     return words.slice(0, 3).join(' ');
   };
-
-   const handleProductDetailsClick = (adId) => {
-    navigate(`/product/${adId}`); // Navigate to product details page
-  };
-
 
   if (!isLoggedIn) {
     return (
@@ -101,73 +133,53 @@ const CartComponent = () => {
                 <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   Price
                 </th>
-                
               </tr>
             </thead>
             <tbody>
-              {cartItems.map((item) => (
-                <tr key={item._id}>
-                  <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 w-16 h-16">
-                        <img
-                          className="w-full h-full object-cover rounded-lg"
-                          src={item.adDetails.images[0].url}
-                          alt={item.adDetails.images[0].alt}
-                        />
-                      </div>
-                      <div className="ml-4">
-                        <p className="text-gray-900 font-medium whitespace-no-wrap">{item.adDetails.model}</p>
-                      </div>
-                    </div>
-                
-                  
-         
-  
-
-                     
-                   
-                  
-                  </td>
-                      <td className="px-6 py-5 border-b border-gray-200 bg-white text-semibold text-sm">
-                    <p className="text-gray-900 whitespace-no-wrap">{item.adStatus}</p>
-                  </td>
-                  <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
-                  <p>{getFirstThreeWords(item.adDetails.location?.readable) || 'Location not specified'}</p>                  </td>
-
-                  <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
-                    <p className="text-gray-900 whitespace-no-wrap">{item.adDetails.condition}</p>
-                  </td>
-                 
-                  <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
-
-                    <p className="text-gray-900 whitespace-no-wrap">${(item.adDetails.price).toFixed(2)}</p>
-                  </td>
-
-                   <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm font-medium">
-                    <button
-                      className="text-yellow-500 hover:text-yellow-600"
-                      onClick={() => handleProductDetailsClick(item._id)} // Add navigation on click
-                    >
-                      Product Details
-                    </button>
-                    
-                  </td>
+  {cartItems.map((item) => (
+    <tr key={item._id}> {/* This can remain as _id for the key */}
+      <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
+        <div className="flex items-center">
+          <div className="flex-shrink-0 w-16 h-16">
+            <img
+              className="w-full h-full object-cover rounded-lg"
+              src={item.adDetails.images[0].url}
+              alt={item.adDetails.images[0].alt}
+            />
+          </div>
+          <div className="ml-4">
+            <p className="text-gray-900 font-medium whitespace-no-wrap">{item.adDetails.model}</p>
+          </div>
+        </div>
+      </td>
+      <td className="px-6 py-5 border-b border-gray-200 bg-white text-semibold text-sm">
+        <p className="text-gray-900 whitespace-no-wrap">{item.adStatus}</p>
+      </td>
+      <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
+        <p>{getFirstThreeWords(item.adDetails.location?.readable) || 'Location not specified'}</p>
+      </td>
+      <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
+        <p className="text-gray-900 whitespace-no-wrap">{item.adDetails.condition}</p>
+      </td>
+      <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
+        <p className="text-gray-900 whitespace-no-wrap">${(item.adDetails.price).toFixed(2)}</p>
+      </td>
+      <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm font-medium">
+      <button onClick={() => handleClick(item._id)}>Product Details</button>
+      </td>
+      <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
+        <button
+          className="text-red-500 hover:text-red-700 transition duration-200"
+          // onClick={() => removeFromCart(item.id)}
+        >
+          <FaTrashAlt />
+        </button>
+      </td>
+    </tr>
+  ))}
+</tbody>
 
 
-
-                 
-                  <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
-                    <button
-                      className="text-red-500 hover:text-red-700 transition duration-200"
-                      // onClick={() => removeFromCart(item.id)}
-                    >
-                      <FaTrashAlt />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
           </table>
         </div>
 
@@ -203,14 +215,14 @@ const CartComponent = () => {
   );
 };
 
-// Helper functions for subtotal, tax, and total calculations
+// Helper functions for calculating subtotal, tax, and total
 const calculateSubtotal = (cartItems) => {
-  return cartItems.reduce((acc, item) => acc + item.quantity * item.adDetails.price, 0).toFixed(2);
+  return cartItems.reduce((total, item) => total + item.adDetails.price, 0).toFixed(2);
 };
 
 const calculateTax = (cartItems) => {
   const subtotal = calculateSubtotal(cartItems);
-  return (subtotal * 0.1).toFixed(2);
+  return (subtotal * 0.1).toFixed(2); // 10% tax
 };
 
 const calculateTotal = (cartItems) => {

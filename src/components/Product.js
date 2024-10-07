@@ -4,7 +4,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Divider from "@mui/material/Divider";
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { RxAvatar } from "react-icons/rx";
 import { Button, IconButton, Grid, Tooltip, Snackbar } from "@mui/material"; // Import Snackbar
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
@@ -21,6 +21,7 @@ const Product = () => {
   const [ads, setAds] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar
   const [snackbarMessage, setSnackbarMessage] = useState(""); // Snackbar message
+  const { adId } = useParams();
 
   useEffect(() => {
     const fetchAds = async () => {
@@ -55,6 +56,7 @@ const Product = () => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
+        
           adId: ad._id,
           brand: ad.brand,
           model: ad.model,
@@ -64,6 +66,7 @@ const Product = () => {
           quantity: 1, // Default quantity is 1
           images: ad.images,
         }),
+        
       });
 
       const data = await response.json();
