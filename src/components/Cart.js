@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { FaTrashAlt } from 'react-icons/fa';
 import { useAuth } from '../ContextAPI/AuthContext';
 import useAxiosInstance from '../ContextAPI/AxiosInstance';
+import Swal from 'sweetalert2';
+
 
 
 const CartComponent = () => {
@@ -14,6 +16,43 @@ const CartComponent = () => {
   const { adId } = useParams();
   const [ads, setAds] = useState(null);
   const [error, setError] = useState(null);
+
+
+
+  const removeFromCart = async (itemId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/usercart/item/${itemId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`, // Assuming you're passing an authorization token
+        },
+      });
+      
+      const data = await response.json();
+      console.log(data.message);
+    } catch (error) {
+      console.error('Error deleting item:', error);
+    }
+  };
+  
+  
+
+
+  const handleDelete = (itemId) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to delete this item from the cart?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Call the API to delete the item
+        removeFromCart(itemId);
+      }
+    });
+  };
 
 
   useEffect(() => {
@@ -133,6 +172,12 @@ const handleClick = async (cartId) => {
                 <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                   Price
                 </th>
+                <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Details
+                </th>
+                <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Delete
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -170,7 +215,7 @@ const handleClick = async (cartId) => {
       <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
         <button
           className="text-red-500 hover:text-red-700 transition duration-200"
-          // onClick={() => removeFromCart(item.id)}
+          onClick={() => handleDelete(item._id)}
         >
           <FaTrashAlt />
         </button>
