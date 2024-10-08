@@ -11,6 +11,7 @@ import {
   Typography,
   Button
 } from '@mui/material';
+import UserNavbar from './UserNavbar';
 
 const AdsTable = () => {
   const [ads, setAds] = useState([]);
@@ -62,6 +63,8 @@ const AdsTable = () => {
   };
 
   return (
+    <>
+    <UserNavbar/>
     <Paper>
        <h3 className="text-xl mt-4  ml-2 mb-4 font-semibold leading-none tracking-tight text-gray-900 md:text-xl lg:text-xl dark:text-white">
         Your <mark className="px-2 text-gray-900 bg-yellow-400 rounded dark:bg-blue-500">Sold Out </mark> Products
@@ -120,6 +123,7 @@ const AdsTable = () => {
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
     </Paper>
+    </>
   );
 };
 

@@ -168,30 +168,17 @@ const Navbar = () => {
                       <Menu.Items className="absolute right-0 z-10 mt-2 w-48 rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                         <Menu.Item>
                           <NavLink to="/profile" className="block px-4 py-2 text-sm text-gray-700">
-                            Your Profile
+                            Dashboard
                           </NavLink>
                         </Menu.Item>
-                        <Menu.Item>
-                          <NavLink to="/postad" className="block px-4 py-2 text-sm text-gray-700">
-                            Post an Ad
-                          </NavLink>
-                        </Menu.Item>
-                        <Menu.Item>
-                          <NavLink to="/viewads" className="block px-4 py-2 text-sm text-gray-700">
-                            View Posted Ads
-                          </NavLink>
-                        </Menu.Item>
-                        <Menu.Item>
-                          <NavLink to="/soldoutproducts" className="block px-4 py-2 text-sm text-gray-700">
-                            Sold Out Products
-                          </NavLink>
-                        </Menu.Item>
+                        
+                 
                         <Menu.Item>
                           <button
                             onClick={logout}
                             className="block w-full text-left px-4 py-2 text-sm text-gray-700"
                           >
-                            Sign out
+                            Log Out
                           </button>
                         </Menu.Item>
                       </Menu.Items>

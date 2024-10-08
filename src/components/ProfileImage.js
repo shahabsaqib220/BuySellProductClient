@@ -4,6 +4,7 @@ import { FaEdit } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import useAxiosInstance from '../ContextAPI/AxiosInstance';
 import { FaSpinner } from 'react-icons/fa'; // Import spinner icon
+import UserNavbar from './UserNavbar';
 
 const ProfileImage = () => {
   const { user } = useAuth(); 
@@ -100,6 +101,8 @@ const ProfileImage = () => {
   };
 
   return (
+    <>
+    <UserNavbar/>
     <div className="flex flex-col items-center p-4 bg-white rounded-lg shadow-md max-w-sm mx-auto mt-8">
       <h1 className="mb-4 text-xl font-semibold leading-none tracking-tight text-gray-900 md:text-xl lg:text-xl dark:text-white">Welcome <mark className="px-2 text-white bg-yellow-400 rounded dark:bg-blue-500">{username}</mark></h1>
       <h6 className="text-lg -ml-32 mt-9 mb-5 font-bold dark:text-white">Update Your Profile Image</h6>
@@ -158,6 +161,7 @@ const ProfileImage = () => {
         </button>
       </div>
     </div>
+    </>
   );
 };
 

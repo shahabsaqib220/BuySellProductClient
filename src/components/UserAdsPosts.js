@@ -4,6 +4,7 @@ import { Divider } from '@mui/material';
 import axios from "axios";
 
 import useAxiosInstance from '../ContextAPI/AxiosInstance';
+import UserNavbar from "./UserNavbar";
 
 
 const ProductForm = () => {
@@ -1971,6 +1972,7 @@ const ProductForm = () => {
   
   return (
     <>
+    <UserNavbar/>
     <div className="flex justify-center p-6 bg-white">
     
     <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-7xl">

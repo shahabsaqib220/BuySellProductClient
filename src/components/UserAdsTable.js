@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import useAxiosInstance from '../ContextAPI/AxiosInstance';
+import UserNavbar from './UserNavbar';
 
 
 const UserAdsTable = () => {
@@ -70,7 +71,6 @@ const UserAdsTable = () => {
         break;
       default:
     
-      // Call the function to mark ad as sold
       break;
     }
   };
@@ -177,6 +177,8 @@ const UserAdsTable = () => {
   if (ads.length === 0) return <p>No ads found.</p>;
 
   return (
+    <>
+    <UserNavbar/>
     <div>
       
       <div className="flex justify-between items-center mb-4 ml-4 mt-4">
@@ -395,6 +397,7 @@ const UserAdsTable = () => {
 )}
 
     </div>
+    </>
   );
 };
 
