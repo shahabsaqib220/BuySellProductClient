@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import useAxiosInstance from '../ContextAPI/AxiosInstance';
 import { FaSpinner } from 'react-icons/fa'; // Import spinner icon
 import UserNavbar from './UserNavbar';
+import LetterPullup from "./LetterPullup"; 
+import UserLiveAds from "./UserLiveAds"; 
 
 const ProfileImage = () => {
   const { user } = useAuth(); 
@@ -17,6 +19,7 @@ const ProfileImage = () => {
   const [newName, setNewName] = useState(username);
   const [uploading, setUploading] = useState(false); // Loading state for image upload
   const axiosInstance = useAxiosInstance(); 
+
 
   // Fetch the user profile only if the user is logged in
   useEffect(() => {
@@ -104,8 +107,14 @@ const ProfileImage = () => {
     <>
     <UserNavbar/>
     <div className="flex flex-col items-center p-4 bg-white rounded-lg shadow-md max-w-sm mx-auto mt-8">
-      <h1 className="mb-4 text-xl font-semibold leading-none tracking-tight text-gray-900 md:text-xl lg:text-xl dark:text-white">Welcome <mark className="px-2 text-white bg-yellow-400 rounded dark:bg-blue-500">{username}</mark></h1>
-      <h6 className="text-lg -ml-32 mt-9 mb-5 font-bold dark:text-white">Update Your Profile Image</h6>
+    <h1 className="mb-4 text-2xl font-semibold leading-none tracking-tight text-gray-900 md:text-2xl lg:text-2xl dark:text-white flex items-center space-x-2">
+  <LetterPullup text="Welcome" delay={0.05} />
+  <LetterPullup text={username} delay={0.05} />
+
+</h1>
+      
+      
+      <h6 className="text-lg space-x-20 mt-9 mb-5 font-bold dark:text-white"><LetterPullup text="Update Your Profile Image" delay={0.05} /></h6>
 
       <div className="relative mb-6">
         {profileImage ? (
@@ -161,6 +170,7 @@ const ProfileImage = () => {
         </button>
       </div>
     </div>
+    <UserLiveAds/>
     </>
   );
 };

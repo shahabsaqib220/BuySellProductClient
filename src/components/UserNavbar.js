@@ -4,77 +4,144 @@ import { useAuth } from '../ContextAPI/AuthContext';
 import { NavLink } from 'react-router-dom';
 
 const UserNavbar = () => {
-  // State to manage the open/close state of the hamburger menu
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const {  logout } = useAuth(); 
+  const { logout } = useAuth(); 
 
-  // Function to toggle the menu
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   return (
-    <nav className="bg-gray-600 dark:bg-gray-900 w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600">
-      <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <a href="/" className="flex items-center space-x-3">
-          <img className="h-8" />
-          <span className="self-center text-2xl font-semibold"></span>
+    <nav className="bg-white border-gray-200 py-2.5 dark:bg-gray-900">
+      <div className="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
+        {/* Logo Section */}
+        <a href="#" className="flex items-center">
+          <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
+            Sell Any Product
+          </span>
         </a>
-        
-        {/* Hamburger Icon */}
-        <div className="flex md:hidden">
+
+        {/* Desktop Menu & Hamburger */}
+        <div className="flex items-center lg:order-2">
+          {/* Logout Button */}
+          <button
+            onClick={logout}
+            className="hidden text-black bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-purple-300 font-semibold rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800 lg:inline-block"
+          >
+            Log Out
+          </button>
+
+          {/* Hamburger Menu Button */}
           <button
             onClick={toggleMenu}
-            className="inline-flex items-center bg-yellow-500 p-2 w-10 h-10 justify-center text-black rounded-lg hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-            aria-controls="navbar-sticky"
+            type="button"
+            className="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            aria-controls="mobile-menu-2"
             aria-expanded={isMenuOpen}
           >
             <span className="sr-only">Open main menu</span>
             {isMenuOpen ? (
-              <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="w-6 h-6"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
               </svg>
             ) : (
-              <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M1 1h15M1 7h15M1 13h15" />
+              <svg
+                className="w-6 h-6"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                  clipRule="evenodd"
+                />
               </svg>
             )}
           </button>
         </div>
 
-        {/* Desktop Menu */}
-        <div className={`w-full md:w-auto md:flex  md:items-center ${isMenuOpen ? 'block' : 'hidden'}`}>
-          <ul className="flex flex-col md:flex-row md:space-x-8 p-4 md:p-0 mt-4 md:mt-0 md:bg-transparent border border-yellow-200 rounded-lg md:border-none dark:bg-yellow-800 md:dark:bg-transparent">
+        {/* Mobile Menu */}
+        <div
+          className={`${
+            isMenuOpen ? "block" : "hidden"
+          } items-center justify-between w-full lg:flex lg:w-auto lg:order-1`}
+          id="mobile-menu-2"
+        >
+          <ul className="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
             <li>
-              <NavLink to="/profile" className="block py-2 px-3 font-semibold bg-yellow-400 lg:text-black lg:hover:bg-yellow-500 rounded sm:bg-yellow-500 sm:text-red-500 sm:font-semibold  ">
+              <NavLink
+                to="/profile"
+                className={({ isActive }) =>
+                  isActive
+                    ? "block py-2 pl-3 pr-4 text-purple-700 lg:text-purple-700 lg:p-0"
+                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-purple-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white"
+                }
+                aria-current="page"
+              >
                 Profile
               </NavLink>
             </li>
             <li>
-              <NavLink to="/postad" className="block py-2 px-3 font-semibold bg-yellow-400 lg:text-black lg:hover:bg-yellow-500 rounded sm:bg-yellow-500 sm:text-red-500 sm:font-semibold  ">
+              <NavLink
+                to="/postad"
+                className={({ isActive }) =>
+                  isActive
+                    ? "block py-2 pl-3 pr-4 text-purple-700 lg:text-purple-700 lg:p-0"
+                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-purple-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white"
+                }
+              >
                 Post Ad
               </NavLink>
             </li>
             <li>
-              <NavLink to="/viewads" className="block py-2 px-3 font-semibold bg-yellow-400 lg:text-black lg:hover:bg-yellow-500 rounded sm:bg-yellow-500 sm:text-red-500 sm:font-semibold  ">
+              <NavLink
+                to="/viewads"
+                className={({ isActive }) =>
+                  isActive
+                    ? "block py-2 pl-3 pr-4 text-purple-700 lg:text-purple-700 lg:p-0"
+                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-purple-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white"
+                }
+              >
                 Posted Ads
               </NavLink>
             </li>
             <li>
-              <NavLink to="/soldoutproducts" className="block py-2 px-3 font-semibold bg-yellow-400 lg:text-black lg:hover:bg-yellow-500 rounded sm:bg-yellow-500 sm:text-red-500 sm:font-semibold ">
+              <NavLink
+                to="/soldoutproducts"
+                className={({ isActive }) =>
+                  isActive
+                    ? "block py-2 pl-3 pr-4 text-purple-700 lg:text-purple-700 lg:p-0"
+                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-purple-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white"
+                }
+              >
                 Sold Products
               </NavLink>
             </li>
           </ul>
         </div>
+      </div>
 
-        {/* Get Started Button */}
-        <div className="hidden md:flex items-center space-x-3">
-          <button type="button" onClick={logout} className=" flex text-black font-semibold bg-yellow-500  focus:ring-4 focus:outline-none focus:ring-yellow-200 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-            <RiLogoutBoxLine className='text-xl mx-1' /> Log Out 
+      {/* Logout Button for Small Devices */}
+      {isMenuOpen && (
+        <div className="block lg:hidden">
+          <button
+            onClick={logout}
+            className="w-full text-white bg-yellow-500 hover:bg-yellow-600 focus:ring-4 font-medium rounded-lg text-sm px-4 py-2.5 mt-4 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800"
+          >
+            Log Out
           </button>
         </div>
-      </div>
+      )}
     </nav>
   );
 };

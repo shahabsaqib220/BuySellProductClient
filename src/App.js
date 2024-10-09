@@ -11,6 +11,7 @@ import { Provider } from 'react-redux'; // Import Redux Provider
 import store from './Redux/store'; // Import the store
 import PrivateRoute from './ContextAPI/PrivateRoute';
 
+
 import SecurityQuestions from './components/SecurityQuestions';
 import Dashboard from './components/Dashboard';
 import AdminNavbar from './components/AdminNavbar'
@@ -29,7 +30,7 @@ function App() {
     <Provider store={store}> {/* Wrap everything inside Provider */}
       <BrowserRouter>
         <Navbar />
-        <Catagories />
+        {/* <Catagories /> */}
         
         <Routes>
           <Route path='/' element={<ProductItemsCard />} />

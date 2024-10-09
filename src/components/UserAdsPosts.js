@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {  Alert } from "@mui/material";
 import { Divider } from '@mui/material';
+import LetterPullup from "./LetterPullup"; 
 import axios from "axios";
 
 import useAxiosInstance from '../ContextAPI/AxiosInstance';
@@ -1976,9 +1977,24 @@ const ProductForm = () => {
     <div className="flex justify-center p-6 bg-white">
     
     <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-7xl">
-<h2 className="mb-4 text-2xl font-extrabold dark:text-white">      <span className="text-yellow-500 ">Post Your Ad: </span>
-   Elevate User  <span className="text-yellow-500 ">Experiance</span> with Our Product Form   <Divider className="bg-yellow-400 h-0.5 mx-6" />
-   </h2>
+   
+
+    <h2 className="mb-4 flex flex-wrap text-2xl font-extrabold dark:text-white">
+  <span className="text-yellow-500">
+    <LetterPullup text="Post Your Ad: " delay={0.05} />
+  </span>
+  <span>
+    <LetterPullup text="Evaluate User " delay={0.05} />
+  </span>
+  <span className="text-yellow-500">
+    <LetterPullup text="Experience " delay={0.05} />
+  </span>
+  <span>
+    <LetterPullup text="with Our Ad Form" delay={0.05} />
+  </span>
+</h2>
+
+    <Divider className="bg-yellow-400 h-0.5 mx-6 space-y-10" />
 
 
 
@@ -1993,7 +2009,7 @@ const ProductForm = () => {
          
 
         {/* Dropdowns Section */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 mt-6 sm:grid-cols-2 gap-6 mb-6">
   {/* Category Dropdown */}
   <div>
     <label
