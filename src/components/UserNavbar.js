@@ -12,7 +12,7 @@ const UserNavbar = () => {
   };
 
   return (
-    <nav className="bg-white border-gray-200 py-2.5 dark:bg-gray-900">
+    <nav className="bg-gray-200 border-gray-200 py-2.5 dark:bg-gray-900">
       <div className="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
         {/* Logo Section */}
         <a href="#" className="flex items-center">
@@ -83,7 +83,7 @@ const UserNavbar = () => {
                 to="/profile"
                 className={({ isActive }) =>
                   isActive
-                    ? "block py-2 pl-3 pr-4 text-purple-700 lg:text-purple-700 lg:p-0"
+                    ? "block py-2 pl-3 pr-4 text-purple-700 font-bold lg:text-purple-700 lg:p-0"
                     : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-purple-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white"
                 }
                 aria-current="page"
@@ -96,7 +96,7 @@ const UserNavbar = () => {
                 to="/postad"
                 className={({ isActive }) =>
                   isActive
-                    ? "block py-2 pl-3 pr-4 text-purple-700 lg:text-purple-700 lg:p-0"
+                    ? "block py-2 pl-3 pr-4 text-purple-700 font-bold lg:text-purple-700 lg:p-0"
                     : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-purple-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white"
                 }
               >
@@ -108,7 +108,7 @@ const UserNavbar = () => {
                 to="/viewads"
                 className={({ isActive }) =>
                   isActive
-                    ? "block py-2 pl-3 pr-4 text-purple-700 lg:text-purple-700 lg:p-0"
+                    ? "block py-2 pl-3 pr-4 text-purple-700 font-bold lg:text-purple-700 lg:p-0"
                     : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-purple-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white"
                 }
               >
@@ -120,7 +120,7 @@ const UserNavbar = () => {
                 to="/soldoutproducts"
                 className={({ isActive }) =>
                   isActive
-                    ? "block py-2 pl-3 pr-4 text-purple-700 lg:text-purple-700 lg:p-0"
+                    ? "block py-2 pl-3 pr-4 text-purple-700 font-bold lg:text-purple-700 lg:p-0"
                     : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-purple-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white"
                 }
               >

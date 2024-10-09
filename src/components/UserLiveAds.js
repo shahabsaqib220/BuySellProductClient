@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import useAxiosInstance from '../ContextAPI/AxiosInstance'; // Use your custom hook
-import { Container, Grid, Card, CardContent, Typography, Pagination, CardMedia, Box } from '@mui/material';
+import { Container, Grid, Card, CardContent, Typography, Pagination, CardMedia, Box, Skeleton } from '@mui/material';
 
 const AdsList = () => {
   const axiosInstance = useAxiosInstance(); // Call the custom Axios instance hook
@@ -9,7 +9,7 @@ const AdsList = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  const adsPerPage = 8; // Display 8 ads per page (4 per row, 2 rows)
+  const adsPerPage = 8; // Display 5 ads per page (5 per row)
 
   useEffect(() => {
     const fetchAds = async () => {
@@ -33,40 +33,101 @@ const AdsList = () => {
   };
 
   return (
-    <Container sx={{ paddingY: 10 }}>
-      <Typography variant="h4" gutterBottom align="left" sx={{ fontWeight: 600, color: '#333' }}>
+    <>
+      <Typography
+        variant="h4"
+        gutterBottom
+        sx={{ fontWeight: 400, color: '#333', textAlign: 'left', marginBottom: 10, marginLeft: 3 }}
+      >
         Your Live Ads
       </Typography>
 
       {loading ? (
-        <Typography>Loading...</Typography>
+        <Grid container spacing={2} justifyContent="center">
+          {Array.from(new Array(5)).map((_, index) => (
+            <Grid item xs={12} sm={6} md={2.4} key={index}> {/* md={2.4} ensures 5 cards per row */}
+              <Skeleton variant="rectangular" width={250} height={250} />
+            </Grid>
+          ))}
+        </Grid>
       ) : ads.length === 0 ? (
         <Typography variant="h6" align="center" color="text.secondary">
           You don't have any ads to display.
         </Typography>
       ) : (
         <>
-          <Grid container spacing={2} justifyContent="center">
+          <Grid container spacing={1.5} justifyContent="center"> {/* Adjust spacing to reduce space between cards */}
             {ads.map((ad) => (
-              <Grid item xs={12} sm={6} md={3} key={ad._id} sx={{ display: 'flex', justifyContent: 'center' }}>
-                <Card sx={{ width: 200, height: 200, display: 'flex', flexDirection: 'column', boxShadow: 3, borderRadius: 2 }}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                md={2.4} 
+                key={ad._id}
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  marginX: { xs: 0, sm: 0.5 }, // Minimal margin on sides
+                }}
+              >
+                <Card
+                  sx={{
+                    width: 250,
+                    height: 300,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    boxShadow: 6,
+                    borderRadius: 3,
+                  }}
+                >
                   <CardMedia
                     component="img"
-                    height="140"
                     image={ad.images.length > 0 ? ad.images[0] : 'default-image.jpg'}
                     alt={`${ad.brand} ${ad.model}`}
-                    sx={{ objectFit: 'cover', flexGrow: 1 }} // Maintain aspect ratio
+                    sx={{
+                      height: 180, // Enforces a fixed height for the image
+                      width: '100%', // Ensures the image takes the full width of the card
+                      objectFit: 'cover', // Ensures the image is cropped to fit within the given height without distorting aspect ratio
+                    }}
                   />
-                  <CardContent sx={{ padding: 1 }}>
-                    <Box>
-                      <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', fontSize: '0.9rem' }}>
-                        {ad.category} - {ad.brand}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {ad.model}
-                      </Typography>
-                    </Box>
-                    <Typography variant="body2" sx={{ fontSize: '0.85rem', color: '#00796b', fontWeight: 600, marginTop: 0.5 }}>
+                  <CardContent sx={{ padding: 2, textAlign: 'center' }}>
+                    <Typography
+                      variant="h6"
+                      component="div"
+                      sx={{
+                        fontWeight: 'bold',
+                        fontSize: '0.95rem',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                    >
+                     Catagory: {ad.category}
+                    </Typography>
+                    <Typography
+                      variant="h6"
+                      component="div"
+                      sx={{
+                        fontWeight: 'bold',
+                        fontSize: '0.95rem',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                    >
+                     Brand: {ad.brand}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                    >
+                      {ad.model}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{ fontSize: '1rem', color: '#00796b', fontWeight: 600, marginTop: 1 }}
+                    >
                       ${ad.price}
                     </Typography>
                   </CardContent>
@@ -85,7 +146,7 @@ const AdsList = () => {
           />
         </>
       )}
-    </Container>
+    </>
   );
 };
 

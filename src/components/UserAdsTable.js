@@ -172,24 +172,26 @@ const UserAdsTable = () => {
     );
   }
 
-  if (error) return <p>Error: {error}</p>;
-
-  if (ads.length === 0) return <p>No ads found.</p>;
-
+ 
   return (
     <>
     <UserNavbar/>
     <div>
       
-      <div className="flex justify-between items-center mb-4 ml-4 mt-4">
+    <div className="flex justify-between items-center mb-4 ml-4 mt-4">
         <h3 className="text-xl font-semibold leading-none tracking-tight text-gray-900 md:text-xl lg:text-xl dark:text-white">
           Control Your Ads: <mark className="px-2 text-gray-900 bg-yellow-400 rounded dark:bg-blue-500">Edit, Sell, or</mark> Mark as Sold
         </h3>
-        
       </div>
+      
+
 
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+
+
+      {currentAds.length > 0 ? (
+        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-black bg-yellow-400 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th className="px-6 py-3">S.No</th>
@@ -204,6 +206,7 @@ const UserAdsTable = () => {
             </tr>
           </thead>
           <tbody>
+
             {currentAds.map((ad, index) => (
               <tr key={ad._id} className="px-6 py-4 font-medium font-semibold text-gray-900 whitespace-nowrap dark:text-white">
                 <td className="border px-4 py-2">{(currentPage - 1) * adsPerPage + index + 1}</td>
@@ -257,6 +260,21 @@ const UserAdsTable = () => {
 
           </tbody>
         </table>
+        </div>
+      ) : (
+        <div className="text-center mt-6">
+          <p className="text-gray-500">You haven't posted any ads yet.</p>
+        </div>
+      )}
+
+
+
+
+
+
+
+
+      
       </div>
 
       <div className="flex justify-center mt-6">
