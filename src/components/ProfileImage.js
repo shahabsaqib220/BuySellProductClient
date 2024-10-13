@@ -7,9 +7,16 @@ import { FaSpinner } from 'react-icons/fa'; // Import spinner icon
 import UserNavbar from './UserNavbar';
 import LetterPullup from "./LetterPullup"; 
 import UserLiveAds from "./UserLiveAds"; 
+import axios from 'axios';
 
 const ProfileImage = () => {
   const { user } = useAuth(); 
+
+  const [email, setEmail] = useState('');
+  const [newEmail, setNewEmail] = useState('');
+  const [error, setError] = useState('');
+
+
   const [profileImage, setProfileImage] = useState(null);
   const [file, setFile] = useState(null);
   const [username, setUsername] = useState(user?.username || ''); // State for username
@@ -21,7 +28,10 @@ const ProfileImage = () => {
   const axiosInstance = useAxiosInstance(); 
 
 
-  // Fetch the user profile only if the user is logged in
+  
+  
+  
+  
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
@@ -170,6 +180,7 @@ const ProfileImage = () => {
         </button>
       </div>
     </div>
+
     <UserLiveAds/>
     </>
   );

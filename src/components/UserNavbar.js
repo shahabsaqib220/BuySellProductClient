@@ -127,6 +127,18 @@ const UserNavbar = () => {
                 Sold Products
               </NavLink>
             </li>
+            <li>
+              <NavLink
+                to="/security"
+                className={({ isActive }) =>
+                  isActive
+                    ? "block py-2 pl-3 pr-4 text-purple-700 font-bold lg:text-purple-700 lg:p-0"
+                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-purple-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white"
+                }
+              >
+                Security
+              </NavLink>
+            </li>
           </ul>
         </div>
       </div>

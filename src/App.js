@@ -22,6 +22,7 @@ import ProductDetails from './components/ProductDetails';
 import SoldOutUserProduct from "./components/SoldOutUserProduct"
 import CartComponent from './components/Cart';
 import UserNavbar from './components/UserNavbar';
+import ChangePassword from "./components/ChangePassword";
 
 
 
@@ -48,6 +49,7 @@ function App() {
       <Route path="/viewads" element={<PrivateRoute element={<UserAdsTable />} />} />
       <Route path="/soldoutproducts" element={<PrivateRoute element={<SoldOutUserProduct />} />} />
       <Route path="/usernavbar" element={<PrivateRoute element={<UserNavbar />} />} />
+      <Route path="/security" element={<PrivateRoute element={<ChangePassword />} />} />
       
         
         </Routes>
