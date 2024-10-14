@@ -7,34 +7,60 @@ const UpdateSecurityQuestions = () => {
   const { user } = useAuth();
   const axiosInstance = useAxiosInstance();
 
+  const [loadingQuestions, setLoadingQuestions] = useState(false);
+  const [securityQuestions, setSecurityQuestions] = useState([]);
   const [password, setPassword] = useState('');
   const [passwordVerified, setPasswordVerified] = useState(false);
   const [securityVerified, setSecurityVerified] = useState(false);
   const [newQuestions, setNewQuestions] = useState({ question1: '', question2: '' });
+  const [answers, setAnswers] = useState({});
   const [newAnswers, setNewAnswers] = useState({ answer1: '', answer2: '' });
   const [oldAnswers, setOldAnswers] = useState({ answer1: '', answer2: '' });
+  const [existingQuestions, setExistingQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [loadingVerifyAnswers, setLoadingVerifyAnswers] = useState(false);
 
-  // Security questions to select from
-  const securityQuestions = [
-    { label: "What was the name of your first pet?", value: "pet" },
-    { label: "What is your mother's maiden name?", value: "maiden" },
-    { label: "What was the name of your first school?", value: "school" },
-    { label: "What city were you born in?", value: "city" },
-    { label: "What is your favorite food?", value: "food" },
+  // Sample new security questions for the user to choose from
+  const newSecurityQuestions = [
+    { value: 'first-pet', label: 'What was the name of your first pet?' },
+    { value: 'favorite-teacher', label: 'Who was your favorite teacher?' },
+    { value: 'birthplace', label: 'In which city were you born?' },
+    { value: 'mother-maiden', label: 'What is your mother’s maiden name?' },
+    { value: 'first-job', label: 'What was your first job?' },
   ];
+
+  // Fetch existing security questions after password is verified
+  const fetchSecurityQuestions = async () => {
+    setLoadingQuestions(true);
+    try {
+      const securityQuestionsResponse = await axiosInstance.get('/security/get-questions');
+      setSecurityQuestions(securityQuestionsResponse.data.questions);
+      setMessage('Answer the security questions to proceed.');
+      setError('');
+    } catch (err) {
+      setError('Failed to load security questions. Please try again.');
+      console.log(err);
+    } finally {
+      setLoadingQuestions(false);
+    }
+  };
 
   // Verify password function
   const verifyPassword = async () => {
     setLoading(true);
     try {
-      const response = await axiosInstance.post('/security/verify-old-password', { email: user.email, password });
+      const response = await axiosInstance.post('/security/verify-old-password', { 
+        email: user.email, 
+        oldPassword: password
+      });
+      
       if (response.data.success) {
         setPasswordVerified(true);
         setError('');
         setMessage('Password verified. Please answer the security questions.');
+        fetchSecurityQuestions();
       } else {
         setError('Incorrect password.');
       }
@@ -45,25 +71,25 @@ const UpdateSecurityQuestions = () => {
     }
   };
 
-  // Verify existing security answers
-  const verifySecurityQuestions = async () => {
-    setLoading(true);
+  // Verify old security answers
+  const verifySecurityAnswers = async () => {
+    setLoadingVerifyAnswers(true);
     try {
       const response = await axiosInstance.post('/security/verify-questions', {
         email: user.email,
-        answers: oldAnswers,
+        answers: oldAnswers
       });
       if (response.data.success) {
         setSecurityVerified(true);
-        setMessage('Security questions verified. Now choose new security questions.');
         setError('');
+        setMessage('Security answers verified. Now you can set new security questions.');
       } else {
-        setError('Security answers are incorrect.');
+        setError('Incorrect security answers.');
       }
     } catch (err) {
-      setError('Failed to verify security questions.');
+      setError('Failed to verify security answers.');
     } finally {
-      setLoading(false);
+      setLoadingVerifyAnswers(false);
     }
   };
 
@@ -73,8 +99,8 @@ const UpdateSecurityQuestions = () => {
       setError('Security questions must not be the same.');
       return;
     }
-    if (newAnswers.answer1 !== newAnswers.answer2) {
-      setError('Answers to security questions must match.');
+    if (!newAnswers.answer1 || !newAnswers.answer2) {
+      setError('Answers to new security questions must not be empty.');
       return;
     }
 
@@ -83,7 +109,7 @@ const UpdateSecurityQuestions = () => {
       const response = await axiosInstance.post('/security/update-questions', {
         email: user.email,
         newQuestions,
-        newAnswers: newAnswers.answer1, // Only sending one answer for both questions
+        newAnswers
       });
       setMessage('Security questions updated successfully.');
       setError('');
@@ -127,29 +153,26 @@ const UpdateSecurityQuestions = () => {
 
       {passwordVerified && !securityVerified && (
         <Box mt={4}>
-          <Typography variant="body1">Answer your previous security questions:</Typography>
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Old Answer 1"
-            variant="outlined"
-            onChange={(e) => setOldAnswers({ ...oldAnswers, answer1: e.target.value })}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Old Answer 2"
-            variant="outlined"
-            onChange={(e) => setOldAnswers({ ...oldAnswers, answer2: e.target.value })}
-          />
+          <Typography variant="body1">Answer the security questions below:</Typography>
+          {securityQuestions.map((question, index) => (
+            <TextField
+              key={index}
+              fullWidth
+              margin="normal"
+              label={question.question}
+              variant="outlined"
+              onChange={(e) => setOldAnswers({ ...oldAnswers, [question._id]: e.target.value })}
+            />
+          ))}
           <Button
-            onClick={verifySecurityQuestions}
-            disabled={loading}
+            onClick={verifySecurityAnswers}
+            disabled={loadingVerifyAnswers}
             fullWidth
             variant="contained"
             color="primary"
+            className="mt-4"
           >
-            {loading ? 'Verifying Answers...' : 'Verify Security Questions'}
+            {loadingVerifyAnswers ? 'Verifying Answers...' : 'Verify Answers'}
           </Button>
         </Box>
       )}
@@ -165,7 +188,7 @@ const UpdateSecurityQuestions = () => {
             value={newQuestions.question1}
             onChange={(e) => setNewQuestions({ ...newQuestions, question1: e.target.value })}
           >
-            {securityQuestions.map((question) => (
+            {newSecurityQuestions.map((question) => (
               <MenuItem key={question.value} value={question.value}>
                 {question.label}
               </MenuItem>
@@ -179,7 +202,7 @@ const UpdateSecurityQuestions = () => {
             value={newQuestions.question2}
             onChange={(e) => setNewQuestions({ ...newQuestions, question2: e.target.value })}
           >
-            {securityQuestions.map((question) => (
+            {newSecurityQuestions.map((question) => (
               <MenuItem key={question.value} value={question.value}>
                 {question.label}
               </MenuItem>
@@ -219,4 +242,4 @@ const UpdateSecurityQuestions = () => {
   );
 };
 
-export default UpdateSecurityQuestions; 
+export default UpdateSecurityQuestions;

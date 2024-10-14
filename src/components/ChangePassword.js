@@ -5,6 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { TextField, Button, CircularProgress, Typography, Box, Container } from '@mui/material';
 import UserNavbar from "../components/UserNavbar"
 import UpdateSecurityQuestions from './UpdateSecurtyQuestion';
+
+
+
 const Security = () => {
   const { user } = useAuth();
   const axiosInstance = useAxiosInstance();
@@ -12,7 +15,7 @@ const Security = () => {
 
   const [securityQuestions, setSecurityQuestions] = useState([]);
   const [answers, setAnswers] = useState({});
-  const [passwords, setPasswords] = useState({ oldPassword: '', newPassword: '', confirmPassword: '' });
+  const [passwords, setPasswords] = useState({ password: '', newPassword: '', confirmPassword: '' });
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loadingQuestions, setLoadingQuestions] = useState(false);
@@ -22,6 +25,8 @@ const Security = () => {
   const [securityVerified, setSecurityVerified] = useState(false);
   const [oldPasswordVerified, setOldPasswordVerified] = useState(false);
   const [isVerifyButtonDisabled, setIsVerifyButtonDisabled] = useState(false);
+
+  
 
   const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
