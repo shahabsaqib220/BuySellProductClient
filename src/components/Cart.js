@@ -6,58 +6,36 @@ import { useAuth } from '../ContextAPI/AuthContext';
 import useAxiosInstance from '../ContextAPI/AxiosInstance';
 import Swal from 'sweetalert2';
 
-
-
 const CartComponent = () => {
-  const { isLoggedIn, token } = useAuth();
+  const { isLoggedIn } = useAuth();
   const [cartItems, setCartItems] = useState([]);
   const axiosInstance = useAxiosInstance();
   const navigate = useNavigate();
-  const { adId } = useParams();
-  const [ads, setAds] = useState(null);
-  const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [itemIdToDelete, setItemIdToDelete] = useState(null);
 
-
-
   const removeFromCart = async (itemId) => {
     try {
-      // Make the DELETE request using axiosInstance (token handled globally)
-      const response = await axiosInstance.delete(`/api/usercart/item/${itemId}`);
-      
-      // Log the success message
-      console.log(response.data.message);
-
-      // Remove the deleted item from the cartItems state
+      await axiosInstance.delete(`/usercart/item/${itemId}`);
       setCartItems(cartItems.filter(item => item._id !== itemId));
-
-      // Show a success alert
-     
-      const data = await response.json();
-      
+      Swal.fire('Deleted!', 'Item has been removed from your cart.', 'success');
     } catch (error) {
       console.error('Error deleting item:', error);
+      Swal.fire('Error!', 'Failed to remove item from cart.', 'error');
     }
   };
-  
-  
-
 
   const handleDelete = (itemId) => {
-    setItemIdToDelete(itemId); // Store the id of the item to delete
-    setIsModalOpen(true); // Open the modal
+    setItemIdToDelete(itemId);
+    setIsModalOpen(true);
   };
 
-  // Function to confirm deletion
   const confirmDelete = async () => {
-    setIsModalOpen(false); // Close the modal after confirmation
+    setIsModalOpen(false);
     if (itemIdToDelete) {
-      // Call the API to delete the item
       await removeFromCart(itemIdToDelete);
     }
   };
-
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -65,54 +43,23 @@ const CartComponent = () => {
     }
   }, [isLoggedIn]);
 
-const fetchCartItems = async () => {
-  try {
-    // Make API request using axios
-    const response = await axiosInstance.get('/api/usercart/item/cart');
-    
-    // Log the response data to see its structure
-    
-    // Assuming you want to store the cart items in state
-    setCartItems(response.data);
-    
-    // Check if adId exists in the response and access its _id
-    
- 
-    
-  } catch (error) {
-    // Log error details
-    console.error("Error fetching cart items:", error.response?.data?.message || error.message);
-  }
-};
+  const fetchCartItems = async () => {
+    try {
+      const response = await axiosInstance.get('/usercart/item/cart');
+      setCartItems(response.data);
+    } catch (error) {
+      console.error("Error fetching cart items:", error.response?.data?.message || error.message);
+    }
+  };
 
-const handleClick = async (cartId) => {
-  try {
-    // Call the backend endpoint to fetch the adId using the cartId with axiosInstance
-    const response = await axiosInstance.get(`/api/usercart/navigate/adId/${cartId}`);
-    
-    // Navigate to the product details page with the fetched adId
-    navigate(`/product/${response.data.adId}`);
-  } catch (error) {
-    console.error('Error fetching adId:', error.response?.data?.message || error.message);
-  }
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  const handleClick = async (cartId) => {
+    try {
+      const response = await axiosInstance.get(`/usercart/navigate/adId/${cartId}`);
+      navigate(`/product/${response.data.adId}`);
+    } catch (error) {
+      console.error('Error fetching adId:', error.response?.data?.message || error.message);
+    }
+  };
 
   const getFirstThreeWords = (location) => {
     if (!location) return '';
@@ -185,116 +132,105 @@ const handleClick = async (cartId) => {
               </tr>
             </thead>
             <tbody>
-  {cartItems.map((item) => (
-    <tr key={item._id}> {/* This can remain as _id for the key */}
-      <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
-        <div className="flex items-center">
-          <div className="flex-shrink-0 w-16 h-16">
-            <img
-              className="w-full h-full object-cover rounded-lg"
-              src={item.adDetails.images[0].url}
-              alt={item.adDetails.images[0].alt}
-            />
-          </div>
-          <div className="ml-4">
-            <p className="text-gray-900 font-medium whitespace-no-wrap">{item.adDetails.model}</p>
-          </div>
-        </div>
-      </td>
-      <td className="px-6 py-5 border-b border-gray-200 bg-white text-semibold text-sm">
-        <p className="text-gray-900 whitespace-no-wrap">{item.adStatus}</p>
-      </td>
-      <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
-        <p>{getFirstThreeWords(item.adDetails.location?.readable) || 'Location not specified'}</p>
-      </td>
-      <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
-        <p className="text-gray-900 whitespace-no-wrap">{item.adDetails.condition}</p>
-      </td>
-      <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
-        <p className="text-gray-900 whitespace-no-wrap">${(item.adDetails.price).toFixed(2)}</p>
-      </td>
-      <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm font-medium">
-      <button 
-  onClick={() => handleClick(item._id)} 
-  className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
-  Product Details
-</button>
-
-      </td>
-      <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
-   
-      {/* Delete button */}
-      <button
-        className="text-red-500 hover:text-red-700 transition duration-200"
-        onClick={() => handleDelete(item._id)}
-      >
-        <FaTrashAlt />
-      </button>
-
-      {/* Modal */}
-      {isModalOpen && (
-        <div className="fixed z-10 inset-0 overflow-y-auto">
-          <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-            {/* Background overlay */}
-            <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-
-            {/* Modal box */}
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:align-middle sm:max-w-lg sm:w-full">
-              <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div className="sm:flex sm:items-start">
-                  <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                      Delete 
-                    </h3>
-                    <div className="mt-2">
-                      <p className="text-sm text-gray-500">
-                        Are you sure you want to remove this from Cart? This action cannot be undone.
-                      </p>
+              {cartItems.map((item) => (
+                <tr key={item._id}>
+                  <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0 w-16 h-16">
+                        {item.adDetails.images && item.adDetails.images.length > 0 ? (
+                          <img
+                            className="w-full h-full object-cover rounded-lg"
+                            src={item.adDetails.images[0]}
+                            alt={item.adDetails.images[0].alt}
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gray-200 rounded-lg">
+                            <span>No Image Available</span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="ml-4">
+                        <p className="text-gray-900 font-medium whitespace-no-wrap">{item.adDetails.model}</p>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                {/* Confirm Button */}
-                <button
-                  type="button"
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 sm:ml-3 sm:w-auto sm:text-sm"
-                  onClick={confirmDelete}
-                >
-                  Yes, delete it!
-                </button>
-                {/* Cancel Button */}
-                <button
-                  type="button"
-                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:mt-0 sm:w-auto sm:text-sm"
-                  onClick={() => setIsModalOpen(false)}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    
-      </td>
-    </tr>
-  ))}
-</tbody>
-
-
+                  </td>
+                  <td className="px-6 py-5 border-b border-gray-200 bg-white text-semibold text-sm">
+                    <p className="text-gray-900 whitespace-no-wrap">{item.adStatus}</p>
+                  </td>
+                  <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
+                    <p>{getFirstThreeWords(item.adDetails.location?.readable) || 'Location not specified'}</p>
+                  </td>
+                  <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
+                    <p className="text-gray-900 whitespace-no-wrap">{item.adDetails.condition}</p>
+                  </td>
+                  <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
+                    <p className="text-gray-900 whitespace-no-wrap">
+                      ${item.adDetails.price ? item.adDetails.price.toFixed(2) : 'N/A'}
+                    </p>
+                  </td>
+                  <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm font-medium">
+                    <button 
+                      onClick={() => handleClick(item._id)} 
+                      className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+                      Product Details
+                    </button>
+                  </td>
+                  <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
+                    <button
+                      className="text-red-600 hover:text-red-900"
+                      onClick={() => handleDelete(item._id)}
+                    >
+                      <FaTrashAlt />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
           </table>
         </div>
 
-       
-        
+        {isModalOpen && (
+          <div className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex justify-center items-center">
+            <div className="bg-white rounded-lg overflow-hidden shadow-lg w-full max-w-md mx-auto">
+              <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+              <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                  <div className="sm:flex sm:items-start">
+                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                      <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                        Confirm Delete
+                      </h3>
+                      <div className="mt-2">
+                        <p className="text-sm text-gray-500">
+                          Are you sure you want to remove this item from your cart?
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                  <button
+                    type="button"
+                    className="mt-3 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                    onClick={confirmDelete}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    type="button"
+                    className="mt-3 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-gray-300 text-base font-medium text-gray-700 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 sm:mt-0 sm:w-auto sm:text-sm"
+                    onClick={() => setIsModalOpen(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 };
-
-// Helper functions for calculating subtotal, tax, and total
-
 
 export default CartComponent;

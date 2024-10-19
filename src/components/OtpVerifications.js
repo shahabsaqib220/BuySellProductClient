@@ -41,7 +41,7 @@ function VerifyOtp() {
     setLoading(true);
     try {
       // Call API to verify OTP using the custom Axios instance
-      const response = await axiosInstance.post('/api/auth/verify-otp', { email, otp });
+      const response = await axiosInstance.post('/auth/verify-otp', { email, otp });
       
       // If OTP is verified successfully
       toast.success('OTP verified successfully!');

@@ -63,7 +63,7 @@ function SignUpForm() {
   
     try {
       // Make the request using Axios instance
-      const response = await axiosInstance.post('/api/auth/send-otp', {
+      const response = await axiosInstance.post('/auth/send-otp', {
         email,
       });
   

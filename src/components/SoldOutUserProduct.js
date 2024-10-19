@@ -11,6 +11,7 @@ import {
   Typography,
   Button
 } from '@mui/material';
+import useAxiosInstance from '../ContextAPI/AxiosInstance'; 
 import UserNavbar from './UserNavbar';
 
 const AdsTable = () => {
@@ -19,17 +20,20 @@ const AdsTable = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
+  const axiosInstance = useAxiosInstance(); // Get the Axios instance with token
 
   const fetchAds = async (page) => {
+  
     try {
-      const response = await fetch(`http://localhost:5000/api/userproducts/solded/ads?page=${page + 1}&limit=${rowsPerPage}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+      const response = await axiosInstance.get(`/userproducts/solded/ads`, {
+        params: {
+          page: page + 1,
+          limit: rowsPerPage,
         },
       });
-      const data = await response.json();
-      setAds(data.ads);
-      setTotalAds(data.totalAds);
+      
+      setAds(response.data.ads);
+      setTotalAds(response.data.totalAds);
     } catch (error) {
       console.error('Error fetching ads:', error);
     }

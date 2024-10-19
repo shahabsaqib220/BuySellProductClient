@@ -30,7 +30,7 @@ const ProfileImage = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const response = await axiosInstance.get('/api/profile-image/profile-image');
+        const response = await axiosInstance.get('/profile-image/profile-image');
         if (response.status === 200) {
           const data = response.data;
           setProfileImage(data.profileImageUrl);
@@ -52,7 +52,7 @@ const ProfileImage = () => {
   const handleEdit = async () => {
     if (newName) {
       try {
-        const response = await axiosInstance.put('/api/profile-image/update-username', {
+        const response = await axiosInstance.put('/profile-image/update-username', {
           newName,
         });
         if (response.status === 200) {
@@ -88,7 +88,7 @@ const ProfileImage = () => {
 
     setUploading(true); // Set uploading to true when starting the upload
     try {
-      const response = await axiosInstance.post('/api/profile-image/profile-photo', formData, {
+      const response = await axiosInstance.post('/profile-image/profile-photo', formData, {
         headers: {
           'Content-Type': 'multipart/form-data', 
         },

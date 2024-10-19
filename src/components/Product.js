@@ -8,6 +8,7 @@ import { Link, useParams } from 'react-router-dom';
 import { RxAvatar } from "react-icons/rx";
 import { Button, IconButton, Grid, Tooltip, Snackbar } from "@mui/material"; // Import Snackbar
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import useAxiosInstance from '../ContextAPI/AxiosInstance';
 
 // Utility function to get the first two words of a location
 const getFirstTwoWords = (location) => {
@@ -17,6 +18,7 @@ const getFirstTwoWords = (location) => {
 };
 
 const Product = () => {
+  const axiosInstance = useAxiosInstance(); 
   const sliderRef = useRef(null);
   const [ads, setAds] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar
@@ -26,9 +28,8 @@ const Product = () => {
   useEffect(() => {
     const fetchAds = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/allads/ads");
-        const data = await response.json();
-        setAds(data);
+        const response = await axiosInstance.get('/allads/ads');
+        setAds(response.data);
       } catch (error) {
         console.error("Error fetching ads:", error);
       }

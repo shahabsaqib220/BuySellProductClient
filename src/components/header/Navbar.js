@@ -30,7 +30,7 @@ const Navbar = () => {
       if (isLoggedIn && token) {
         try {
           // Use axiosInstance for API call
-          const response = await axiosInstance.get('/api/profile-image/profile-image');
+          const response = await axiosInstance.get('/profile-image/profile-image');
     
           if (response.status === 200) {
             const data = response.data;

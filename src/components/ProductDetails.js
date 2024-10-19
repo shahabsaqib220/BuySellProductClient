@@ -28,7 +28,7 @@ const ProductDetails = () => {
         const fetchAds = async () => {
           try {
             // Use Axios instance to fetch the ads
-            const response = await axiosInstance.get('/api/allads/ads');
+            const response = await axiosInstance.get('/allads/ads');
             setAds(response.data); // Axios stores the response data in `response.data`
           } catch (error) {
             console.error("Error fetching ads:", error);
@@ -44,7 +44,7 @@ const ProductDetails = () => {
         const fetchUserName = async () => {
           try {
             // Use Axios instance to fetch the user name
-            const response = await axiosInstance.get(`/api/user-profile-image/ad/${id}`); // Backend endpoint
+            const response = await axiosInstance.get(`/user-profile-image/ad/${id}`); // Backend endpoint
             setUserName(response.data.name); // Axios stores the response data in `response.data`
             setLoading(false);
           } catch (err) {
@@ -59,31 +59,25 @@ const ProductDetails = () => {
 
 
 
-    useEffect(() => {
+      useEffect(() => {
         const fetchAdDetails = async () => {
-            try {
-                const response = await fetch(`http://localhost:5000/api/product/details/ad/${id}`);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
-                setAd(data);
-                setCurrentImage(data.images[0]); // Set the default image
-
-                // Fetch other products
-                const otherResponse = await fetch(`http://localhost:5000/api/product/details/others/${data.category}`);
-                if (!otherResponse.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const otherData = await otherResponse.json();
-                setOtherProducts(otherData); // Set the other products
-            } catch (error) {
-                console.error("Error fetching ad details:", error);
-            }
+          try {
+            // Fetch ad details
+            const response = await axiosInstance.get(`/product/details/ad/${id}`);
+            setAd(response.data);
+            setCurrentImage(response.data.images[0]); // Set the default image
+    
+            // Fetch other products in the same category
+            const otherResponse = await axiosInstance.get(`/product/details/others/${response.data.category}`);
+            setOtherProducts(otherResponse.data); // Set the other products
+          } catch (error) {
+            console.error("Error fetching ad details:", error);
+          }
         };
-
+    
         fetchAdDetails();
-    }, [id]);
+      }, [id, axiosInstance]);
+    
 
     if (!ad) {
         return <div className="flex justify-center items-center h-screen text-lg">Loading...</div>;

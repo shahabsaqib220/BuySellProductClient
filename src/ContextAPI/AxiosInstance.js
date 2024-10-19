@@ -11,7 +11,7 @@ const useAxiosInstance = () => {
   // Create axios instance only once using useMemo
   const axiosInstance = useMemo(() => {
     return axios.create({
-      baseURL: 'http://localhost:5000/', // Your API base URL
+      baseURL: 'http://localhost:5000/api', // Your API base URL
     });
   }, []);
 

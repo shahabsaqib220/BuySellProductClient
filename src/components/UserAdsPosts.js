@@ -1891,7 +1891,7 @@ const ProductForm = () => {
   
     try {
       // Use axiosInstance to post ad data
-      await axiosInstance.post('/api/usersads/postads', formData, {
+      await axiosInstance.post('/usersads/postads', formData, {
         headers: {
           'Content-Type': 'multipart/form-data', // Required for file uploads
         },

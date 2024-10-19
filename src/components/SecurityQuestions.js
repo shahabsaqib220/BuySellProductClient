@@ -60,7 +60,7 @@ function SecurityQuestions() {
     setLoading(true);
     try {
       // Call the API to register using the custom Axios instance
-      await axiosInstance.post('/api/auth/register', {
+      await axiosInstance.post('/auth/register', {
         name,
         email,
         password, // Send the plain password
