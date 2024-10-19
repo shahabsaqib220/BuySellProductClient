@@ -4,12 +4,16 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { Alert } from '@mui/material';
 import { toast } from 'react-toastify';
+import useAxiosInstance from '../ContextAPI/AxiosInstance';
 
 function VerifyOtp() {
+
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(120); // 2 minutes
   const [timerExpired, setTimerExpired] = useState(false);
+  const axiosInstance = useAxiosInstance(); // Use your Axios instance
+
   const navigate = useNavigate();
   const { email } = useSelector((state) => state.user);
 
@@ -26,6 +30,7 @@ function VerifyOtp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
     
     // Basic validation to check OTP length
     if (otp.length !== 6) {
@@ -35,8 +40,8 @@ function VerifyOtp() {
   
     setLoading(true);
     try {
-      // Call API to verify OTP
-      const response = await axios.post('http://localhost:5000/api/auth/verify-otp', { email, otp });
+      // Call API to verify OTP using the custom Axios instance
+      const response = await axiosInstance.post('/api/auth/verify-otp', { email, otp });
       
       // If OTP is verified successfully
       toast.success('OTP verified successfully!');

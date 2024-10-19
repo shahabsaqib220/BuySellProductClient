@@ -28,12 +28,16 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  const login = async (userData) => {
-    localStorage.setItem('token', userData.token);
-    localStorage.setItem('user', JSON.stringify(userData));
-    setIsLoggedIn(true);
-    setUser(userData);
-    setToken(userData.token);
+  const login = (userData) => {
+    try {
+      localStorage.setItem('token', userData.token);
+      localStorage.setItem('user', JSON.stringify(userData));
+      setIsLoggedIn(true);
+      setUser(userData);
+      setToken(userData.token);
+    } catch (error) {
+      console.error('Failed to log in:', error);
+    }
   };
 
   const logout = () => {

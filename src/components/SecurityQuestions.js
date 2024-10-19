@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import bcrypt from 'bcryptjs';
 import { Alert } from '@mui/material';
+import useAxiosInstance from '../ContextAPI/AxiosInstance';
 
 const securityQuestionsList = [
   'What was the name of your first pet?',
@@ -19,20 +20,22 @@ function SecurityQuestions() {
   const [loading, setLoading] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const dispatch = useDispatch();
+  const axiosInstance = useAxiosInstance(); 
+
   const navigate = useNavigate();
   const { name, email, password } = useSelector((state) => state.user);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setAlertMessage(''); // Clear previous alert
-
+  
     // Check if all questions and answers are filled
     const hasEmptyField = questions.some(q => q.question === '' || q.answer === '');
     if (hasEmptyField) {
       setAlertMessage('Please answer all questions.');
       return;
     }
-
+  
     // Check for duplicate questions
     const selectedQuestions = questions.map(q => q.question);
     const hasDuplicateQuestions = new Set(selectedQuestions).size !== selectedQuestions.length;
@@ -40,7 +43,7 @@ function SecurityQuestions() {
       setAlertMessage('Both questions cannot be the same. Choose a different one.');
       return;
     }
-
+  
     // Check for duplicate answers
     const selectedAnswers = questions.map(q => q.answer);
     const hasDuplicateAnswers = new Set(selectedAnswers).size !== selectedAnswers.length;
@@ -48,25 +51,26 @@ function SecurityQuestions() {
       setAlertMessage('Both answers cannot be the same. Please provide different answers.');
       return;
     }
-
-    // Hash the password and answers
-    const hashedPassword = await bcrypt.hash(password, 10);
+  
+    // Hash the answers only
     const hashedAnswers = await Promise.all(
       questions.map((q) => bcrypt.hash(q.answer, 10))
     );
-
+  
     setLoading(true);
     try {
-      await axios.post('http://localhost:5000/api/auth/register', {
+      // Call the API to register using the custom Axios instance
+      await axiosInstance.post('/api/auth/register', {
         name,
         email,
-        password,
+        password, // Send the plain password
         securityQuestions: questions.map((q, index) => ({
           question: q.question,
-          answer: hashedAnswers[index],
+          answer: hashedAnswers[index], // Send the hashed answer
         })),
       });
-
+  
+      // Optionally dispatch security questions or answers here
       dispatch(setSecurityAnswers(questions));
       setAlertMessage('Registration completed successfully!');
       navigate('/login');
@@ -76,6 +80,7 @@ function SecurityQuestions() {
       setLoading(false);
     }
   };
+  
 
   const handleQuestionChange = (index, field, value) => {
     const updatedQuestions = [...questions];

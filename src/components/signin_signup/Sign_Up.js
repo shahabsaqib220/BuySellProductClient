@@ -4,8 +4,12 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setUserDetails } from '../../Redux/userSlice'; // Import the action
 import { Alert } from '@mui/material';
+import  useAxiosInstance  from '../../ContextAPI/AxiosInstance'
 
 function SignUpForm() {
+  const navigate = useNavigate();
+
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -17,77 +21,92 @@ function SignUpForm() {
   const [alertMessage, setAlertMessage] = useState('');
   const [alertSeverity, setAlertSeverity] = useState('error');
   const [nameError, setNameError] = useState(false);
+  const axiosInstance = useAxiosInstance(); // Use your Axios instance
+
   
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setNameError(false);
     setAlertMessage(''); // Clear previous alert
-
+  
+    
+    // Input validation
     if (!name) {
       setNameError(true);
-      setAlertMessage('Name is required');
-      setTimeout(() => setAlertMessage(''), 3000); // Clear after 3 seconds
+      showAlert('Name is required');
       return;
     }
-
+  
     if (!email || !password || !reEnterPassword) {
-      setAlertMessage('All fields are required');
-      setTimeout(() => setAlertMessage(''), 3000);
+      showAlert('All fields are required');
       return;
     }
-
+  
     if (!/\S+@\S+\.\S+/.test(email)) {
-      setAlertMessage('Invalid email format');
-      setTimeout(() => setAlertMessage(''), 3000);
+      showAlert('Invalid email format');
       return;
     }
-
+  
     if (password.length < 8 || !/[A-Z]/.test(password) || !/[!@#$%^&*]/.test(password)) {
-      setAlertMessage('Password must be at least 8 characters long, include a capital letter, and a special symbol');
-      setTimeout(() => setAlertMessage(''), 3000);
+      showAlert('Password must be at least 8 characters long, include a capital letter, and a special symbol');
       return;
     }
-
+  
     if (password !== reEnterPassword) {
-      setAlertMessage('Passwords do not match');
-      setTimeout(() => setAlertMessage(''), 3000);
+      showAlert('Passwords do not match');
       return;
     }
-
+  
     setLoading(true);
     setButtonText('Sending OTP...');
-
+  
     try {
-      const response = await fetch('http://localhost:5000/api/auth/send-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
+      // Make the request using Axios instance
+      const response = await axiosInstance.post('/api/auth/send-otp', {
+        email,
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to send OTP');
-      }
-
+  
+      // If successful, proceed with the next steps
       dispatch(setUserDetails({ name, email, password }));
-      setAlertMessage('OTP sent successfully!');
-      setAlertSeverity('success');
-      setTimeout(() => setAlertMessage(''), 3000);
-
+      showAlert('OTP sent successfully!', 'success');
       navigate('/verify-otp');
     } catch (error) {
-      setAlertMessage(error.message || 'Failed to send OTP');
-      setTimeout(() => setAlertMessage(''), 3000);
+      console.error('Error sending OTP:', error); // Log error for debugging
+      showAlert(error.response?.data?.message || 'Failed to send OTP');
     } finally {
       setLoading(false);
       setButtonText('Continue');
     }
   };
+
+  const fetchWithTimeout = (url, options, timeout = 8000) => {
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        reject(new Error('Request timed out'));
+      }, timeout);
+  
+      fetch(url, options)
+        .then(response => {
+          clearTimeout(timer);
+          resolve(response);
+        })
+        .catch(err => {
+          clearTimeout(timer);
+          reject(err);
+        });
+    });
+  };
+  
+  
+  
+  // Helper function to show alerts
+  const showAlert = (message, severity = 'error') => {
+    setAlertMessage(message);
+    setAlertSeverity(severity); // You can define alert severity if needed
+    setTimeout(() => setAlertMessage(''), 3000); // Clear after 3 seconds
+  };
+  
 
   const handleNameChange = (e) => {
     setName(e.target.value);

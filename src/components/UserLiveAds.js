@@ -15,7 +15,7 @@ const AdsList = () => {
     const fetchAds = async () => {
       setLoading(true);
       try {
-        const response = await axiosInstance.get(`/viewsads/myads?page=${currentPage}&limit=${adsPerPage}`);
+        const response = await axiosInstance.get(`/api/viewsads/myads?page=${currentPage}&limit=${adsPerPage}`);
         setAds(response.data.ads);
         setTotalPages(Math.ceil(response.data.totalAds / adsPerPage)); // Assume backend returns total ads count
       } catch (error) {

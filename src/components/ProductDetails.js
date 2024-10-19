@@ -3,8 +3,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { RxAvatar } from "react-icons/rx";
 import { FaPhoneAlt } from 'react-icons/fa';
 import { Divider } from '@mui/material';
+import useAxiosInstance from '../ContextAPI/AxiosInstance';
 
 const ProductDetails = () => {
+    const axiosInstance = useAxiosInstance(); 
     const { id } = useParams(); // Retrieve the product ID from the URL
     const [ad, setAd] = useState(null);
     const [currentImage, setCurrentImage] = useState('');
@@ -22,30 +24,28 @@ const ProductDetails = () => {
     //     return words.length > 1 ? `${words[0]} ${words[1]}` : words[0]; // Return first two words or less
     //   };
 
-      useEffect(() => {
+    useEffect(() => {
         const fetchAds = async () => {
           try {
-            const response = await fetch("http://localhost:5000/api/allads/ads");
-            const data = await response.json();
-            setAds(data);
+            // Use Axios instance to fetch the ads
+            const response = await axiosInstance.get('/api/allads/ads');
+            setAds(response.data); // Axios stores the response data in `response.data`
           } catch (error) {
             console.error("Error fetching ads:", error);
           }
         };
     
         fetchAds();
-      }, []);
+      }, [axiosInstance]);
+    
 
-    useEffect(() => {
+      useEffect(() => {
         // Function to fetch the user's name who posted the ad
         const fetchUserName = async () => {
           try {
-            const response = await fetch(`http://localhost:5000/api/user-profile-image/ad/${id}`); // Backend endpoint
-            if (!response.ok) {
-              throw new Error('Failed to fetch user name');
-            }
-            const data = await response.json();
-            setUserName(data.name);
+            // Use Axios instance to fetch the user name
+            const response = await axiosInstance.get(`/api/user-profile-image/ad/${id}`); // Backend endpoint
+            setUserName(response.data.name); // Axios stores the response data in `response.data`
             setLoading(false);
           } catch (err) {
             setError('Failed to fetch user name');
@@ -54,7 +54,8 @@ const ProductDetails = () => {
         };
     
         fetchUserName();
-      }, [id]);
+      }, [id, axiosInstance]);
+    
 
 
 

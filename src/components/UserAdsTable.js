@@ -24,7 +24,7 @@ const UserAdsTable = () => {
   
       try {
         // Use axiosInstance to get ads data
-        const response = await axiosInstance.get('/viewsads/myads');
+        const response = await axiosInstance.get('/api/viewsads/myads');
   
         if (response.status === 200) {
           const data = response.data;
@@ -79,7 +79,7 @@ const UserAdsTable = () => {
   const markAsSold = async (adId) => {
     try {
       // Use axiosInstance to send the PUT request
-      const response = await axiosInstance.put(`/userproducts/solded/soldout/${adId}`, {}, {
+      const response = await axiosInstance.put(`/api/userproducts/solded/soldout/${adId}`, {}, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -110,7 +110,7 @@ const UserAdsTable = () => {
     if (adToDelete) {
       try {
         // Use axiosInstance to send the DELETE request
-        const response = await axiosInstance.delete(`/deletead/deletead/${adToDelete}`);
+        const response = await axiosInstance.delete(`/api/deletead/deletead/${adToDelete}`);
   
         // Check if the request was successful
         if (response.status !== 200) throw new Error('Error deleting ad');

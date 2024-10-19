@@ -24,7 +24,7 @@ const CartComponent = () => {
   const removeFromCart = async (itemId) => {
     try {
       // Make the DELETE request using axiosInstance (token handled globally)
-      const response = await axiosInstance.delete(`/usercart/item/${itemId}`);
+      const response = await axiosInstance.delete(`/api/usercart/item/${itemId}`);
       
       // Log the success message
       console.log(response.data.message);
@@ -68,7 +68,7 @@ const CartComponent = () => {
 const fetchCartItems = async () => {
   try {
     // Make API request using axios
-    const response = await axiosInstance.get('/usercart/item/cart');
+    const response = await axiosInstance.get('/api/usercart/item/cart');
     
     // Log the response data to see its structure
     
@@ -88,7 +88,7 @@ const fetchCartItems = async () => {
 const handleClick = async (cartId) => {
   try {
     // Call the backend endpoint to fetch the adId using the cartId with axiosInstance
-    const response = await axiosInstance.get(`/usercart/navigate/adId/${cartId}`);
+    const response = await axiosInstance.get(`/api/usercart/navigate/adId/${cartId}`);
     
     // Navigate to the product details page with the fetched adId
     navigate(`/product/${response.data.adId}`);
