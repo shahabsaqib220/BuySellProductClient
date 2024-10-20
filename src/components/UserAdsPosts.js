@@ -1898,6 +1898,7 @@ const ProductForm = () => {
       });
       
       setAlert({ message: "Ad posted successfully!", severity: "success" });
+      
     } catch (error) {
       setAlert({ message: "Failed to post ad.", severity: "error" });
     } finally {
@@ -1999,11 +2000,7 @@ const ProductForm = () => {
 
 
       
-      {alert && (
-        <Alert severity={alert.severity} onClose={() => setAlert("")} className="mb-4">
-            {alert.message}
-          </Alert>
-        )}
+      
 
         
          
@@ -2283,10 +2280,15 @@ const ProductForm = () => {
             type="submit"
             onClick={handleSubmit}
             disabled={loading}
-            className="w-full py-2 bg-yellow-400 text-black rounded-lg font-semibold hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+            className="w-full mb-4 py-2 bg-yellow-400 text-black rounded-lg font-semibold hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-500"
           >
              {loading ? "Posting..." : "Post Ad"}
           </button>
+          {alert && (
+        <Alert severity={alert.severity} onClose={() => setAlert("")} className="mb-4">
+            {alert.message}
+          </Alert>
+        )}
 
 
       </div>

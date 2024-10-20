@@ -179,8 +179,8 @@ const UserAdsTable = () => {
     <div>
       
     <div className="flex justify-between items-center mb-4 ml-4 mt-4">
-        <h3 className="text-xl font-semibold leading-none tracking-tight text-gray-900 md:text-xl lg:text-xl dark:text-white">
-          Control Your Ads: <mark className="px-2 text-gray-900 bg-yellow-400 rounded dark:bg-blue-500">Edit, Sell, or</mark> Mark as Sold
+        <h3 className="text-xl font-semibold leading-none tracking-tight text-gray-900 md:text-xl lg:text-xl ">
+          Control Your Ads: <mark className="px-2 text-gray-900 bg-yellow-400 rounded ">Edit, Sell, or</mark> Mark as Sold
         </h3>
       </div>
       
@@ -191,8 +191,8 @@ const UserAdsTable = () => {
 
       {currentAds.length > 0 ? (
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead className="text-xs text-black bg-yellow-400 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
+          <thead className="text-xs text-black bg-yellow-400 uppercase bg-gray-50  ">
             <tr>
               <th className="px-6 py-3">S.No</th>
               <th className="px-6 py-3">Category</th>
@@ -208,7 +208,7 @@ const UserAdsTable = () => {
           <tbody>
 
             {currentAds.map((ad, index) => (
-              <tr key={ad._id} className="px-6 py-4 font-medium font-semibold text-gray-900 whitespace-nowrap dark:text-white">
+              <tr key={ad._id} className="px-6 py-4 font-medium font-semibold text-gray-900 whitespace-nowrap ">
                 <td className="border px-4 py-2">{(currentPage - 1) * adsPerPage + index + 1}</td>
                 <td className="border px-4 py-2">{ad.category}</td>
                 <td className="border px-4 py-2">{ad.brand}</td>
@@ -231,19 +231,19 @@ const UserAdsTable = () => {
                 <td className="border px-4 py-2">{ad.MobilePhone}</td>
                 <td className="border px-4 py-2">{ad.condition}</td>
                 <td className="relative px-6 py-4">
-                  <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline" onClick={() => toggleDropdown(ad._id)}>
+                  <a href="#" className="font-medium text-blue-600  hover:underline" onClick={() => toggleDropdown(ad._id)}>
                     Edit
                   </a>
                   {activeDropdown === ad._id && (
-                    <div className="absolute z-10 mt-2 w-48 bg-white border rounded shadow-lg dark:bg-gray-800">
-                      <ul className="py-1 text-sm text-gray-700 dark:text-gray-200">
-                        <li className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer" onClick={() => handleAction('sellFast', ad._id)}>
+                    <div className="absolute z-10 mt-2 w-48 bg-white border rounded shadow-lg ">
+                      <ul className="py-1 text-sm text-gray-700 ">
+                        <li className="block px-4 py-2 hover:bg-gray-100  cursor-pointer" onClick={() => handleAction('sellFast', ad._id)}>
                           Sell Fast
                         </li>
-                        <li className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer" onClick={() => handleAction('markSold', ad._id)}>
+                        <li className="block px-4 py-2 hover:bg-gray-100  cursor-pointer" onClick={() => handleAction('markSold', ad._id)}>
                           Mark as Sold
                         </li>
-                        <li className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer" onClick={() => handleAction('deletead', ad._id)}>
+                        <li className="block px-4 py-2 hover:bg-gray-100  cursor-pointer" onClick={() => handleAction('deletead', ad._id)}>
                           Delete
                         </li>
            
