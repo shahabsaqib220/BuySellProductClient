@@ -110,8 +110,8 @@ const Product = () => {
 
       {Object.keys(groupedAds).map((category) => (
         <div key={category}>
-          <h3 className="mb-8 mt-10 text-lg font-bold leading-tight tracking-tight text-gray-900 md:text-2xl lg:text-3xl dark:text-white">
-            <mark className="px-2 text-white bg-yellow-400 rounded dark:bg-yellow-500">
+          <h3 className="mb-8 mt-10 text-lg font-bold leading-tight tracking-tight text-gray-900 md:text-2xl lg:text-3xl">
+            <mark className="px-2 text-white bg-yellow-400 rounded">
               {category}
             </mark>
           </h3>
@@ -139,10 +139,9 @@ const Product = () => {
               alt={`${ad.model} image`}
               className="w-full h-48 object-cover rounded-t-lg mb-4"
             />
-            <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white mb-2">
+            <h5 className="text-xl font-semibold tracking-tight text-gray-900 mb-2">
               <span className="text-yellow-500">{ad.brand} </span>
-              <span className="text-yellow-500">{ad.model} </span>
-              
+              {ad.model}
             </h5>
           </Link>
 
@@ -150,7 +149,7 @@ const Product = () => {
 
           <Grid container alignItems="center">
             <Grid item xs>
-              <span className="text-2xl font-bold text-gray-900 dark:text-white">
+              <span className="text-2xl font-bold text-gray-900">
                 ${ad.price}
               </span>
             </Grid>
