@@ -141,7 +141,8 @@ const Product = () => {
             />
             <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white mb-2">
               <span className="text-yellow-500">{ad.brand} </span>
-              {ad.model}
+              <span className="text-yellow-500">{ad.model} </span>
+              
             </h5>
           </Link>
 
