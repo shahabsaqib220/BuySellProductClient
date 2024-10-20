@@ -1979,7 +1979,7 @@ const ProductForm = () => {
     <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-7xl">
    
 
-    <h2 className="mb-4 flex flex-wrap text-2xl font-extrabold dark:text-white">
+    <h2 className="mb-4 flex flex-wrap text-2xl font-extrabold ">
   <span className="text-yellow-500">
     <LetterPullup text="Post Your Ad: " delay={0.05} />
   </span>
@@ -2014,7 +2014,7 @@ const ProductForm = () => {
   <div>
     <label
       htmlFor="category"
-      className="block text-md font-semibold text-gray-950 dark:text-gray-200 mb-2"
+      className="block text-md font-semibold text-gray-950 mb-2"
     >
       <span className="text-gray-950">Select Category</span>
     </label>
@@ -2023,7 +2023,7 @@ const ProductForm = () => {
         id="category"
         value={selectedCategory}
         onChange={handleCategoryChange}
-        className="w-full p-3 border border-gray-300 bg-gray-50 text-gray-700 rounded-lg shadow focus:ring-2 focus:ring-yellow-800 focus:border-transparent transition duration-300 ease-in-out dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:ring-yellow-600"
+        className="w-full p-3 border border-gray-300 bg-gray-50 text-gray-700 rounded-lg shadow focus:ring-2 focus:ring-yellow-800 focus:border-transparent transition duration-300 ease-in-out"
       >
         <option value="">-- Select a Category --</option>
         {Object.keys(data).map((category) => (
@@ -2040,7 +2040,7 @@ const ProductForm = () => {
   <div>
     <label
       htmlFor="brand"
-      className="block text-md font-semibold text-gray-950 dark:text-gray-200 mb-2"
+      className="block text-md font-semibold text-gray-950 "
     >
       <span className="text-gray-950">Select Brand</span>
     </label>
@@ -2051,7 +2051,7 @@ const ProductForm = () => {
         onChange={handleBrandChange}
         className={`w-full p-3 border ${
           selectedCategory ? "border-gray-300 bg-gray-50" : "bg-gray-200"
-        } text-gray-700 rounded-lg shadow focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-300 ease-in-out dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:ring-yellow-800`}
+        } text-gray-700 rounded-lg shadow focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-300 ease-in-out`}
         disabled={!selectedCategory}
       >
         <option value="">-- Select a Brand --</option>
@@ -2084,7 +2084,7 @@ const ProductForm = () => {
   <div>
     <label
       htmlFor="model"
-      className="block text-md font-semibold text-gray-950 dark:text-gray-200 mb-2"
+      className="block text-md font-semibold text-gray-950  mb-2"
     >
       <span className="text-gray-950">Select Model</span>
     </label>
@@ -2095,7 +2095,7 @@ const ProductForm = () => {
         onChange={(e) => setSelectedModel(e.target.value)}
         className={`w-full p-3 border ${
           selectedBrand ? "border-gray-300 bg-gray-50" : "bg-gray-200"
-        } text-gray-700 rounded-lg shadow focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-300 ease-in-out dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:ring-yellow-600`}
+        } text-gray-700 rounded-lg shadow focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-300 ease-in-out `}
         disabled={!selectedBrand}
       >
         <option value="">-- Select a Model --</option>
@@ -2130,7 +2130,7 @@ const ProductForm = () => {
         <div className="mb-6">
   <label
     htmlFor="mobileNumber"
-    className="block text-md font-semibold text-gray-950 dark:text-gray-200 mb-2"
+    className="block text-md font-semibold text-gray-950  mb-2"
   >
     <span className="text-gray-950">Mobile Phone Number</span>
   </label>
@@ -2140,7 +2140,7 @@ const ProductForm = () => {
       id="mobileNumber"
       value={mobileNumber}
       onChange={(e) => setMobileNumber(e.target.value)}
-      className="w-full p-4 text-gray-700 border border-gray-300 bg-gray-50 rounded-lg shadow focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-300 ease-in-out placeholder-gray-400 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-500 dark:focus:ring-yellow-600"
+      className="w-full p-4 text-gray-700 border border-gray-300 bg-gray-50 rounded-lg shadow focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-300 ease-in-out placeholder-gray-400 "
       placeholder="Enter your mobile phone number"
     />
     <div className="absolute inset-y-0 right-0 pr-4 flex items-center">
@@ -2152,7 +2152,7 @@ const ProductForm = () => {
    <div className="mb-6">
   <label
     htmlFor="location"
-    className="block text-md font-semibold text-gray-950 dark:text-gray-200 mb-2"
+    className="block text-md font-semibold text-gray-950  mb-2"
   >
     Location
   </label>
@@ -2161,7 +2161,7 @@ const ProductForm = () => {
     id="location"
     value={location}
     onChange={handleLocationInputChange}
-    className="w-full p-4 border border-gray-300 bg-gray-50 rounded-lg shadow focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-300 ease-in-out placeholder-gray-400 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-500 dark:focus:ring-yellow-600"
+    className="w-full p-4 border border-gray-300 bg-gray-50 rounded-lg shadow focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-300 ease-in-out placeholder-gray-400 "
     placeholder="Enter location"
   />
   
@@ -2188,14 +2188,14 @@ const ProductForm = () => {
 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
   {/* Description Input */}
   <div>
-    <label htmlFor="description" className="block text-md font-semibold text-gray-950 dark:text-gray-200 mb-2">
+    <label htmlFor="description" className="block text-md font-semibold text-gray-950  mb-2">
       Description
     </label>
     <textarea
       id="description"
       value={description}
       onChange={(e) => setDescription(e.target.value)}
-      className="w-full p-4 text-gray-700 border border-gray-300 bg-gray-50 rounded-lg shadow focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-300 ease-in-out placeholder-gray-400 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-500 dark:focus:ring-yellow-600"
+      className="w-full p-4 text-gray-700 border border-gray-300 bg-gray-50 rounded-lg shadow focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-300 ease-in-out placeholder-gray-400 "
       rows="4"
       placeholder="Provide a detailed description of the product"
     />
@@ -2203,7 +2203,7 @@ const ProductForm = () => {
 
   {/* Price Input */}
   <div>
-    <label htmlFor="price" className="block text-md font-semibold text-gray-950 dark:text-gray-200 mb-2">
+    <label htmlFor="price" className="block text-md font-semibold text-gray-950  mb-2">
       Price
     </label>
     <input
@@ -2211,7 +2211,7 @@ const ProductForm = () => {
       id="price"
       value={price}
       onChange={(e) => setPrice(e.target.value)}
-      className="w-full p-4 text-gray-700 border border-gray-300 bg-gray-50 rounded-lg shadow focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-300 ease-in-out placeholder-gray-400 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-500 dark:focus:ring-yellow-600"
+      className="w-full p-4 text-gray-700 border border-gray-300 bg-gray-50 rounded-lg shadow focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-300 ease-in-out placeholder-gray-400 "
       placeholder="Enter price in USD"
     />
   </div>
@@ -2219,14 +2219,14 @@ const ProductForm = () => {
 
 {/* Condition Dropdown */}
 <div className="mb-6">
-  <label htmlFor="condition" className="block text-md font-semibold text-gray-950 dark:text-gray-200 mb-2">
+  <label htmlFor="condition" className="block text-md font-semibold text-gray-950  mb-2">
     Select Condition
   </label>
   <select
     id="condition"
     value={selectedCondition}
     onChange={(e) => setSelectedCondition(e.target.value)}
-    className="w-full p-4 border border-gray-300 bg-gray-50 rounded-lg shadow focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-300 ease-in-out dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:ring-yellow-600"
+    className="w-full p-4 border border-gray-300 bg-gray-50 rounded-lg shadow focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-300 ease-in-out "
   >
     <option value="">-- Select Condition --</option>
     {conditions.map((condition, index) => (
@@ -2239,7 +2239,7 @@ const ProductForm = () => {
 
 {/* Image Uploads Section */}
 <div className="mb-6">
-  <label className="block text-md font-semibold text-gray-950 dark:text-gray-200 mb-2">
+  <label className="block text-md font-semibold text-gray-950  mb-2">
     Upload Images (up to 5)
   </label>
   <input
@@ -2247,7 +2247,7 @@ const ProductForm = () => {
     multiple
     onChange={handleImageUpload}
     accept="image/*"
-    className="w-full p-4 text-gray-700 border border-gray-300 bg-gray-50 rounded-lg shadow focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-300 ease-in-out dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:ring-yellow-600"
+    className="w-full p-4 text-gray-700 border border-gray-300 bg-gray-50 rounded-lg shadow focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-300 ease-in-out "
   />
 
   {images.length > 0 && (
