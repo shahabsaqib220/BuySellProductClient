@@ -140,7 +140,7 @@ const Product = () => {
               className="w-full h-48 object-cover rounded-t-lg mb-4"
             />
             <h5 className="text-xl font-semibold tracking-tight text-gray-900 dark:text-white mb-2">
-              {/* <span className="text-yellow-500">  {ad.brand} </span> */}
+              <span className="text-yellow-500">{ad.brand} </span>
               {ad.model}
             </h5>
           </Link>
