@@ -128,7 +128,7 @@ const AdsList = () => {
                       variant="body2"
                       sx={{ fontSize: '1rem', color: '#00796b', fontWeight: 600, marginTop: 1 }}
                     >
-                      ${ad.price}
+                      Rs. {ad.price}
                     </Typography>
                   </CardContent>
                 </Card>

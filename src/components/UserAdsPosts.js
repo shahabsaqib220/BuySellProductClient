@@ -2209,7 +2209,7 @@ const ProductForm = () => {
       value={price}
       onChange={(e) => setPrice(e.target.value)}
       className="w-full p-4 text-gray-700 border border-gray-300 bg-gray-50 rounded-lg shadow focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-300 ease-in-out placeholder-gray-400 "
-      placeholder="Enter price in USD"
+      placeholder="Enter price in PKR"
     />
   </div>
 </div>

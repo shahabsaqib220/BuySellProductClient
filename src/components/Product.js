@@ -162,7 +162,7 @@ const Product = () => {
                     <Grid container alignItems="center">
                       <Grid item xs>
                         <span className="text-2xl font-bold text-gray-900">
-                          ${ad.price}
+                          Rs {ad.price}
                         </span>
                       </Grid>
 

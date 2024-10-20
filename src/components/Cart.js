@@ -165,7 +165,7 @@ const CartComponent = () => {
                   </td>
                   <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
                     <p className="text-gray-900 whitespace-no-wrap">
-                      ${item.adDetails.price ? item.adDetails.price.toFixed(2) : 'N/A'}
+                      Rs {item.adDetails.price ? item.adDetails.price.toFixed(2) : 'N/A'}
                     </p>
                   </td>
                   <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm font-medium">

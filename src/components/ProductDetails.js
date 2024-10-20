@@ -18,11 +18,7 @@ const ProductDetails = () => {
 
     const [error, setError] = useState('');
 
-    // const getFirstTwoWords = (location) => {
-    //     if (!location) return "";
-    //     const words = location.split(" ");
-    //     return words.length > 1 ? `${words[0]} ${words[1]}` : words[0]; // Return first two words or less
-    //   };
+
 
     useEffect(() => {
         const fetchAds = async () => {
@@ -124,7 +120,7 @@ const ProductDetails = () => {
             <p className="flex items-center text-2xl font-bold mb-4 text-gray-800">
             <mark className="px-2 text-gray-900 bg-yellow-400 rounded"> <strong>Price:</strong></mark> 
 
-                <span className="text-black text-3xl mx-2">  ${ad.price}</span>
+                <span className="text-black text-3xl mx-2">  Rs. {ad.price}</span>
             </p>
             <p className="mb-6 text-lg text-gray-600">
             <mark className="px-2 text-gray-900 bg-yellow-400 rounded"> <strong>Description:</strong></mark> 
@@ -188,7 +184,7 @@ const ProductDetails = () => {
                         <div key={product._id} className="bg-white rounded-lg shadow-lg p-4">
                             <img src={product.images[0]} alt={product.model} className="w-full h-48 object-cover rounded-lg" />
                             <h3 className="text-lg font-semibold mt-2">{product.brand} {product.model}</h3>
-                            <p className="text-yellow-500 text-xl">${product.price}</p>
+                            <p className="text-yellow-500 text-xl">Rs. {product.price}</p>
                             <button 
                                 className="mt-2 w-full bg-yellow-400 py-2 rounded-lg font-semibold shadow-md hover:bg-yellow-500 text-black transition duration-200"
                                 onClick={() => {
