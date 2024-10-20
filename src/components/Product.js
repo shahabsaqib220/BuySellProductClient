@@ -4,31 +4,31 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Divider from "@mui/material/Divider";
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams } from "react-router-dom";
 import { RxAvatar } from "react-icons/rx";
-import { Button, IconButton, Grid, Tooltip, Snackbar } from "@mui/material"; // Import Snackbar
+import { Button, IconButton, Grid, Tooltip, Snackbar, Alert } from "@mui/material"; // Import Snackbar and Alert
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import useAxiosInstance from '../ContextAPI/AxiosInstance';
+import useAxiosInstance from "../ContextAPI/AxiosInstance";
 
-// Utility function to get the first two words of a location
 const getFirstTwoWords = (location) => {
   if (!location) return "";
   const words = location.split(" ");
-  return words.length > 1 ? `${words[0]} ${words[1]}` : words[0]; // Return first two words or less
+  return words.length > 1 ? `${words[0]} ${words[1]}` : words[0];
 };
 
 const Product = () => {
-  const axiosInstance = useAxiosInstance(); 
+  const axiosInstance = useAxiosInstance();
   const sliderRef = useRef(null);
   const [ads, setAds] = useState([]);
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // State for Snackbar
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState(""); // Snackbar message
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // Snackbar severity (success, error, etc.)
   const { adId } = useParams();
 
   useEffect(() => {
     const fetchAds = async () => {
       try {
-        const response = await axiosInstance.get('/allads/ads');
+        const response = await axiosInstance.get("/allads/ads");
         setAds(response.data);
       } catch (error) {
         console.error("Error fetching ads:", error);
@@ -47,25 +47,38 @@ const Product = () => {
   }, {});
 
   const handleAddToCart = async (ad) => {
-    const token = localStorage.getItem("token"); // Assuming you're storing JWT in local storage
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      // User is not logged in
+      setSnackbarMessage("Sign in to use your cart");
+      setSnackbarSeverity("warning");
+      setSnackbarOpen(true);
+      return;
+    }
+
     try {
-      const response = await axiosInstance.post("/usercart/item/shopping", {
+      await axiosInstance.post("/usercart/item/shopping", {
         adId: ad._id,
         brand: ad.brand,
         model: ad.model,
         price: ad.price,
         condition: ad.condition,
         location: ad.location,
-        quantity: 1, // Default quantity is 1
+        quantity: 1,
         images: ad.images,
       });
-    
-      // Handle the response if needed
+
+      // User is logged in and item added to cart
+      setSnackbarMessage("Item added to cart");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
     } catch (error) {
-      // Handle the error if needed
       console.error("Error adding item to cart:", error);
+      setSnackbarMessage("Failed to add item to cart");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
     }
-    
   };
 
   const settings = {
@@ -128,108 +141,110 @@ const Product = () => {
           </div>
 
           <Slider ref={(slider) => (sliderRef.current = slider)} {...settings}>
-  {groupedAds[category].length > 0 ? (
-    groupedAds[category].map((ad) => (
-      <div key={ad._id} className="px-4">
-        {/* Card Wrapper for Overall Click */}
-        <div className="p-6 bg-white shadow-md rounded-lg transition-transform transform hover:scale-105 duration-200">
-          <Link to={`/product/${ad._id}`}>
-            <img
-              src={ad.images[0]}
-              alt={`${ad.model} image`}
-              className="w-full h-48 object-cover rounded-t-lg mb-4"
-            />
-            <h5 className="text-xl font-semibold tracking-tight text-gray-900 mb-2">
-              <span className="text-yellow-500">{ad.brand} </span>
-              {ad.model}
-            </h5>
-          </Link>
+            {groupedAds[category].length > 0 ? (
+              groupedAds[category].map((ad) => (
+                <div key={ad._id} className="px-4">
+                  <div className="p-6 bg-white shadow-md rounded-lg transition-transform transform hover:scale-105 duration-200">
+                    <Link to={`/product/${ad._id}`}>
+                      <img
+                        src={ad.images[0]}
+                        alt={`${ad.model} image`}
+                        className="w-full h-48 object-cover rounded-t-lg mb-4"
+                      />
+                      <h5 className="text-xl font-semibold tracking-tight text-gray-900 mb-2">
+                        <span className="text-yellow-500">{ad.brand} </span>
+                        {ad.model}
+                      </h5>
+                    </Link>
 
-          <Divider className="bg-gray-400 h-0.5 mb-6" />
+                    <Divider className="bg-gray-400 h-0.5 mb-6" />
 
-          <Grid container alignItems="center">
-            <Grid item xs>
-              <span className="text-2xl font-bold text-gray-900">
-                ${ad.price}
-              </span>
-            </Grid>
+                    <Grid container alignItems="center">
+                      <Grid item xs>
+                        <span className="text-2xl font-bold text-gray-900">
+                          ${ad.price}
+                        </span>
+                      </Grid>
 
-            <Grid item>
-              <Grid container alignItems="center" justifyContent="flex-end">
-                <Grid item>
-                  <Tooltip title="Add to Cart">
-                    <IconButton
-                      color="primary"
-                      style={{ color: "#FFC107", fontSize: "30px" }}
-                      aria-label="add to cart"
-                      onClick={(e) => {
-                        e.stopPropagation(); // Prevent Link click
-                        handleAddToCart(ad); // Pass the full ad object
-                      }}
-                    >
-                      <AddShoppingCartIcon style={{ fontSize: "30px" }} />
-                    </IconButton>
-                  </Tooltip>
-                </Grid>
-                <Grid item>
-                  {ad.userId?.profileImageUrl ? (
-                    <img
-                      src={ad.userId.profileImageUrl}
-                      alt="User profile"
-                      className="w-10 h-10 rounded-full object-cover ml-2"
-                    />
-                  ) : (
-                    <RxAvatar className="w-8 h-8 text-yellow-400 ml-2" />
-                  )}
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
+                      <Grid item>
+                        <Grid container alignItems="center" justifyContent="flex-end">
+                          <Grid item>
+                            <Tooltip title="Add to Cart">
+                              <IconButton
+                                color="primary"
+                                style={{ color: "#FFC107", fontSize: "30px" }}
+                                aria-label="add to cart"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleAddToCart(ad);
+                                }}
+                              >
+                                <AddShoppingCartIcon style={{ fontSize: "30px" }} />
+                              </IconButton>
+                            </Tooltip>
+                          </Grid>
+                          <Grid item>
+                            {ad.userId?.profileImageUrl ? (
+                              <img
+                                src={ad.userId.profileImageUrl}
+                                alt="User profile"
+                                className="w-10 h-10 rounded-full object-cover ml-2"
+                              />
+                            ) : (
+                              <RxAvatar className="w-8 h-8 text-yellow-400 ml-2" />
+                            )}
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
 
-          <div className="flex justify-between items-center mb-2">
-            {ad.location && (
-              <div>
-                <span className="text-sm text-gray-500">
-                  Location: {getFirstTwoWords(ad.location.readable)}
-                </span>
-              </div>
+                    <div className="flex justify-between items-center mb-2">
+                      {ad.location && (
+                        <div>
+                          <span className="text-sm text-gray-500">
+                            Location: {getFirstTwoWords(ad.location.readable)}
+                          </span>
+                        </div>
+                      )}
+
+                      <h5 className="text-sm text-gray-900">
+                        <span>Condition: {ad.condition}</span>
+                      </h5>
+                    </div>
+
+                    <div className="flex justify-between items-center mt-4">
+                      <Button
+                        variant="outlined"
+                        startIcon={<FaComments />}
+                        style={{ color: "#FFC107", borderColor: "#FFC107" }}
+                        size="small"
+                      >
+                        Chat with Seller
+                      </Button>
+
+                      <div className="flex">In Stock</div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-4">No ads available in this category.</div>
             )}
-
-            <h5 className="text-sm text-gray-900">
-              <span>Condition: {ad.condition}</span>
-            </h5>
-          </div>
-
-          <div className="flex justify-between items-center mt-4">
-            <Button
-              variant="outlined"
-              startIcon={<FaComments />}
-              style={{ color: "#FFC107", borderColor: "#FFC107" }}
-              size="small"
-            >
-              Chat with Seller
-            </Button>
-
-            <div className="flex">In Stock</div>
-          </div>
-        </div>
-      </div>
-    ))
-  ) : (
-    <div className="text-center py-4">No ads available in this category.</div>
-  )}
-</Slider>
-
+          </Slider>
         </div>
       ))}
 
-      {/* Snackbar for success message */}
+      {/* Snackbar for notifications */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleSnackbarClose}
-        message={snackbarMessage}
-      />
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
