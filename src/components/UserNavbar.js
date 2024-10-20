@@ -12,11 +12,11 @@ const UserNavbar = () => {
   };
 
   return (
-    <nav className="bg-gray-200 border-gray-200 py-2.5 dark:bg-gray-900">
+    <nav className="bg-gray-200 border-gray-200 py-2.5">
       <div className="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
         {/* Logo Section */}
         <a href="#" className="flex items-center">
-          <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
+          <span className="self-center text-xl font-semibold whitespace-nowrap">
             Sell Any Product
           </span>
         </a>
@@ -26,7 +26,7 @@ const UserNavbar = () => {
           {/* Logout Button */}
           <button
             onClick={logout}
-            className="hidden text-black bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-purple-300 font-semibold rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800 lg:inline-block"
+            className="hidden text-black bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-purple-300 font-semibold rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0 focus:outline-none lg:inline-block"
           >
             Log Out
           </button>
@@ -35,7 +35,7 @@ const UserNavbar = () => {
           <button
             onClick={toggleMenu}
             type="button"
-            className="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            className="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 "
             aria-controls="mobile-menu-2"
             aria-expanded={isMenuOpen}
           >
@@ -84,7 +84,7 @@ const UserNavbar = () => {
                 className={({ isActive }) =>
                   isActive
                     ? "block py-2 pl-3 pr-4 text-purple-700 font-bold lg:text-purple-700 lg:p-0"
-                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-purple-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white"
+                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-purple-700 lg:p-0 "
                 }
                 aria-current="page"
               >
@@ -97,7 +97,7 @@ const UserNavbar = () => {
                 className={({ isActive }) =>
                   isActive
                     ? "block py-2 pl-3 pr-4 text-purple-700 font-bold lg:text-purple-700 lg:p-0"
-                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-purple-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white"
+                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-purple-700 lg:p-0 "
                 }
               >
                 Post Ad
@@ -109,7 +109,7 @@ const UserNavbar = () => {
                 className={({ isActive }) =>
                   isActive
                     ? "block py-2 pl-3 pr-4 text-purple-700 font-bold lg:text-purple-700 lg:p-0"
-                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-purple-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white"
+                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-purple-700 lg:p-0 "
                 }
               >
                 Posted Ads
@@ -121,7 +121,7 @@ const UserNavbar = () => {
                 className={({ isActive }) =>
                   isActive
                     ? "block py-2 pl-3 pr-4 text-purple-700 font-bold lg:text-purple-700 lg:p-0"
-                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-purple-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white"
+                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-purple-700 lg:p-0 "
                 }
               >
                 Sold Products
@@ -133,7 +133,7 @@ const UserNavbar = () => {
                 className={({ isActive }) =>
                   isActive
                     ? "block py-2 pl-3 pr-4 text-purple-700 font-bold lg:text-purple-700 lg:p-0"
-                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-purple-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white"
+                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-purple-700 lg:p-0"
                 }
               >
                 Security
@@ -148,7 +148,7 @@ const UserNavbar = () => {
         <div className="block lg:hidden">
           <button
             onClick={logout}
-            className="w-full text-white bg-yellow-500 hover:bg-yellow-600 focus:ring-4 font-medium rounded-lg text-sm px-4 py-2.5 mt-4 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800"
+            className="w-full text-white bg-yellow-500 hover:bg-yellow-600 focus:ring-4 font-medium rounded-lg text-sm px-4 py-2.5 mt-4  focus:outline-none "
           >
             Log Out
           </button>
