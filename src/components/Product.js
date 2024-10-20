@@ -48,40 +48,24 @@ const Product = () => {
 
   const handleAddToCart = async (ad) => {
     const token = localStorage.getItem("token"); // Assuming you're storing JWT in local storage
-
     try {
-      const response = await fetch("http://localhost:5000/api/usercart/item/shopping", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-        
-          adId: ad._id,
-          brand: ad.brand,
-          model: ad.model,
-          price: ad.price,
-          condition: ad.condition,
-          location: ad.location,
-          quantity: 1, // Default quantity is 1
-          images: ad.images,
-        }),
-        
+      const response = await axiosInstance.post("/usercart/item/shopping", {
+        adId: ad._id,
+        brand: ad.brand,
+        model: ad.model,
+        price: ad.price,
+        condition: ad.condition,
+        location: ad.location,
+        quantity: 1, // Default quantity is 1
+        images: ad.images,
       });
-
-      const data = await response.json();
-      if (response.ok) {
-        // Show success message in Snackbar
-        setSnackbarMessage("Item has been added to your cart.");
-        setSnackbarOpen(true);
-      } else {
-        setSnackbarMessage(data.message); // Show error message
-        setSnackbarOpen(true);
-      }
+    
+      // Handle the response if needed
     } catch (error) {
+      // Handle the error if needed
       console.error("Error adding item to cart:", error);
     }
+    
   };
 
   const settings = {
