@@ -70,8 +70,8 @@ const AdsTable = () => {
     <>
     <UserNavbar/>
     <Paper>
-       <h3 className="text-xl mt-4  ml-2 mb-4 font-semibold leading-none tracking-tight text-gray-900 md:text-xl lg:text-xl dark:text-white">
-        Your <mark className="px-2 text-gray-900 bg-yellow-400 rounded dark:bg-blue-500">Sold Out </mark> Products
+       <h3 className="text-xl mt-4  ml-2 mb-4 font-semibold leading-none tracking-tight text-gray-900 md:text-xl lg:text-xl ">
+        Your <mark className="px-2 text-gray-900 bg-yellow-400 rounded ">Sold Out </mark> Products
         </h3>
       <TableContainer>
         <Table>
