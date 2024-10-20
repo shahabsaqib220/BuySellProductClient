@@ -26,7 +26,7 @@ const UserNavbar = () => {
           {/* Logout Button */}
           <button
             onClick={logout}
-            className="hidden text-black bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-purple-300 font-semibold rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0 focus:outline-none lg:inline-block"
+            className="hidden text-black bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-400 font-semibold rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0 focus:outline-none lg:inline-block"
           >
             Log Out
           </button>
@@ -83,8 +83,8 @@ const UserNavbar = () => {
                 to="/profile"
                 className={({ isActive }) =>
                   isActive
-                    ? "block py-2 pl-3 pr-4 text-purple-700 font-bold lg:text-purple-700 lg:p-0"
-                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-purple-700 lg:p-0 "
+                    ? "block py-2 pl-3 pr-4 text-yellow-500 font-bold lg:text-yellow-500 lg:p-0"
+                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-yellow-500 lg:p-0 "
                 }
                 aria-current="page"
               >
@@ -96,8 +96,8 @@ const UserNavbar = () => {
                 to="/postad"
                 className={({ isActive }) =>
                   isActive
-                    ? "block py-2 pl-3 pr-4 text-purple-700 font-bold lg:text-purple-700 lg:p-0"
-                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-purple-700 lg:p-0 "
+                    ? "block py-2 pl-3 pr-4 text-yellow-500 font-bold lg:text-yellow-500 lg:p-0"
+                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-yellow-500 lg:p-0 "
                 }
               >
                 Post Ad
@@ -108,8 +108,8 @@ const UserNavbar = () => {
                 to="/viewads"
                 className={({ isActive }) =>
                   isActive
-                    ? "block py-2 pl-3 pr-4 text-purple-700 font-bold lg:text-purple-700 lg:p-0"
-                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-purple-700 lg:p-0 "
+                    ? "block py-2 pl-3 pr-4 text-yellow-500 font-bold lg:text-yellow-500 lg:p-0"
+                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-yellow-500 lg:p-0 "
                 }
               >
                 Posted Ads
@@ -120,8 +120,8 @@ const UserNavbar = () => {
                 to="/soldoutproducts"
                 className={({ isActive }) =>
                   isActive
-                    ? "block py-2 pl-3 pr-4 text-purple-700 font-bold lg:text-purple-700 lg:p-0"
-                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-purple-700 lg:p-0 "
+                    ? "block py-2 pl-3 pr-4 text-yellow-500 font-bold lg:text-yellow-500 lg:p-0"
+                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-yellow-500 lg:p-0 "
                 }
               >
                 Sold Products
@@ -132,8 +132,8 @@ const UserNavbar = () => {
                 to="/security"
                 className={({ isActive }) =>
                   isActive
-                    ? "block py-2 pl-3 pr-4 text-purple-700 font-bold lg:text-purple-700 lg:p-0"
-                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-purple-700 lg:p-0"
+                    ? "block py-2 pl-3 pr-4 text-yellow-500 font-bold lg:text-yellow-500 lg:p-0"
+                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-yellow-500 lg:p-0"
                 }
               >
                 Security
