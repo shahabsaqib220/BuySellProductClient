@@ -9,6 +9,10 @@ import { RxAvatar } from "react-icons/rx";
 import { Button, IconButton, Grid, Tooltip, Snackbar, Alert } from "@mui/material"; // Import Snackbar and Alert
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import useAxiosInstance from "../ContextAPI/AxiosInstance";
+import { FaLocationDot } from "react-icons/fa6";
+
+import { useNavigate } from "react-router-dom";
+
 
 const getFirstTwoWords = (location) => {
   if (!location) return "";
@@ -17,6 +21,7 @@ const getFirstTwoWords = (location) => {
 };
 
 const Product = () => {
+  const navigate = useNavigate();
   const axiosInstance = useAxiosInstance();
   const sliderRef = useRef(null);
   const [ads, setAds] = useState([]);
@@ -37,6 +42,11 @@ const Product = () => {
 
     fetchAds();
   }, []);
+
+
+  const handleViewAll = (category) => {
+    navigate(`/category/${category}`); // Navigate to CategoryAds component
+  };
 
   const groupedAds = ads.reduce((acc, ad) => {
     if (!acc[ad.category]) {
@@ -130,10 +140,10 @@ const Product = () => {
           </h3>
 
           <div className="flex justify-end items-center mb-4">
-            <Button
+          <Button
               variant="contained"
               color="primary"
-              className="text-black font-semibold"
+              onClick={() => handleViewAll(category)}
               style={{ backgroundColor: "#FFC107" }}
             >
               View All
@@ -200,11 +210,10 @@ const Product = () => {
 
                     <div className="flex justify-between items-center mb-2">
                       {ad.location && (
-                        <div>
-                          <span className="text-sm text-gray-500">
-                            Location: {getFirstTwoWords(ad.location.readable)}
-                          </span>
-                        </div>
+                         <div className="flex items-center text-sm text-gray-500">
+                         <FaLocationDot className="text-2xl text-yellow-500 mr-1" />
+                         <span>{getFirstTwoWords(ad.location.readable)}</span>
+                       </div>
                       )}
 
                       <h5 className="text-sm text-gray-900">

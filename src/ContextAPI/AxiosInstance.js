@@ -10,6 +10,8 @@ const useAxiosInstance = () => {
 
   // Create axios instance only once using useMemo
   const axiosInstance = useMemo(() => {
+
+    
     return axios.create({
       baseURL: 'https://buysellproductserver-production.up.railway.app/api', // Your API base URL
     });

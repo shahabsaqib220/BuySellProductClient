@@ -10,7 +10,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Provider } from 'react-redux'; // Import Redux Provider
 import store from './Redux/store'; // Import the store
 import PrivateRoute from './ContextAPI/PrivateRoute';
-
+import CatagoryAds from "./components/CategoryAds"
 
 import SecurityQuestions from './components/SecurityQuestions';
 import Dashboard from './components/Dashboard';
@@ -34,7 +34,9 @@ function App() {
         {/* <Catagories /> */}
         
         <Routes>
+          
           <Route path='/' element={<ProductItemsCard />} />
+          <Route path="/category/:category" element={<CatagoryAds/>} />
           <Route path="/cart" element={<CartComponent />} />
           <Route path='/login' element={<Sign_In />} />
           <Route path='/register' element={<Sign_Up />} />
