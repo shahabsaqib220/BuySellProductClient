@@ -19,7 +19,6 @@ const AdsTable = () => {
   const [totalAds, setTotalAds] = useState(0);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [expandedDescriptions, setExpandedDescriptions] = useState({});
   const axiosInstance = useAxiosInstance(); // Get the Axios instance with token
 
   const fetchAds = async (page) => {
@@ -52,19 +51,9 @@ const AdsTable = () => {
     setPage(0);
   };
 
-  const toggleDescription = (adId) => {
-    setExpandedDescriptions((prevState) => ({
-      ...prevState,
-      [adId]: !prevState[adId], // Toggle the state for the clicked description
-    }));
-  };
 
-  const getShortDescription = (description) => {
-    const maxLength = 50; // Limit for description length
-    return description.length > maxLength
-      ? description.substring(0, maxLength) + '...'
-      : description;
-  };
+
+
 
   return (
     <>
@@ -81,9 +70,9 @@ const AdsTable = () => {
               <TableCell>Brand</TableCell>
               <TableCell>Model</TableCell>
               <TableCell>Price</TableCell>
-              <TableCell>Description</TableCell>
+              
               <TableCell>Condition</TableCell>
-              <TableCell>Contact</TableCell>
+              
             </TableRow>
           </TableHead>
           <TableBody>
@@ -93,25 +82,9 @@ const AdsTable = () => {
                 <TableCell>{ad.brand}</TableCell>
                 <TableCell>{ad.model}</TableCell>
                 <TableCell>{ad.price}</TableCell>
-                <TableCell>
-                  {expandedDescriptions[ad._id] ? (
-                    <>
-                      {ad.description}{' '}
-                      <Button color="primary" onClick={() => toggleDescription(ad._id)}>
-                        See less
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      {getShortDescription(ad.description)}{' '}
-                      <Button color="primary" onClick={() => toggleDescription(ad._id)}>
-                        See more
-                      </Button>
-                    </>
-                  )}
-                </TableCell>
+             
                 <TableCell>{ad.condition}</TableCell>
-                <TableCell>{ad.MobilePhone}</TableCell>
+               
               </TableRow>
             ))}
           </TableBody>

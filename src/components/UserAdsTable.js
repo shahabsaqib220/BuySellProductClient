@@ -231,8 +231,8 @@ const UserAdsTable = () => {
                 <td className="border px-4 py-2">{ad.MobilePhone}</td>
                 <td className="border px-4 py-2">{ad.condition}</td>
                 <td className="relative px-6 py-4">
-                  <a href="#" className="font-medium text-blue-600  hover:underline" onClick={() => toggleDropdown(ad._id)}>
-                    Edit
+                  <a className="font-medium text-blue-600  hover:underline" onClick={() => toggleDropdown(ad._id)}>
+                    Actions
                   </a>
                   {activeDropdown === ad._id && (
                     <div className="absolute z-10 mt-2 w-48 bg-white border rounded shadow-lg ">
