@@ -94,11 +94,12 @@ const Product = () => {
   const settings = {
     dots: false,
     infinite: false,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1,
+    speed: 800,
+    slidesToShow: 4,
+    slidesToScroll: 4,
     autoplay: false,
     arrows: false,
+    dots:true, // We'll add custom arrows
     responsive: [
       {
         breakpoint: 1024,
@@ -117,11 +118,20 @@ const Product = () => {
         breakpoint: 640,
         settings: {
           slidesToShow: 1,
-          dots: true,
+          dots: false,
+          speed: 800,
+          slidesToShow: 1,
+          slidesToScroll: 1,
+
         },
       },
     ],
   };
+
+
+
+ 
+
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
@@ -149,97 +159,112 @@ const Product = () => {
               View All
             </Button>
           </div>
+          <div className="relative">
+      
 
-          <Slider ref={(slider) => (sliderRef.current = slider)} {...settings}>
-            {groupedAds[category].length > 0 ? (
-              groupedAds[category].map((ad) => (
-                <div key={ad._id} className="px-4">
-                  <div className="p-6 bg-white shadow-md rounded-lg transition-transform transform hover:scale-105 duration-200">
-                    <Link to={`/product/${ad._id}`}>
-                      <img
-                        src={ad.images[0]}
-                        alt={`${ad.model} image`}
-                        className="w-full h-48 object-cover rounded-t-lg mb-4"
-                      />
-                      <h5 className="text-xl font-semibold tracking-tight text-gray-900 mb-2">
-                        <span className="text-yellow-500">{ad.brand} </span>
-                        {ad.model}
-                      </h5>
-                    </Link>
+      {/* Slider */}
+      <div className="relative">
+      {/* Custom Previous Button */}
+     
 
-                    <Divider className="bg-gray-400 h-0.5 mb-6" />
+      {/* Slider */}
+      <Slider ref={sliderRef} {...settings}>
+        {groupedAds[category] && groupedAds[category].length > 0 ? (
+          groupedAds[category].map((ad) => (
+            <div key={ad._id} className="px-4">
+              <div className="p-6 bg-white shadow-md rounded-lg transition-transform transform hover:scale-105 duration-200">
+                <Link to={`/product/${ad._id}`}>
+                  <img
+                    src={ad.images[0]}
+                    alt={`${ad.model} image`}
+                    className="w-full h-48 object-cover rounded-t-lg mb-4"
+                  />
+                  <h5 className="text-xl font-semibold tracking-tight text-gray-900 mb-2">
+                    <span className="text-yellow-500">{ad.brand} </span>
+                    {ad.model}
+                  </h5>
+                </Link>
 
-                    <Grid container alignItems="center">
-                      <Grid item xs>
-                        <span className="text-2xl font-bold text-gray-900">
-                          Rs {ad.price}
-                        </span>
-                      </Grid>
+                <Divider className="bg-gray-400 h-0.5 mb-6" />
 
+                <Grid container alignItems="center">
+                  <Grid item xs>
+                    <span className="text-2xl font-bold text-gray-900">
+                      Rs {ad.price}
+                    </span>
+                  </Grid>
+
+                  <Grid item>
+                    <Grid container alignItems="center" justifyContent="flex-end">
                       <Grid item>
-                        <Grid container alignItems="center" justifyContent="flex-end">
-                          <Grid item>
-                            <Tooltip title="Add to Cart">
-                              <IconButton
-                                color="primary"
-                                style={{ color: "#FFC107", fontSize: "30px" }}
-                                aria-label="add to cart"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleAddToCart(ad);
-                                }}
-                              >
-                                <AddShoppingCartIcon style={{ fontSize: "30px" }} />
-                              </IconButton>
-                            </Tooltip>
-                          </Grid>
-                          <Grid item>
-                            {ad.userId?.profileImageUrl ? (
-                              <img
-                                src={ad.userId.profileImageUrl}
-                                alt="User profile"
-                                className="w-10 h-10 rounded-full object-cover ml-2"
-                              />
-                            ) : (
-                              <RxAvatar className="w-8 h-8 text-yellow-400 ml-2" />
-                            )}
-                          </Grid>
-                        </Grid>
+                        <Tooltip title="Add to Cart">
+                          <IconButton
+                            color="primary"
+                            style={{ color: "#FFC107", fontSize: "30px" }}
+                            aria-label="add to cart"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAddToCart(ad);
+                            }}
+                          >
+                            <AddShoppingCartIcon style={{ fontSize: "30px" }} />
+                          </IconButton>
+                        </Tooltip>
+                      </Grid>
+                      <Grid item>
+                        {ad.userId?.profileImageUrl ? (
+                          <img
+                            src={ad.userId.profileImageUrl}
+                            alt="User profile"
+                            className="w-10 h-10 rounded-full object-cover ml-2"
+                          />
+                        ) : (
+                          <RxAvatar className="w-8 h-8 text-yellow-400 ml-2" />
+                        )}
                       </Grid>
                     </Grid>
+                  </Grid>
+                </Grid>
 
-                    <div className="flex justify-between items-center mb-2">
-                      {ad.location && (
-                         <div className="flex items-center text-sm text-gray-500">
-                         <FaLocationDot className="text-2xl text-yellow-500 mr-1" />
-                         <span>{getFirstTwoWords(ad.location.readable)}</span>
-                       </div>
-                      )}
-
-                      <h5 className="text-sm text-gray-900">
-                        <span>Condition: {ad.condition}</span>
-                      </h5>
+                <div className="flex justify-between items-center mb-2">
+                  {ad.location && (
+                    <div className="flex items-center text-sm text-gray-500">
+                      <FaLocationDot className="text-2xl text-yellow-500 mr-1" />
+                      <span>{getFirstTwoWords(ad.location.readable)}</span>
                     </div>
+                  )}
 
-                    <div className="flex justify-between items-center mt-4">
-                      <Button
-                        variant="outlined"
-                        startIcon={<FaComments />}
-                        style={{ color: "#FFC107", borderColor: "#FFC107" }}
-                        size="small"
-                      >
-                        Chat with Seller
-                      </Button>
-
-                      <div className="flex">In Stock</div>
-                    </div>
-                  </div>
+                  <h5 className="text-sm text-gray-900">
+                    <span>Condition: {ad.condition}</span>
+                  </h5>
                 </div>
-              ))
-            ) : (
-              <div className="text-center py-4">No ads available in this category.</div>
-            )}
-          </Slider>
+
+                <div className="flex justify-between items-center mt-4">
+                  <Button
+                    variant="outlined"
+                    startIcon={<FaComments />}
+                    style={{ color: "#FFC107", borderColor: "#FFC107" }}
+                    size="small"
+                  >
+                    Chat with Seller
+                  </Button>
+
+                  <div className="flex">In Stock</div>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="text-center py-4">No ads available in this category.</div>
+        )}
+      </Slider>
+
+   
+    </div>
+
+      
+   
+    </div>
         </div>
       ))}
 
