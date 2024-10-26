@@ -22,7 +22,9 @@ import ProductDetails from './components/ProductDetails';
 import SoldOutUserProduct from "./components/SoldOutUserProduct"
 import CartComponent from './components/Cart';
 import UserNavbar from './components/UserNavbar';
+import EditUserAds from "./components/EditUserAds"
 import ChangePassword from "./components/ChangePassword";
+import FilteredAds from "./components/FilteredAds"
 
 
 
@@ -42,12 +44,14 @@ function App() {
           <Route path='/register' element={<Sign_Up />} />
           <Route path="/verify-otp" element={<OTPVerification />} />
         <Route path="/security-questions" element={<SecurityQuestions />} />
+        <Route path="/custom-filter" element={<FilteredAds />} />
         <Route path="/product/:id" element={<ProductDetails />} />
      
         
         
         <Route path="/postad" element={<PrivateRoute element={<UserAdsPosts />} />} />
       <Route path="/profile" element={<PrivateRoute element={<ProfileImage />} />} />
+      <Route path="/edit-ad" element={<PrivateRoute element={<EditUserAds />} />} />
       <Route path="/viewads" element={<PrivateRoute element={<UserAdsTable />} />} />
       <Route path="/soldoutproducts" element={<PrivateRoute element={<SoldOutUserProduct />} />} />
       <Route path="/usernavbar" element={<PrivateRoute element={<UserNavbar />} />} />

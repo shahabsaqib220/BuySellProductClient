@@ -8,6 +8,7 @@ const ProductItemsCard = () => {
     <div>
       <CoverImages/>
         <Product/>
+        
     
       
     </div>

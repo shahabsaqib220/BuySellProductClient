@@ -10,7 +10,7 @@ import { Button, IconButton, Grid, Tooltip, Snackbar, Alert } from "@mui/materia
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import useAxiosInstance from "../ContextAPI/AxiosInstance";
 import { FaLocationDot } from "react-icons/fa6";
-
+import { MdFilterNone } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
 
@@ -137,9 +137,38 @@ const Product = () => {
     setSnackbarOpen(false);
   };
 
+  const handleApplyCustomFilter = () => {
+    navigate('/custom-filter'); // Navigate to the custom filter component
+  };
+
   return (
     <div className="container bg-gray-50 mx-auto px-4 py-8">
       <hr className="border-t-2 border-gray-200 mb-8" />
+     
+
+      <Button
+  variant="contained"
+  onClick={handleApplyCustomFilter}
+  sx={{
+    backgroundColor: '#FFC107', // Yellow color
+    color: '#000', // Black font color
+    borderRadius: '8px', // Rounded corners
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // Subtle shadow
+    '&:hover': {
+      backgroundColor: '#FFA000', // Darker yellow on hover
+      boxShadow: '0 6px 12px rgba(0, 0, 0, 0.3)', // Deeper shadow on hover
+    },
+    fontWeight: 'bold', // Bold text
+    padding: '10px 20px', // Extra padding for a larger button
+    display: 'flex', // Use flex to align icon and text
+    alignItems: 'center', // Center items vertically
+  }}
+>
+  <MdFilterNone style={{ marginRight: '8px' }} /> {/* Add margin for spacing */}
+  Apply Custom Filter
+</Button>
+
+
 
       {Object.keys(groupedAds).map((category) => (
         <div key={category}>
