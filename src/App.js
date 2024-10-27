@@ -25,6 +25,10 @@ import UserNavbar from './components/UserNavbar';
 import EditUserAds from "./components/EditUserAds"
 import ChangePassword from "./components/ChangePassword";
 import FilteredAds from "./components/FilteredAds"
+import ForgetPassword from "./components/ForgetPassword"
+import ResetPasswordOtpVerfication from "./components/ResetPasswordOtpVerification";
+import ResetPasswordQuestion from "./components/ResetPasswordQuestion";
+import UserNewPassword from "./components/UserNewPassword"
 
 
 
@@ -46,6 +50,10 @@ function App() {
         <Route path="/security-questions" element={<SecurityQuestions />} />
         <Route path="/custom-filter" element={<FilteredAds />} />
         <Route path="/product/:id" element={<ProductDetails />} />
+        <Route path="/forgot-password" element={<ForgetPassword />} />
+        <Route path="/password-reset-optp-verfication" element={<ResetPasswordOtpVerfication />} />
+        <Route path="/password-reset-questions-verfication" element={<ResetPasswordQuestion />} />
+        <Route path="/new-user-password" element={<UserNewPassword />} />
      
         
         

@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setSecurityAnswers } from '../Redux/userSlice';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import bcrypt from 'bcryptjs';
 import { Alert } from '@mui/material';
 import useAxiosInstance from '../ContextAPI/AxiosInstance';
 
@@ -52,10 +51,8 @@ function SecurityQuestions() {
       return;
     }
   
-    // Hash the answers only
-    const hashedAnswers = await Promise.all(
-      questions.map((q) => bcrypt.hash(q.answer, 10))
-    );
+  
+  
   
     setLoading(true);
     try {
@@ -64,9 +61,9 @@ function SecurityQuestions() {
         name,
         email,
         password, // Send the plain password
-        securityQuestions: questions.map((q, index) => ({
+        securityQuestions: questions.map((q) => ({
           question: q.question,
-          answer: hashedAnswers[index], // Send the hashed answer
+          answer: q.answer, // Send the plain answer directly
         })),
       });
   
@@ -79,6 +76,7 @@ function SecurityQuestions() {
     } finally {
       setLoading(false);
     }
+  
   };
   
 

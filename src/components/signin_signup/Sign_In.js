@@ -64,6 +64,10 @@ function SignIn() {
       setLoading(false);
     }
   };
+
+  const handleForgetPasswordClick = () => {
+    navigate('/forgot-password'); // Adjust the path as per your route setup
+  };
   
   
 
@@ -123,6 +127,12 @@ function SignIn() {
           </button>
         </form>
 
+        <p
+        className="text-sm text-gray-600 cursor-pointer mt-3"
+        onClick={handleForgetPasswordClick}
+      >
+        Forget Password?
+      </p>
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">New Here?</p>
           <NavLink
