@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { NavLink, useNavigate } from 'react-router-dom';
+
 import { useDispatch } from 'react-redux';
 import { setUserDetails } from '../../Redux/userSlice'; // Import the action
-import { Alert } from '@mui/material';
+import { Alert,  Stepper, Step, StepLabel, } from '@mui/material';
 import  useAxiosInstance  from '../../ContextAPI/AxiosInstance'
 
 function SignUpForm() {
@@ -115,15 +116,32 @@ function SignUpForm() {
     }
   };
 
+  const steps = [
+    'Basic Information',
+    'Verify the OTP',
+    'Setup Security Question',
+    
+  ];
+
   return (
     <div className="flex flex-col gap-5 items-center justify-center min-h-screen bg-gray-100 p-4">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+      <Stepper activeStep={0} alternativeLabel>
+      {steps.map((label, index) => (
+        <Step key={label}>
+          <StepLabel>{label}</StepLabel>
+        </Step>
+      ))}
+    </Stepper>
         <div className="text-center mb-6">
           <img src="/path-to-your-logo.png" alt="Logo" className="mx-auto mb-4" />
         </div>
+        <h2 className="text-center text-2xl font-bold">Create Your Account</h2>
+
         {alertMessage && (
           <Alert severity={alertSeverity} className="mb-4">{alertMessage}</Alert>
         )}
+
         <form onSubmit={handleSubmit}>
           <div className={`mb-8`}>
             <label htmlFor="name" className="block text-gray-700 font-bold">Your Name</label>

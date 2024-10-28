@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setSecurityAnswers } from '../Redux/userSlice';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Alert } from '@mui/material';
+import { Alert, Step, StepLabel, Stepper } from '@mui/material';
 import useAxiosInstance from '../ContextAPI/AxiosInstance';
 
 const securityQuestionsList = [
@@ -86,9 +86,23 @@ function SecurityQuestions() {
     setQuestions(updatedQuestions);
   };
 
+  const steps = [
+    'Basic Information',
+    'Verify the OTP',
+    'Setup Security Question',
+    
+  ];
+
   return (
     <div className="flex flex-col gap-5 items-center justify-center min-h-screen bg-gray-100 p-4">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+      <Stepper activeStep={2} alternativeLabel>
+      {steps.map((label, index) => (
+        <Step key={label}>
+          <StepLabel>{label}</StepLabel>
+        </Step>
+      ))}
+    </Stepper>
         <h2 className="text-center text-2xl font-bold">Security Questions</h2>
         {alertMessage && (
           <Alert severity="error" className="mb-4">

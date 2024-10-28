@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Avatar, Box, Alert, AlertTitle, CircularProgress } from '@mui/material';
+import { TextField, Button, Typography, Avatar, Box, Stepper, Step, StepLabel, Alert, AlertTitle, CircularProgress } from '@mui/material';
 import { FaSearch } from "react-icons/fa";
 import { RiMailSendFill } from "react-icons/ri";
 import { useDispatch } from 'react-redux';
@@ -43,6 +43,13 @@ const FindAccount = () => {
       setFindLoading(false); // Set loading to false
     }
   };
+
+  const steps = [
+    'Find Your Account',
+    'Verify the OTP',
+    'Verify Answers',
+    'Reset Password'
+  ];
   
   const handleSendOtp = async () => {
     setOtpLoading(true); // Set loading to true
@@ -84,7 +91,20 @@ const FindAccount = () => {
           backgroundColor: '#f9f9f9',
         }}
       >
-        <Typography variant="h5" gutterBottom textAlign="center">
+
+<div>
+    <Typography variant="h6" gutterBottom>
+      Step 1: Find Your Account
+    </Typography>
+    <Stepper activeStep={0} alternativeLabel>
+      {steps.map((label, index) => (
+        <Step key={label}>
+          <StepLabel>{label}</StepLabel>
+        </Step>
+      ))}
+    </Stepper>
+  </div>
+        <Typography variant="h5" marginTop={5} gutterBottom textAlign="center">
           Let us help you find your account
         </Typography>
 
@@ -100,26 +120,40 @@ const FindAccount = () => {
         )}
 
         <div className="mt-4">
-          <label htmlFor="email" className="block text-gray-700 font-bold">Email</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-yellow-500 focus:border-yellow-500"
-            placeholder="Email"
-          />
+        <label htmlFor="email" className="block text-gray-700 font-bold">Email</label>
+<input
+  type="email"
+  id="email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-yellow-500 focus:border-yellow-500"
+  placeholder="Email"
+  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+  required
+/>
+
         </div>
 
         <button
-          type="button"
-          onClick={handleFindAccount}
-          disabled={findloading} // Disable button while loading
-          className="bg-yellow-500 mt-4 hover:bg-black hover:text-white text-black font-semibold py-2 px-4 rounded-lg"
-        >
-          {findloading ? <CircularProgress size={20} color="inherit" /> : <FaSearch className='inline-block -mt-0.5' />} 
-          {findloading ? ' Finding...' : ' Find Account'}
-        </button>
+  type="button"
+  onClick={handleFindAccount}
+  disabled={findloading}
+  className="w-full py-2 bg-yellow-400 text-black rounded-lg mt-4 font-semibold hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+>
+  {findloading ? (
+    <div className="flex items-center justify-center">
+      <CircularProgress size={20} color="inherit" className="mr-2" />
+      Finding...
+    </div>
+  ) : (
+    'Continue'
+  )}
+</button>
+
+
+
+
+
 
         {/* Show Your Account header and account details if user is found */}
         {user && (
@@ -179,24 +213,34 @@ const FindAccount = () => {
 
               {/* Send OTP button on the Right */}
               {!otpSent && (
-  <button
-    type="button"
-    onClick={handleSendOtp}
-    disabled={otploading} // Disable button while loading
-    className="bg-yellow-500 hover:bg-black hover:text-white text-black font-semibold py-2 px-4 rounded-lg flex items-center"
-  >
-    {otploading ? (
-      <Box display="flex" alignItems="center">
-        <CircularProgress size={20} sx={{ marginRight: 1 }} color="inherit" />
-        Sending...
-      </Box>
-    ) : (
-      <Box display="flex" alignItems="center">
-        <RiMailSendFill className="inline-block" />
-        Send OTP
-      </Box>
-    )}
-  </button>
+                
+
+
+
+
+
+
+
+
+
+
+<button
+  type="button"
+  onClick={handleSendOtp}
+  disabled={otploading}
+  className="w-1/3 py-2 bg-yellow-400 text-black rounded-lg mt-4 font-semibold hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 flex items-center justify-center"
+>
+  {otploading ? (
+    <div className="flex items-center space-x-2">
+      
+      <span>Sending...</span>
+    </div>
+  ) : (
+    'Continue'
+  )}
+</button>
+
+
 )}
             </Box>
           </>
