@@ -9,9 +9,13 @@ import { RxAvatar } from "react-icons/rx";
 import { Button, IconButton, Grid, Tooltip, Snackbar, Alert } from "@mui/material"; // Import Snackbar and Alert
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import useAxiosInstance from "../ContextAPI/AxiosInstance";
+import { useDispatch } from 'react-redux';
+import { setUserAndAd } from '../Redux/usersChatSlice';
+
 import { FaLocationDot } from "react-icons/fa6";
 import { MdFilterNone } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from '../ContextAPI/AuthContext';
 
 
 const getFirstTwoWords = (location) => {
@@ -21,6 +25,9 @@ const getFirstTwoWords = (location) => {
 };
 
 const Product = () => {
+  const { user, isLoggedIn } = useAuth();
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
   const axiosInstance = useAxiosInstance();
   const sliderRef = useRef(null);
@@ -140,6 +147,35 @@ const Product = () => {
   const handleApplyCustomFilter = () => {
     navigate('/custom-filter'); // Navigate to the custom filter component
   };
+
+  const handleChatClick = (ad) => {
+    if (isLoggedIn && user) {
+      console.log("Logged-in user:", user.id);
+      console.log("Ad data:", ad);
+      
+      // Dispatch Redux action
+      dispatch(setUserAndAd({ user, ad }));
+  
+      // Save data to localStorage to persist on reload
+      localStorage.setItem('chatUser', JSON.stringify(user));
+      localStorage.setItem('chatAd', JSON.stringify(ad));
+  
+      navigate(`/chat/${user.id}/${ad.userId._id}`);
+  
+      const senderId = user?._id; // assuming `user` contains the logged-in user's ID
+      const receiverId = ad?.userId?._id; // assuming `ad.userId` contains an object with an `_id` field
+  
+      if (!receiverId) {
+        console.error("Receiver ID not found in ad.userId");
+      }
+    } else {
+      setSnackbarMessage("Sign in to chat with the seller");
+      setSnackbarSeverity("warning");
+      setSnackbarOpen(true);
+    }
+  };
+  
+  
 
   return (
     <div className="container bg-gray-50 mx-auto px-4 py-8">
@@ -269,14 +305,15 @@ const Product = () => {
                 </div>
 
                 <div className="flex justify-between items-center mt-4">
-                  <Button
-                    variant="outlined"
-                    startIcon={<FaComments />}
-                    style={{ color: "#FFC107", borderColor: "#FFC107" }}
-                    size="small"
-                  >
-                    Chat with Seller
-                  </Button>
+                <Button
+      variant="outlined"
+      startIcon={<FaComments />}
+      style={{ color: "#FFC107", borderColor: "#FFC107" }}
+      size="small"
+      onClick={() => handleChatClick(ad)}
+    >
+      Chat with Seller
+    </Button>
 
                   <div className="flex">In Stock</div>
                 </div>

@@ -33,12 +33,18 @@ export function AuthProvider({ children }) {
       localStorage.setItem('token', userData.token);
       localStorage.setItem('user', JSON.stringify(userData));
       setIsLoggedIn(true);
-      setUser(userData);
+      setUser(userData);  // Ensure profileImageUrl is part of userData
+      console.log("I am loggin from AuthContext", userData)
+
+
+
       setToken(userData.token);
     } catch (error) {
       console.error('Failed to log in:', error);
     }
   };
+  
+  
 
   const logout = () => {
     setIsLoggedIn(false);

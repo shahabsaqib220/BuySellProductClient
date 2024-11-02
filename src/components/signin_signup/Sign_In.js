@@ -27,43 +27,52 @@ function SignIn() {
     e.preventDefault();
     setLoading(true);
     const userData = { email, password };
-  
+
     try {
-      console.log('Logging in with:', userData); // Log user data being sent
-      const response = await axiosInstance.post('/userlogin/login', userData);
-  
-      console.log('Login response:', response); // Log the full response
-  
-      if (response.status === 200) {
-        const data = response.data;
-  
-        await login({ name: data.user.name, email: data.user.email, token: data.token });
-  
-        setAlertMessage('Login successful!');
-        setAlertType('success');
-        setShowAlert(true);
-  
-        setTimeout(() => {
-          navigate('/profile');
-        }, 1000);
-      } else {
-        setAlertMessage(data.message || 'Invalid credentials. Please try again.');
+        console.log('Logging in with:', userData); // Log user data being sent
+        const response = await axiosInstance.post('/userlogin/login', userData);
+
+        console.log('Login response:', response); // Log the full response
+
+        if (response.status === 200) {
+            const data = response.data;
+
+            // Ensure you're passing the ID along with name and email
+            await login({ 
+                id: data.user.id, // Include the user ID
+                name: data.user.name, 
+                email: data.user.email, 
+                token: data.token,
+                profileImageUrl: data.user.profileImageUrl
+              });
+              
+
+            setAlertMessage('Login successful!');
+            setAlertType('success');
+            setShowAlert(true);
+
+            setTimeout(() => {
+                navigate('/profile');
+            }, 1000);
+        } else {
+            setAlertMessage(data.message || 'Invalid credentials. Please try again.');
+            setAlertType('error');
+            setShowAlert(true);
+        }
+    } catch (error) {
+        console.error('Login error:', error); // Log the error for debugging
+        if (error.response && error.response.data) {
+            setAlertMessage(error.response.data.message || 'Something went wrong. Please try again later.');
+        } else {
+            setAlertMessage('Something went wrong. Please try again later.');
+        }
         setAlertType('error');
         setShowAlert(true);
-      }
-    } catch (error) {
-      console.error('Login error:', error); // Log the error for debugging
-      if (error.response && error.response.data) {
-        setAlertMessage(error.response.data.message || 'Something went wrong. Please try again later.');
-      } else {
-        setAlertMessage('Something went wrong. Please try again later.');
-      }
-      setAlertType('error');
-      setShowAlert(true);
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
+
 
   const handleForgetPasswordClick = () => {
     navigate('/forgot-password'); // Adjust the path as per your route setup

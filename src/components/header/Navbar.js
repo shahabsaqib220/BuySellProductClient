@@ -3,14 +3,17 @@ import { Disclosure, Menu } from '@headlessui/react';
 import { FaCartArrowDown } from 'react-icons/fa';
 import { RxAvatar } from 'react-icons/rx';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import useAxiosInstance from '../../ContextAPI/AxiosInstance';
-import { useAuth } from '../../ContextAPI/AuthContext'; // Assuming you have an AuthContext for managing auth state
+import { useAuth } from '../../ContextAPI/AuthContext'; 
+import { TbMessageFilled } from "react-icons/tb";// Assuming you have an AuthContext for managing auth state
 
 const Navbar = () => {
   const { isLoggedIn, logout, token } = useAuth(); // Getting auth state and token from context
   const [profileImage, setProfileImage] = useState(null); // State to store profile image URL
   const navigate = useNavigate(); // Hook for navigation
   const [cartItemCount, setCartItemCount] = useState(0);
+  const user = useSelector((state) => state.user.user);
   const axiosInstance = useAxiosInstance();
 
   // Utility function to conditionally apply class names
@@ -25,6 +28,8 @@ const Navbar = () => {
   //    }
   //  }, 5000);
   
+
+  const userId = user ? user.id : null;
 
   useEffect(() => {
     // Fetch profile image if user is logged in
@@ -71,6 +76,15 @@ const Navbar = () => {
     }
   };
 
+  const handleChatClick = () =>{
+    if (isLoggedIn){
+      navigate("/chat")
+    }
+    else{
+      navigate("/login")
+    }
+  }
+
   return (
     <Disclosure as="nav" className="bg-gray-800">
       {({ open: isOpen }) => (
@@ -83,6 +97,11 @@ const Navbar = () => {
                   <h3 className="text-white text-lg font-bold">Logo</h3>
                 </NavLink>
               </div>
+
+
+         
+
+
 
               {/* Search Bar */}
               <div className="flex-1 flex justify-center px-2">
@@ -140,7 +159,20 @@ const Navbar = () => {
                         <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-semibold rounded-full px-2 py-1">
                           {cartItemCount}
                         </span>
+                        
+                        
                       )}
+                        <button
+                        onClick={handleChatClick}
+                        className="text-black font-semibold py-2 px-4 rounded-lg"
+                      >
+                        <TbMessageFilled className=" text-yellow-500  w-8 h-8" />
+                        
+                      </button>
+
+
+
+
                     </div>
                     <Menu as="div" className="relative">
                       <div>
@@ -262,6 +294,14 @@ const Navbar = () => {
               )}
             </div>
           </Disclosure.Panel>
+          <div>
+            <h1 className='bg-red-500'>User Information</h1>
+            {userId ? (
+                <p>User ID: {userId}</p>
+            ) : (
+                <p>No user is logged in.</p>
+            )}
+        </div>
         </>
       )}
     </Disclosure>

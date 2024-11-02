@@ -29,7 +29,7 @@ import ForgetPassword from "./components/ForgetPassword"
 import ResetPasswordOtpVerfication from "./components/ResetPasswordOtpVerification";
 import ResetPasswordQuestion from "./components/ResetPasswordQuestion";
 import UserNewPassword from "./components/UserNewPassword"
-
+import  UsersChat from "./components/UsersChat"
 
 
 function App() {
@@ -49,7 +49,7 @@ function App() {
           <Route path="/verify-otp" element={<OTPVerification />} />
         <Route path="/security-questions" element={<SecurityQuestions />} />
         <Route path="/custom-filter" element={<FilteredAds />} />
-        <Route path="/product/:id" element={<ProductDetails />} />
+        <Route path="/product/:id" element={<ProductDetails  />} />
         <Route path="/forgot-password" element={<ForgetPassword />} />
         <Route path="/password-reset-optp-verfication" element={<ResetPasswordOtpVerfication />} />
         <Route path="/password-reset-questions-verfication" element={<ResetPasswordQuestion />} />
@@ -64,7 +64,8 @@ function App() {
       <Route path="/soldoutproducts" element={<PrivateRoute element={<SoldOutUserProduct />} />} />
       <Route path="/usernavbar" element={<PrivateRoute element={<UserNavbar />} />} />
       <Route path="/security" element={<PrivateRoute element={<ChangePassword />} />} />
-      
+      <Route path="/chat/:senderId/:receiverId" element={<PrivateRoute element={<UsersChat />} />} />
+   
         
         </Routes>
         <Footer />
