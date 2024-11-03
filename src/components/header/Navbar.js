@@ -78,7 +78,7 @@ const Navbar = () => {
 
   const handleChatClick = () =>{
     if (isLoggedIn){
-      navigate("/chat")
+      navigate(`/user-personal-chat/${userId}`)
     }
     else{
       navigate("/login")

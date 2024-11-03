@@ -1,4 +1,3 @@
-// features/otp/otpSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 
 const otpSlice = createSlice({

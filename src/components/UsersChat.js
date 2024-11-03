@@ -113,8 +113,29 @@ const UserChat = () => {
         return <CircularProgress />;
     }
 
+    const handleProfileClick = () => {
+        // Navigate to the specific chat URL using the receiverId
+       
+    };
+
+
+
+
     return (
+        <>
+                   <div className="flex items-center p-4 bg-white shadow-md">
+            <button onClick={handleProfileClick} className="flex items-center">
+                <Avatar 
+                    src={receiverProfile.profileImageUrl}
+                    alt="Receiver Profile" 
+                    className="w-10 h-10 rounded-full"
+                />
+            
+            </button>
+        </div>
+
         <div className="p-4">
+            
             <h2 className="text-xl font-semibold mb-4 flex items-center">
                 {receiverProfile.profileImageUrl ? (
                     <img
@@ -197,6 +218,7 @@ const UserChat = () => {
 </div>
 
         </div>
+        </>
     );
 };
 

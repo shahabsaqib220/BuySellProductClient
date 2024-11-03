@@ -8,7 +8,7 @@ import messageReducer from './messageSlice';
 
 const store = configureStore({
   reducer: {
-    user: userReducer,
+    userreg: userReducer,
     otp: otpReducer,
     auth: authReducer, // Corrected reducer assignment
     user: ChatReducer,

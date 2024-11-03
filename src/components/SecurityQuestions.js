@@ -22,7 +22,7 @@ function SecurityQuestions() {
   const axiosInstance = useAxiosInstance(); 
 
   const navigate = useNavigate();
-  const { name, email, password } = useSelector((state) => state.user);
+  const { name, email, password } = useSelector((state) => state.userreg);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

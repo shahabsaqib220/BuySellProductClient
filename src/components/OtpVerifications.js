@@ -16,7 +16,7 @@ function VerifyOtp() {
   const axiosInstance = useAxiosInstance(); // Use your Axios instance
 
   const navigate = useNavigate();
-  const { email } = useSelector((state) => state.user);
+  const { email } = useSelector((state) => state.userreg);
 
   useEffect(() => {
     if (countdown > 0) {
