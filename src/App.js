@@ -29,7 +29,8 @@ import ForgetPassword from "./components/ForgetPassword"
 import ResetPasswordOtpVerfication from "./components/ResetPasswordOtpVerification";
 import ResetPasswordQuestion from "./components/ResetPasswordQuestion";
 import UserNewPassword from "./components/UserNewPassword"
-import  UsersChat from "./components/UsersChat"
+import UserChat from './components/UsersChat';
+import ReceiversProfileImages from "./components/ReceiversProfileImages"
 
 
 function App() {
@@ -54,6 +55,7 @@ function App() {
         <Route path="/password-reset-optp-verfication" element={<ResetPasswordOtpVerfication />} />
         <Route path="/password-reset-questions-verfication" element={<ResetPasswordQuestion />} />
         <Route path="/new-user-password" element={<UserNewPassword />} />
+        
      
         
         
@@ -64,7 +66,7 @@ function App() {
       <Route path="/soldoutproducts" element={<PrivateRoute element={<SoldOutUserProduct />} />} />
       <Route path="/usernavbar" element={<PrivateRoute element={<UserNavbar />} />} />
       <Route path="/security" element={<PrivateRoute element={<ChangePassword />} />} />
-      <Route path="/chat/:senderId/:receiverId" element={<PrivateRoute element={<UsersChat />} />} />
+      <Route path="/chat" element={<PrivateRoute element={<UserChat />} />} />
    
         
         </Routes>

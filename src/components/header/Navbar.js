@@ -3,18 +3,22 @@ import { Disclosure, Menu } from '@headlessui/react';
 import { FaCartArrowDown } from 'react-icons/fa';
 import { RxAvatar } from 'react-icons/rx';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import {  useSelector } from 'react-redux';
 import useAxiosInstance from '../../ContextAPI/AxiosInstance';
+import { useDispatch } from 'react-redux';
+import { setUserAndAd } from '../../Redux/usersChatSlice';
 import { useAuth } from '../../ContextAPI/AuthContext'; 
 import { TbMessageFilled } from "react-icons/tb";// Assuming you have an AuthContext for managing auth state
 
 const Navbar = () => {
-  const { isLoggedIn, logout, token } = useAuth(); // Getting auth state and token from context
+  const { isLoggedIn, logout, token } = useAuth(); 
+  const dispatch = useDispatch();// Getting auth state and token from context
   const [profileImage, setProfileImage] = useState(null); // State to store profile image URL
   const navigate = useNavigate(); // Hook for navigation
   const [cartItemCount, setCartItemCount] = useState(0);
   const user = useSelector((state) => state.user.user);
   const axiosInstance = useAxiosInstance();
+  const ad = useSelector((state) => state.user.ad);
 
   // Utility function to conditionally apply class names
   const classNames = (...classes) => {
@@ -78,7 +82,14 @@ const Navbar = () => {
 
   const handleChatClick = () =>{
     if (isLoggedIn){
-      navigate(`/user-personal-chat/${userId}`)
+     
+     
+
+      
+  
+     
+      navigate(`/chat`)
+      console.log(ad)
     }
     else{
       navigate("/login")

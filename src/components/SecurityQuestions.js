@@ -24,11 +24,17 @@ function SecurityQuestions() {
   const navigate = useNavigate();
   const { name, email, password } = useSelector((state) => state.userreg);
 
+  
+
+
+
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setAlertMessage(''); // Clear previous alert
+    setAlertMessage(''); 
   
-    // Check if all questions and answers are filled
+   
     const hasEmptyField = questions.some(q => q.question === '' || q.answer === '');
     if (hasEmptyField) {
       setAlertMessage('Please answer all questions.');

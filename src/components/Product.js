@@ -160,7 +160,8 @@ const Product = () => {
       localStorage.setItem('chatUser', JSON.stringify(user));
       localStorage.setItem('chatAd', JSON.stringify(ad));
   
-      navigate(`/chat/${user.id}/${ad.userId._id}`);
+      // navigate(`/chat/${user.id}/${ad.userId._id}`);
+      navigate(`/chat`)
   
       const senderId = user?._id; // assuming `user` contains the logged-in user's ID
       const receiverId = ad?.userId?._id; // assuming `ad.userId` contains an object with an `_id` field
