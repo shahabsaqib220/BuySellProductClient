@@ -9,6 +9,7 @@ import { TextField, Button, CircularProgress, Alert } from '@mui/material';
 import { GoTrash } from "react-icons/go";
 import { MdSend, MdPerson } from "react-icons/md";
 import { MdLock } from "react-icons/md";
+import { RxCross2 } from "react-icons/rx";
 import { BiCheckDouble } from "react-icons/bi";
 
 const socket = io('http://localhost:5000');
@@ -22,6 +23,7 @@ const ReceiversList = () => {
   const [selectedReceiverId, setSelectedReceiverId] = useState(null);
   const [isTyping, setIsTyping] = useState(false);
   const [sending, setSending] = useState(false);
+  const [onlineStatuses, setOnlineStatuses] = useState({});
   
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -30,6 +32,17 @@ const ReceiversList = () => {
   const typingTimeout = useRef(null); 
   const dispatch = useDispatch();
   const ad = useSelector((state) => state.user.ad);
+
+
+
+  
+    
+
+     
+
+  
+
+
 
   useEffect(() => {
     if (user?.id) {
@@ -160,16 +173,26 @@ const ReceiversList = () => {
   };
   
 
-  const handleConfirmDelete = () => {
-    // Log the message ID to the console as requested
-    console.log(`Message ID to delete: ${messageIdToDelete}`);
-    
-    // Here, you would call your API to delete the message (omitted for brevity)
-    
-    // After successful deletion, close the modal and update state
-    setIsModalOpen(false);
-    setMessages(prevMessages => prevMessages.filter(msg => msg._id !== messageIdToDelete));
+  const handleConfirmDelete = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/conservation/delete/message/${messageIdToDelete}`, {
+        method: 'DELETE',
+      });
+  
+      if (response.ok) {
+        console.log(`Message ID to delete: ${messageIdToDelete}`);
+        
+        // Update local state after successful deletion
+        setIsModalOpen(false);
+        setMessages(prevMessages => prevMessages.filter(msg => msg._id !== messageIdToDelete));
+      } else {
+        console.error('Failed to delete the message');
+      }
+    } catch (error) {
+      console.error('Error deleting message:', error);
+    }
   };
+  
 
 
   const handleCancelDelete = () => {
@@ -185,32 +208,36 @@ const ReceiversList = () => {
     <div className="text-center p-4 sm:p-2 max-w-md mx-auto">
       <h2 className="text-xl font-semibold mb-4">Your Chats</h2>
       <div className="flex flex-wrap justify-center gap-4 mb-6">
+
+        {/*  In this loop we are getting the receiver profile Images that displayed on the top! */}
      
     
       
         {receivers.map((receiver) => (
-          <div
-            key={receiver.contactId}
-            className="text-center cursor-pointer"
-            onClick={() => setSelectedReceiverId(receiver.contactId)}
-          >
-            <div className="relative">
-              {receiver.profileImageUrl ? (
-                <img
-                  src={receiver.profileImageUrl}
-                  alt={receiver.name}
-                  className="w-16 h-16 sm:w-12 sm:h-12 rounded-full border-2 border-yellow-500 mx-auto object-cover"
-                />
-              ) : (
-                <MdPerson className="w-16 h-16 sm:w-12 sm:h-12 text-gray-400 mx-auto" />
-              )}
-            </div>
-            <p className="text-sm mt-2">{receiver.name}</p>
-           
+  <div
+    key={receiver.contactId}
+    className="text-center cursor-pointer"
+    onClick={() => setSelectedReceiverId(receiver.contactId)}
+  >
+    <div className="relative">
+      {receiver.profileImageUrl ? (
+        <img
+          src={receiver.profileImageUrl}
+          alt={receiver.name}
+          className="w-16 h-16 sm:w-12 sm:h-12 rounded-full border-2 border-yellow-500 mx-auto object-cover"
+        />
+      ) : (
+        <div className="w-16 h-16 sm:w-12 sm:h-12 text-gray-400 mx-auto bg-gray-300 rounded-full flex items-center justify-center">
+          <span>{receiver.name[0]}</span>
+        </div>
+      )}
 
+      
+    </div>
+    <p className="text-sm mt-2">{receiver.name}</p>
+  </div>
+))}
 
-          </div>
-        ))}
       </div>
       <span className="bg-yellow-400 text-gray-950 p-2 rounded-lg shadow-lg flex items-center space-x-3 mb-4 mt-4">
         <MdLock className="font-semibold text-sm text-gray-950" />
@@ -275,6 +302,7 @@ const ReceiversList = () => {
                    onClick={() => handleDeleteMessage(msg._id)}
                    className="text-black font-light flex hover:text-red-500 mt-3 justify-center items-center cursor-pointer"
                  >
+                  <RxCross2/>
                    Delete Message
                  </button>
                  )}

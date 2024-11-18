@@ -11,7 +11,7 @@ import { Provider } from 'react-redux'; // Import Redux Provider
 import store from './Redux/store'; // Import the store
 import PrivateRoute from './ContextAPI/PrivateRoute';
 import CatagoryAds from "./components/CategoryAds"
-
+import EditUserPostedAd from "./components/EditUserPostedAd"
 import SecurityQuestions from './components/SecurityQuestions';
 import Dashboard from './components/Dashboard';
 import AdminNavbar from './components/AdminNavbar'
@@ -61,9 +61,10 @@ function App() {
         
         <Route path="/postad" element={<PrivateRoute element={<UserAdsPosts />} />} />
       <Route path="/profile" element={<PrivateRoute element={<ProfileImage />} />} />
-      <Route path="/edit-ad" element={<PrivateRoute element={<EditUserAds />} />} />
+      {/* <Route path="/edit-ad" element={<PrivateRoute element={<EditUserAds />} />} /> */}
       <Route path="/viewads" element={<PrivateRoute element={<UserAdsTable />} />} />
       <Route path="/soldoutproducts" element={<PrivateRoute element={<SoldOutUserProduct />} />} />
+      <Route path="/edit-ad/:adId" element={<PrivateRoute element={<EditUserPostedAd />} />} />
       <Route path="/usernavbar" element={<PrivateRoute element={<UserNavbar />} />} />
       <Route path="/security" element={<PrivateRoute element={<ChangePassword />} />} />
       <Route path="/chat" element={<PrivateRoute element={<UserChat />} />} />

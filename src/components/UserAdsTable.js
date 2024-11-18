@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import useAxiosInstance from '../ContextAPI/AxiosInstance';
 import UserNavbar from './UserNavbar';
+import { useNavigate } from 'react-router-dom';
+
 
 
 const UserAdsTable = () => {
+  const navigate = useNavigate();
   const [ads, setAds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -12,6 +15,7 @@ const UserAdsTable = () => {
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+
   const [showSoldOutModal, setShowSoldOutModal] = useState(false);
   const [adToDelete, setAdToDelete] = useState(null);
   const axiosInstance = useAxiosInstance(); 
@@ -56,24 +60,26 @@ const UserAdsTable = () => {
   
 
   // Handle actions like Edit, Sell Fast, Mark Sold, Delete
+
   const handleAction = (action, adId) => {
+  
     switch (action) {
       case 'deletead':
         setAdToDelete(adId);
         setShowDeleteModal(true);
         break;
-      // Placeholder for other actions
-      // case 'edit':
-      // case 'sellFast':
-      case 'markSold':      
-      setAdToMarkSold(adId);  // Save adId in state
-      setShowSoldOutModal(true); // Show the modal
+      case 'markSold':
+        setAdToMarkSold(adId);
+        break;
+        case 'edit':
+        
+        navigate(`/edit-ad/${adId}`);  // Navigate to Edit Ad component with adId as a parameter
         break;
       default:
-    
-      break;
+        break;
     }
   };
+  
 
 
   const markAsSold = async (adId) => {
@@ -242,6 +248,9 @@ const UserAdsTable = () => {
                         </li>
                         <li className="block px-4 py-2 hover:bg-gray-100  cursor-pointer" onClick={() => handleAction('markSold', ad._id)}>
                           Mark as Sold
+                        </li>
+                        <li className="block px-4 py-2 hover:bg-gray-100  cursor-pointer" onClick={() => handleAction('edit', ad._id)}>
+                          Edit Ad
                         </li>
                         <li className="block px-4 py-2 hover:bg-gray-100  cursor-pointer" onClick={() => handleAction('deletead', ad._id)}>
                           Delete
