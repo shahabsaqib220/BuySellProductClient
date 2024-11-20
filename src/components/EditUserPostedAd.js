@@ -41,32 +41,47 @@ const EditAd = () => {
   const [mobileNumber, setMobileNumber] = useState("");
 
   const handleImageUpload = (event) => {
-    const selectedFiles = Array.from(event.target.files); // Get the actual file objects
+    const selectedFiles = Array.from(event.target.files); // Get the new file objects
   
     setImages((prevImages) => {
-      const updatedImages = [...prevImages];
+      // Filter out any empty slots or placeholders
+      const filteredPrevImages = prevImages.filter((img) => img);
+  
+      let updatedImages = [...filteredPrevImages]; // Create a copy of existing images
+  
       let index = 0;
   
       // Replace empty slots or append new images
       for (let i = 0; i < updatedImages.length && index < selectedFiles.length; i++) {
+        if (updatedImages[i] instanceof File) {
+          continue; // Skip already uploaded files
+        }
         if (!updatedImages[i]) {
-          updatedImages[i] = selectedFiles[index++]; // Store the actual file object
+          updatedImages[i] = selectedFiles[index++]; // Store the new file
         }
       }
   
       while (updatedImages.length < 5 && index < selectedFiles.length) {
-        updatedImages.push(selectedFiles[index++]); // Store the actual file object
+        updatedImages.push(selectedFiles[index++]); // Add new files up to 5 total images
       }
   
       return updatedImages;
     });
   };
+  
 
   const removeImage = (indexToRemove) => {
-    setImages((prevImages) =>
-      prevImages.map((img, index) => (index === indexToRemove ? null : img))
-    );
+    setImages((prevImages) => {
+      const imageToRemove = prevImages[indexToRemove];
+      if (typeof imageToRemove === "string") {
+        // Track removed URLs
+        setRemovedImages((prevRemoved) => [...prevRemoved, imageToRemove]);
+      }
+      return prevImages.filter((_, index) => index !== indexToRemove);
+    });
   };
+  
+  
 
 
 
@@ -74,6 +89,7 @@ const EditAd = () => {
 
 
   const [loading, setLoading] = useState(true);
+  const [removedImages, setRemovedImages] = useState([]);
 
 
   
@@ -1949,72 +1965,66 @@ const handleLocationInputChange = async (event) => {
 
 
 
+
+
   const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent default form submission
+    event.preventDefault();
   
-    const longitude = 72.3631;
-    const latitude = 33.7530;
-  
-    // Prepare a FormData object
     const formData = new FormData();
   
-    // Append updated ad details
-    formData.append('category', selectedCategory || initialAdDetails.category);
-    formData.append('brand', selectedBrand || initialAdDetails.brand);
-    formData.append('model', selectedModel || initialAdDetails.model);
-    formData.append('description', description || initialAdDetails.description);
-    formData.append('price', price || initialAdDetails.price);
-    formData.append('MobilePhone', mobileNumber || initialAdDetails.MobilePhone);
-    formData.append('condition', selectedCondition || initialAdDetails.condition);
+    // Append other form data
+    formData.append("category", selectedCategory || initialAdDetails.category);
+    formData.append("brand", selectedBrand || initialAdDetails.brand);
+    formData.append("model", selectedModel || initialAdDetails.model);
+    formData.append("description", description || initialAdDetails.description);
+    formData.append("price", price || initialAdDetails.price);
+    formData.append("MobilePhone", mobileNumber || initialAdDetails.MobilePhone);
+    formData.append("condition", selectedCondition || initialAdDetails.condition);
   
-    // Append location with coordinates
-    formData.append(
-      'location',
-      JSON.stringify({
-        type: "Point",
-        coordinates: [parseFloat(longitude), parseFloat(latitude)], // Ensure coordinates are in [lon, lat] format
-        readable: location || initialAdDetails.location.readable, // Human-readable location name
-      })
-    );
-  
-    // Handle images
-    if (images.length > 0) {
-      // If new images are provided, replace the old ones
-      images.forEach((image, index) => {
-        if (image) {
-          formData.append(`images`, image); // Append the actual file object
-        } else if (initialAdDetails.images[index]) {
-          // If the image is not a new file, keep the existing URL
-          formData.append(`images`, initialAdDetails.images[index]);
-        }
-      });
-    } else {
-      // If no new images are provided, keep the existing images
-      initialAdDetails.images.forEach((image) => {
-        formData.append(`images`, image);
-      });
+    // Location data
+    if (location) {
+      const locationData = {
+        readable: location.readable || initialAdDetails.location?.readable,
+        coordinates: location.coordinates || initialAdDetails.location?.coordinates,
+      };
+      formData.append("location", JSON.stringify(locationData));
     }
   
-    if (!token) {
-      console.error("No authorization token found.");
+    // Separate images into new files and existing URLs
+    const newImages = images.filter((img) => img instanceof File);
+    const existingImages = images.filter((img) => typeof img === "string");
+  
+    // Ensure at least one image exists
+    if (newImages.length === 0 && existingImages.length === 0) {
+      console.error("At least one image is required.");
       return;
     }
   
+    // Append new images
+    newImages.forEach((file) => formData.append("images", file));
+  
+    // Append existing image URLs (updated after removal)
+    formData.append("existingImages", JSON.stringify(existingImages));
+  
+    // Append removed images for the backend to handle deletion
+    formData.append("removedImages", JSON.stringify(removedImages));
+  
+    // Backend request
     try {
-      // Call the endpoint with FormData
       const response = await fetch(`http://localhost:5000/api/existing/user/ad/${adId}`, {
         method: "PUT",
         headers: {
-          Authorization: `Bearer ${token}`, // Only include authorization in headers
+          Authorization: `Bearer ${token}`,
         },
-        body: formData, // Send FormData as the request body
+        body: formData,
       });
   
-      // Handle the response
       if (response.ok) {
         const responseData = await response.json();
         console.log("Ad updated successfully:", responseData);
-        // Perform additional actions, e.g., UI updates
+  
+        // Clear removedImages after successful update
+        setRemovedImages([]);
       } else {
         const errorData = await response.json();
         console.error("Failed to update ad:", errorData);
@@ -2023,6 +2033,9 @@ const handleLocationInputChange = async (event) => {
       console.error("Error occurred while updating ad:", error);
     }
   };
+  
+  
+  
   
   
   
@@ -2320,41 +2333,48 @@ const handleLocationInputChange = async (event) => {
     className="w-full p-4 text-gray-700 border border-gray-300 bg-gray-50 rounded-lg shadow focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-300 ease-in-out"
   />
 
-  {images.length > 0 && (
-    <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-      {[...Array(5)].map((_, index) => (
-        <div
-          key={index}
-          className="relative w-full h-32 rounded-lg overflow-hidden shadow-md"
-        >
-          {images[index] ? (
-            <>
+{images.length > 0 && (
+  <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+    {images.map((image, index) => (
+      <div key={index} className="relative w-full h-32 rounded-lg overflow-hidden shadow-md">
+        {image ? (
+          <>
+            {image instanceof File ? (
               <img
-                src={images[index]}
+                src={URL.createObjectURL(image)}
                 alt={`Uploaded ${index + 1}`}
                 className="w-full h-full object-cover"
               />
-              {index === 0 && (
-                <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-lg">
-                  <span className="text-white text-sm font-semibold">Cover</span>
-                </div>
-              )}
-              <button
-                onClick={() => removeImage(index)}
-                className="absolute top-2 right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-700 transition duration-200"
-              >
-                &times;
-              </button>
-            </>
-          ) : (
-            <div className="flex items-center justify-center w-full h-full bg-gray-200 text-gray-500">
-              Empty Slot
-            </div>
-          )}
-        </div>
-      ))}
-    </div>
-  )}
+            ) : (
+              <img
+                src={image}
+                alt={`Existing ${index + 1}`}
+                className="w-full h-full object-cover"
+              />
+            )}
+            {index === 0 && (
+              <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center rounded-lg">
+                <span className="text-white text-sm font-semibold">Cover</span>
+              </div>
+            )}
+            <button
+              onClick={() => removeImage(index)}
+              className="absolute top-2 right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center hover:bg-red-700 transition duration-200"
+              title="Remove Image"
+            >
+              &times;
+            </button>
+          </>
+        ) : (
+          <div className="flex items-center justify-center w-full h-full bg-gray-200 text-gray-500">
+            Empty Slot
+          </div>
+        )}
+      </div>
+    ))}
+  </div>
+)}
+
 </div>
 
     

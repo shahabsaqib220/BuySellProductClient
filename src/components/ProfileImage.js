@@ -119,12 +119,12 @@ const ProfileImage = () => {
     <>
       <UserNavbar />
       <div className="flex flex-col items-center p-4 bg-white rounded-lg shadow-md max-w-sm mx-auto mt-8">
-        <h1 className="mb-4 text-2xl font-semibold leading-none tracking-tight text-gray-900 md:text-2xl lg:text-2xl dark:text-white flex items-center space-x-2">
+        <h1 className="mb-4 text-2xl font-semibold leading-none tracking-tight text-gray-900 md:text-2xl lg:text-2xl flex items-center space-x-2">
           <LetterPullup text="Welcome" delay={0.05} />
           <LetterPullup text={username} delay={0.05} />
         </h1>
         
-        <h6 className="text-lg space-x-20 mt-9 mb-5 font-bold dark:text-white">
+        <h6 className="text-lg space-x-20 mt-9 mb-5 font-bold">
           <LetterPullup text="Update Your Profile Image" delay={0.05} />
         </h6>
 
@@ -158,7 +158,7 @@ const ProfileImage = () => {
           )}
         </button>
 
-        <h6 className="text-lg -ml-32 mt-9 font-bold dark:text-white">Change your Username</h6>
+        <h6 className="text-lg -ml-32 mt-9 font-bold">Change your Username</h6>
 
         <div className="flex items-center mt-7 space-x-2">
           <div className="relative w-full">
