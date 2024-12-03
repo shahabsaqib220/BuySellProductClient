@@ -75,6 +75,12 @@ const UserAdsTable = () => {
         
         navigate(`/edit-ad/${adId}`);  // Navigate to Edit Ad component with adId as a parameter
         break;
+
+        case 'sellFast':  // New action
+        navigate(`/sell-fast/${adId}`);  // Navigate to Sell Fast component with adId as a parameter
+        break;
+
+
       default:
         break;
     }

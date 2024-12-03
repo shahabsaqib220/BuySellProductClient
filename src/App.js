@@ -30,6 +30,7 @@ import ResetPasswordOtpVerfication from "./components/ResetPasswordOtpVerificati
 import ResetPasswordQuestion from "./components/ResetPasswordQuestion";
 import UserNewPassword from "./components/UserNewPassword"
 import UserChat from './components/UsersChat';
+import UserSellFastAd from './components/UserSellFastAd'
 import ReceiversProfileImages from "./components/ReceiversProfileImages"
 
 
@@ -64,6 +65,7 @@ function App() {
       {/* <Route path="/edit-ad" element={<PrivateRoute element={<EditUserAds />} />} /> */}
       <Route path="/viewads" element={<PrivateRoute element={<UserAdsTable />} />} />
       <Route path="/soldoutproducts" element={<PrivateRoute element={<SoldOutUserProduct />} />} />
+      <Route path="/sell-fast/:adId" element={<PrivateRoute element={<UserSellFastAd />} />} />
       <Route path="/edit-ad/:adId" element={<PrivateRoute element={<EditUserPostedAd />} />} />
       <Route path="/usernavbar" element={<PrivateRoute element={<UserNavbar />} />} />
       <Route path="/security" element={<PrivateRoute element={<ChangePassword />} />} />
