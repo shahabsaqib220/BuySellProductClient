@@ -61,7 +61,7 @@ const CategoryAds = () => {
   useEffect(() => {
     const fetchAdsByCategory = async () => {
       try {
-        const response = await axiosInstance.get(`/ads/category/${category}`);
+        const response = await axiosInstance.get(`/product/details/${category}`);
         setAds(response.data);
         setLoading(false);
       } catch (error) {

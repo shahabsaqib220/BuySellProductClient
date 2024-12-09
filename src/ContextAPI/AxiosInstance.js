@@ -13,7 +13,7 @@ const useAxiosInstance = () => {
 
     https://buysellproductserver-production.up.railway.app/api
     return axios.create({
-      baseURL: 'http://localhost:5000/api', // Your API base URL
+      baseURL: 'https://ols-server-eight.vercel.app/api', // Your API base URL
     });
   }, []);
 

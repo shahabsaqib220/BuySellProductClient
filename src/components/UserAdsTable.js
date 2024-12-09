@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import useAxiosInstance from '../ContextAPI/AxiosInstance';
 import UserNavbar from './UserNavbar';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../src/ContextAPI/AuthContext';
+
 
 
 
@@ -19,7 +21,14 @@ const UserAdsTable = () => {
   const [showSoldOutModal, setShowSoldOutModal] = useState(false);
   const [adToDelete, setAdToDelete] = useState(null);
   const axiosInstance = useAxiosInstance(); 
+  const { user, isLoggedIn } = useAuth(); 
 
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate('/login');
+    }
+  }, [isLoggedIn, navigate]);
 
   const [adToMarkSold, setAdToMarkSold] = useState(null);
   useEffect(() => {
@@ -28,7 +37,7 @@ const UserAdsTable = () => {
   
       try {
         // Use axiosInstance to get ads data
-        const response = await axiosInstance.get('/viewsads/myads');
+        const response = await axiosInstance.get('/user-ads/myads');
   
         if (response.status === 200) {
           const data = response.data;
@@ -68,11 +77,15 @@ const UserAdsTable = () => {
         setAdToDelete(adId);
         setShowDeleteModal(true);
         break;
-      case 'markSold':
-        setAdToMarkSold(adId);
-        break;
-        case 'edit':
+
+        case 'markSold':
+          setAdToMarkSold(adId);
+          setShowSoldOutModal(true); // Open modal
+          break;
         
+        
+
+        case 'edit':
         navigate(`/edit-ad/${adId}`);  // Navigate to Edit Ad component with adId as a parameter
         break;
 
@@ -91,7 +104,8 @@ const UserAdsTable = () => {
   const markAsSold = async (adId) => {
     try {
       // Use axiosInstance to send the PUT request
-      const response = await axiosInstance.put(`/userproducts/solded/soldout/${adId}`, {}, {
+     
+      const response = await axiosInstance.put(`/user-ads/soldout/${adId}`, {}, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -122,7 +136,7 @@ const UserAdsTable = () => {
     if (adToDelete) {
       try {
         // Use axiosInstance to send the DELETE request
-        const response = await axiosInstance.delete(`/deletead/deletead/${adToDelete}`);
+        const response = await axiosInstance.delete(`/updated/user/delete/user/ad/${adToDelete}`);
   
         // Check if the request was successful
         if (response.status !== 200) throw new Error('Error deleting ad');
@@ -252,9 +266,16 @@ const UserAdsTable = () => {
                         <li className="block px-4 py-2 hover:bg-gray-100  cursor-pointer" onClick={() => handleAction('sellFast', ad._id)}>
                           Sell Fast
                         </li>
-                        <li className="block px-4 py-2 hover:bg-gray-100  cursor-pointer" onClick={() => handleAction('markSold', ad._id)}>
-                          Mark as Sold
-                        </li>
+                        <li
+  className="block px-4 py-2 hover:bg-gray-100 cursor-pointer"
+  onClick={() => {
+    console.log('Mark as Sold clicked for ad:', ad._id);
+    handleAction('markSold', ad._id);
+  }}
+>
+  Mark as Sold
+</li>
+
                         <li className="block px-4 py-2 hover:bg-gray-100  cursor-pointer" onClick={() => handleAction('edit', ad._id)}>
                           Edit Ad
                         </li>
@@ -368,8 +389,7 @@ const UserAdsTable = () => {
       )}
 
 
-      {/* Mark as Sold Out Modal */}
-      {showSoldOutModal && (
+{showSoldOutModal && (
   <div className="fixed inset-0 z-10 overflow-y-auto">
     <div className="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
       <div className="fixed inset-0 transition-opacity" aria-hidden="true">
@@ -412,7 +432,7 @@ const UserAdsTable = () => {
           <button
             type="button"
             className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
-            onClick={() => markAsSold(adToMarkSold)}  // Use adToMarkSold state
+            onClick={() => markAsSold(adToMarkSold)}  // Call the function here after confirmation
           >
             Mark Soldout
           </button>
@@ -428,6 +448,7 @@ const UserAdsTable = () => {
     </div>
   </div>
 )}
+
 
     </div>
     </>

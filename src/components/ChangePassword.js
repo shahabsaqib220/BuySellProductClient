@@ -34,7 +34,7 @@ const Security = () => {
   const fetchSecurityQuestions = async () => {
     setLoadingQuestions(true);
     try {
-      const securityQuestionsResponse = await axiosInstance.get('/security/get-questions');
+      const securityQuestionsResponse = await axiosInstance.get('/security/options/security-questions');
       setSecurityQuestions(securityQuestionsResponse.data.questions);
       setMessage('Answer the security questions to proceed.');
       setError('');
@@ -50,7 +50,7 @@ const Security = () => {
   const verifySecurityQuestions = async () => {
     setLoadingVerifyAnswers(true);
     try {
-      const response = await axiosInstance.post('/security/verify-questions', { answers });
+      const response = await axiosInstance.post('/security/options/verify-security-answers', { answers });
       if (response.data.success) {
         setMessage('Security questions verified. Please enter your old password.');
         setSecurityVerified(true);
@@ -69,7 +69,7 @@ const Security = () => {
   const verifyOldPassword = async () => {
     setLoadingVerifyPassword(true);
     try {
-      const response = await axiosInstance.post('/security/verify-old-password', {
+      const response = await axiosInstance.post('/security/options/verify-old-password', {
         email: user.email,
         oldPassword: passwords.oldPassword,
       });
@@ -102,7 +102,7 @@ const Security = () => {
 
     setLoadingUpdatePassword(true);
     try {
-      const response = await axiosInstance.post('/security/update-password', {
+      const response = await axiosInstance.post('/security/options/update-password', {
         email: user.email,
         password: passwords.newPassword
       });

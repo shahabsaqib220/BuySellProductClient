@@ -16,7 +16,7 @@ const CartComponent = () => {
 
   const removeFromCart = async (itemId) => {
     try {
-      await axiosInstance.delete(`/usercart/item/${itemId}`);
+      await axiosInstance.delete(`/filtering/cart/${itemId}`);
       setCartItems(cartItems.filter(item => item._id !== itemId));
       Swal.fire('Deleted!', 'Item has been removed from your cart.', 'success');
     } catch (error) {
@@ -45,7 +45,7 @@ const CartComponent = () => {
 
   const fetchCartItems = async () => {
     try {
-      const response = await axiosInstance.get('/usercart/item/cart');
+      const response = await axiosInstance.get('/filtering/cart/items');
       setCartItems(response.data);
     } catch (error) {
       console.error("Error fetching cart items:", error.response?.data?.message || error.message);
@@ -54,7 +54,7 @@ const CartComponent = () => {
 
   const handleClick = async (cartId) => {
     try {
-      const response = await axiosInstance.get(`/usercart/navigate/adId/${cartId}`);
+      const response = await axiosInstance.get(`/filtering/adId/${cartId}`);
       navigate(`/product/${response.data.adId}`);
     } catch (error) {
       console.error('Error fetching adId:', error.response?.data?.message || error.message);

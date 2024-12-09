@@ -13,6 +13,8 @@ const UpdateSecurityQuestions = () => {
   const [passwordVerified, setPasswordVerified] = useState(false);
   const [securityVerified, setSecurityVerified] = useState(false);
   const [newQuestions, setNewQuestions] = useState({ question1: '', question2: '' });
+  
+
   const [answers, setAnswers] = useState({});
   const [newAnswers, setNewAnswers] = useState({ answer1: '', answer2: '' });
   const [oldAnswers, setOldAnswers] = useState({ answer1: '', answer2: '' });
@@ -35,7 +37,7 @@ const UpdateSecurityQuestions = () => {
   const fetchSecurityQuestions = async () => {
     setLoadingQuestions(true);
     try {
-      const securityQuestionsResponse = await axiosInstance.get('/security/get-questions');
+      const securityQuestionsResponse = await axiosInstance.get('/security/options/security-questions');
       setSecurityQuestions(securityQuestionsResponse.data.questions);
       setMessage('Answer the security questions to proceed.');
       setError('');
@@ -51,7 +53,7 @@ const UpdateSecurityQuestions = () => {
   const verifyPassword = async () => {
     setLoading(true);
     try {
-      const response = await axiosInstance.post('/security/verify-old-password', { 
+      const response = await axiosInstance.post('/security/options/verify-old-password', { 
         email: user.email, 
         oldPassword: password
       });
@@ -73,12 +75,16 @@ const UpdateSecurityQuestions = () => {
 
   // Verify old security answers
   const verifySecurityAnswers = async () => {
-    setLoadingVerifyAnswers(true);
+    setLoading(true);
     try {
-      const response = await axiosInstance.post('/security/verify-questions', {
+      const payload = {
         email: user.email,
-        answers: oldAnswers
-      });
+        answers, // Dynamically constructed answers object
+      };
+      console.log('Payload sent to server:', payload); // Log the payload for debugging
+  
+      const response = await axiosInstance.post('/security/options/verify-security-answers', payload);
+  
       if (response.data.success) {
         setSecurityVerified(true);
         setError('');
@@ -87,11 +93,13 @@ const UpdateSecurityQuestions = () => {
         setError('Incorrect security answers.');
       }
     } catch (err) {
+      console.error('Error verifying security answers:', err);
       setError('Failed to verify security answers.');
     } finally {
-      setLoadingVerifyAnswers(false);
+      setLoading(false);
     }
   };
+  
 
   // Update new security questions
   const updateSecurityQuestions = async () => {
@@ -106,7 +114,7 @@ const UpdateSecurityQuestions = () => {
 
     setLoading(true);
     try {
-      const response = await axiosInstance.post('/security/update-questions', {
+      const response = await axiosInstance.post('/security/options/update-user-answers', {
         email: user.email,
         newQuestions,
         newAnswers
@@ -155,25 +163,28 @@ const UpdateSecurityQuestions = () => {
         <Box mt={4}>
           <Typography variant="body1">Answer the security questions below:</Typography>
           {securityQuestions.map((question, index) => (
-            <TextField
-              key={index}
-              fullWidth
-              margin="normal"
-              label={question.question}
-              variant="outlined"
-              onChange={(e) => setOldAnswers({ ...oldAnswers, [question._id]: e.target.value })}
-            />
+           <TextField
+           key={question._id}
+           fullWidth
+           margin="normal"
+           label={`Answer for: ${question.question}`}
+           variant="outlined"
+           value={answers[question._id] || ''} // Use the answer for this question ID
+           onChange={(e) =>
+             setAnswers({ ...answers, [question._id]: e.target.value }) // Update the answer dynamically
+           }
+         />
           ))}
-          <Button
-            onClick={verifySecurityAnswers}
-            disabled={loadingVerifyAnswers}
-            fullWidth
-            variant="contained"
-            color="primary"
-            className="mt-4"
-          >
-            {loadingVerifyAnswers ? 'Verifying Answers...' : 'Verify Answers'}
-          </Button>
+         <Button
+  onClick={verifySecurityAnswers}
+  disabled={loading}
+  fullWidth
+  variant="contained"
+  color="primary"
+>
+  {loading ? 'Verifying Answers...' : 'Verify Security Answers'}
+</Button>
+
         </Box>
       )}
 

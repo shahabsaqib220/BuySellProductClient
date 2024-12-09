@@ -40,7 +40,7 @@ const Product = () => {
   useEffect(() => {
     const fetchAds = async () => {
       try {
-        const response = await axiosInstance.get("/allads/ads");
+        const response = await axiosInstance.get("/user-ads/all/ads");
         setAds(response.data);
       } catch (error) {
         console.error("Error fetching ads:", error);
@@ -64,18 +64,16 @@ const Product = () => {
   }, {});
 
   const handleAddToCart = async (ad) => {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
+    if (!isLoggedIn) {
       // User is not logged in
-      setSnackbarMessage("Sign in to use your cart");
-      setSnackbarSeverity("warning");
+      setSnackbarMessage('Sign in to use your cart');
+      setSnackbarSeverity('warning');
       setSnackbarOpen(true);
       return;
     }
 
     try {
-      await axiosInstance.post("/usercart/item/shopping", {
+      await axiosInstance.post('/filtering/user/cart', {
         adId: ad._id,
         brand: ad.brand,
         model: ad.model,
@@ -87,13 +85,13 @@ const Product = () => {
       });
 
       // User is logged in and item added to cart
-      setSnackbarMessage("Item added to cart");
-      setSnackbarSeverity("success");
+      setSnackbarMessage('Item added to cart');
+      setSnackbarSeverity('success');
       setSnackbarOpen(true);
     } catch (error) {
-      console.error("Error adding item to cart:", error);
-      setSnackbarMessage("Failed to add item to cart");
-      setSnackbarSeverity("error");
+      console.error('Error adding item to cart:', error);
+      setSnackbarMessage('Failed to add item to cart');
+      setSnackbarSeverity('error');
       setSnackbarOpen(true);
     }
   };

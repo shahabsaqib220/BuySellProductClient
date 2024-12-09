@@ -11,6 +11,7 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import useAxiosInstance from "../ContextAPI/AxiosInstance";
 import { FaComments } from 'react-icons/fa';
 import { RxAvatar } from 'react-icons/rx';
+import axiosInstance from '../ContextAPI/AxiosInstance';
 
 const FilterBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -46,25 +47,24 @@ const AdFilterComponent = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState(""); // Snackbar message
   const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // Snackbar severity (success, error, etc.)
-  const [loading, setLoading] = useState(true);
-
-  const getFirstTwoWords = (text) => text.split(' ').slice(0, 2).join(' ');
 
   useEffect(() => {
     setLoading(true);
-    fetch('http://localhost:5000/api/ads/filter-ads')
-      .then(response => response.json())
-      .then(data => {
-        setCategories(data.categories);
-        setLocations(data.locations);
-        setAds(data.ads);
+    axiosInstance
+      .get('/filtering/filtered-ads')
+      .then((response) => {
+        const { categories, locations, ads } = response.data;
+        setCategories(categories);
+        setLocations(locations);
+        setAds(ads);
         setLoading(false);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Error fetching data:', error);
         setLoading(false);
       });
   }, []);
+
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
@@ -76,20 +76,25 @@ const AdFilterComponent = () => {
       location: selectedLocation,
       minPrice,
       maxPrice
-    });
+    }
+  );
 
     setLoading(true);
-    fetch(`http://localhost:5000/api/ads/filter-ads?${params}`)
-      .then(response => response.json())
-      .then(data => {
-        setAds(data.ads);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error filtering ads:', error);
-        setLoading(false);
-      });
-  };
+    axiosInstance
+    .get('/filtering/filtered-ads', { params })
+    .then((response) => {
+      setAds(response.data.ads);
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.error('Error filtering ads:', error);
+      setLoading(false);
+    });
+  }; const [loading, setLoading] = useState(true);
+
+  const getFirstTwoWords = (text) => text.split(' ').slice(0, 2).join(' ');
+
+  
 
 
   const handleAddToCart = async (ad) => {

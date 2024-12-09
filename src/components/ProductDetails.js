@@ -64,7 +64,7 @@ const ProductDetails = () => {
             setCurrentImage(response.data.images[0]); // Set the default image
     
             // Fetch other products in the same category
-            const otherResponse = await axiosInstance.get(`/product/details/others/${response.data.category}`);
+            const otherResponse = await axiosInstance.get(`/filtering/product/${response.data.category}`);
             setOtherProducts(otherResponse.data); // Set the other products
           } catch (error) {
             console.error("Error fetching ad details:", error);
@@ -153,7 +153,7 @@ const ProductDetails = () => {
             
             </p>
             <div className="flex items-center mb-6">
-                <p className="text-lg text-gray-600"><strong>Posted by: <mark className="px-2 text-gray-900 bg-yellow-400 rounded">{userName}</mark> </strong></p>
+                <p className="text-lg text-gray-600"><strong>Posted by: <mark className="px-2 text-gray-900 bg-yellow-400 rounded">{ad.userId.name}</mark> </strong></p>
                 {ad.userId?.profileImageUrl ? (
     <img
     src={ad.userId.profileImageUrl}

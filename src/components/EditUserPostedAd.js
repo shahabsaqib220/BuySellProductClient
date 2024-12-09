@@ -1,16 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import {useAuth} from "../ContextAPI/AuthContext"
+
 import LetterPullup from './LetterPullup';
-import { Divider, Alert } from '@mui/material';
+import { Divider, Alert, CircularProgress, Skeleton } from '@mui/material';
+// Import AuthContext
 import useAxiosInstance from '../ContextAPI/AxiosInstance';
 import UserNavbar from './UserNavbar';
+import { useNavigate } from 'react-router-dom';
+
+import { useAuth } from '../../src/ContextAPI/AuthContext';
+
 
 
 const EditAd = () => {
+  const axiosInstance = useAxiosInstance(); 
+  const navigate = useNavigate(); // Get navigate hook from react-router-dom
+ 
   const { adId } = useParams();
   const [description, setDescription] = useState("");
+  const [alert, setAlert] = useState("");
   const [selectedCondition, setSelectedCondition] = useState("");
   const [images, setImages] = useState([]);
 
@@ -18,10 +27,10 @@ const EditAd = () => {
   const [price, setPrice] = useState("");
 
 
-  const [alert, setAlert] = useState("");
 
 
-  const { token, isLoggedIn } = useAuth(); // Access auth data
+
+  const { user, isLoggedIn } = useAuth(); 
   const [adDetails, setAdDetails] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
 
@@ -39,6 +48,12 @@ const EditAd = () => {
 
 
   const [mobileNumber, setMobileNumber] = useState("");
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate('/login');
+    }
+  }, [isLoggedIn, navigate]);
 
   const handleImageUpload = (event) => {
     const selectedFiles = Array.from(event.target.files); // Get the new file objects
@@ -1894,15 +1909,14 @@ const EditAd = () => {
 
 useEffect(() => {
   const fetchAdDetails = async () => {
+    if (!isLoggedIn) {
+      navigate("/login")
+      return; // Exit if the user is not logged in
+    }
+    
+
     try {
-      const response = await axios.get(
-        `http://localhost:5000/api/viewsads/edit/user/ad/${adId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, // Include Bearer token here
-          },
-        }
-      );
+      const response = await axiosInstance.get(`/user-ads/edit/user/ad/${adId}`);
       setAdDetails(response.data);
       setInitialAdDetails(response.data); // Store initial ad details
       setImages(response.data.images || []);
@@ -1910,7 +1924,9 @@ useEffect(() => {
       setPrice(response.data.price || "");
       setMobileNumber(response.data.MobilePhone || "");
       setLocation(response.data.location.readable || "");
+      
     } catch (error) {
+      
       console.error('Error fetching ad details:', error);
     } finally {
       setLoading(false);
@@ -1918,7 +1934,7 @@ useEffect(() => {
   };
 
   fetchAdDetails();
-}, [adId, token]);
+}, [adId, isLoggedIn, axiosInstance]); // Add isLoggedIn to dependencies
 
 
 
@@ -1927,7 +1943,14 @@ useEffect(() => {
 
 // Render Logic
 if (loading) {
-  return <div>Loading...</div>; // Show a loading indicator while fetching data
+  return <div>
+  <Skeleton className='w-full h-full text-7xl mt-7' />
+  <Skeleton className='w-full h-full text-7xl mt-7' />
+  <Skeleton className='w-full h-full text-7xl mt-7' />
+  <Skeleton className='w-full h-full text-7xl mt-7' />
+  <Skeleton className='w-full h-full text-7xl mt-7' />
+  <Skeleton className='w-full h-full text-7xl mt-7' />
+  </div>; // Show a loading indicator while fetching data
 }
 
 // Render when adDetails is available
@@ -1967,9 +1990,11 @@ const handleLocationInputChange = async (event) => {
 
 
 
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+    
+    
     const formData = new FormData();
   
     // Append other form data
@@ -1996,7 +2021,8 @@ const handleLocationInputChange = async (event) => {
   
     // Ensure at least one image exists
     if (newImages.length === 0 && existingImages.length === 0) {
-      console.error("At least one image is required.");
+      setAlert({ message: "Atleast 1 new Image is required" , severity: "error" });
+      
       return;
     }
   
@@ -2011,26 +2037,36 @@ const handleLocationInputChange = async (event) => {
   
     // Backend request
     try {
-      const response = await fetch(`http://localhost:5000/api/existing/user/ad/${adId}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
+      const response = await axiosInstance.put(`/updated/user/ad/${adId}`, formData);
   
-      if (response.ok) {
-        const responseData = await response.json();
+      if (response.status === 200) {
+        const responseData = response.data;
         console.log("Ad updated successfully:", responseData);
-  
+        
+        // Set success alert
+        setAlert({ message: "Ad updated successfully!", severity: "success" });
+        
         // Clear removedImages after successful update
         setRemovedImages([]);
+
+        setTimeout(() => {
+          navigate("/viewads");
+      }, 500);
+       
+
+
       } else {
-        const errorData = await response.json();
+        const errorData = await response.data; // Use response.data instead of response.json()
         console.error("Failed to update ad:", errorData);
+        
+        // Set error alert
+        setAlert({ message: "Failed to update ad: " + errorData.message, severity: "error" });
       }
     } catch (error) {
       console.error("Error occurred while updating ad:", error);
+      
+      // Set error alert
+      setAlert({ message: "An error occurred while updating the ad.", severity: "error" });
     }
   };
   
@@ -2382,14 +2418,21 @@ const handleLocationInputChange = async (event) => {
 
         {/* Submit Button */}
       
-          <button
-            type="submit"
-            onClick={handleSubmit}
-            disabled={loading}
-            className="w-full mb-4 py-2 bg-yellow-400 text-black rounded-lg font-semibold hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-          >
-             {loading ? "Posting..." : "Post Ad"}
-          </button>
+        <button
+      type="submit"
+      onClick={handleSubmit}
+      disabled={loading}
+      className="w-full mb-4 py-2 bg-yellow-400 text-black rounded-lg font-semibold hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-500 flex items-center justify-center"
+    >
+      {loading ? (
+        <>
+          <CircularProgress className="bg-black"/>
+          Updating...
+        </>
+      ) : (
+        "Update"
+      )}
+    </button>
           {alert && (
         <Alert severity={alert.severity} onClose={() => setAlert("")} className="mb-4">
             {alert.message}

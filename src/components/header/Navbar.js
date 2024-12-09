@@ -40,7 +40,7 @@ const Navbar = () => {
     const fetchProfileImage = async () => {
       if (isLoggedIn && token) {
         try {
-          const response = await axiosInstance.get('/profile-image/profile-image');
+          const response = await axiosInstance.get('/userlogin/profile-image');
 
           if (response.status === 200) {
             const data = response.data;

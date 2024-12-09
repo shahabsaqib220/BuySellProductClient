@@ -24,7 +24,7 @@ const AdsTable = () => {
   const fetchAds = async (page) => {
   
     try {
-      const response = await axiosInstance.get(`/userproducts/solded/ads`, {
+      const response = await axiosInstance.get(`/updated/user/solded/items`, {
         params: {
           page: page + 1,
           limit: rowsPerPage,
