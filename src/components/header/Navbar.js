@@ -26,11 +26,11 @@ const Navbar = () => {
   };
 
 
-  // const intervalId = setInterval(() => {
-  //    if (isLoggedIn) {
-  //      fetchCartItemCount();
-  //    }
-  //  }, 5000);
+  const intervalId = setInterval(() => {
+     if (isLoggedIn) {
+       fetchCartItemCount();
+     }
+   }, 5000);
   
 
   const userId = user ? user.id : null;
@@ -305,14 +305,14 @@ const Navbar = () => {
               )}
             </div>
           </Disclosure.Panel>
-          <div>
+          {/* <div>
             <h1 className='bg-red-500'>User Information</h1>
             {userId ? (
                 <p>User ID: {userId}</p>
             ) : (
                 <p>No user is logged in.</p>
             )}
-        </div>
+        </div> */}
         </>
       )}
     </Disclosure>
