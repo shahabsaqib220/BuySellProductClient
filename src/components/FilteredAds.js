@@ -213,7 +213,7 @@ const AdFilterComponent = () => {
         />
 
         <TextField
-          label="Location"
+          label="Cities"
           select
           value={selectedLocation}
           onChange={(e) => setSelectedLocation(e.target.value)}
@@ -221,7 +221,7 @@ const AdFilterComponent = () => {
           fullWidth
           variant="outlined"
         >
-          <MenuItem value=""><em>All Locations</em></MenuItem>
+          <MenuItem value=""><em>All Cities</em></MenuItem>
           {locations.map((location, index) => (
             <MenuItem key={index} value={location}>{location}</MenuItem>
           ))}

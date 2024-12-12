@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { RxAvatar } from "react-icons/rx";
-import { FaPhoneAlt } from 'react-icons/fa';
-import { Divider } from '@mui/material';
+
+
 import useAxiosInstance from '../ContextAPI/AxiosInstance';
 
 const ProductDetails = () => {
@@ -86,12 +86,11 @@ const ProductDetails = () => {
            
  
 
-           
-          
+        
 
             
 
-<h1 className="text-4xl font-extrabold text-center mb-6 text-gray-800">{ad.brand} : {ad.model}</h1>
+        <h1 className="text-4xl font-extrabold text-center mb-6 text-gray-800"> <mark className="px-2 text-gray-900 bg-yellow-400 rounded"> <strong>{ad.brand}</strong> {ad.model}</mark> </h1>
 <div className="flex flex-col md:flex-row md:justify-between">
     <div className="w-full md:w-1/2 mb-6">
         <div className="relative w-full h-80 border-4 border-gray-200 rounded-lg overflow-hidden shadow-lg">

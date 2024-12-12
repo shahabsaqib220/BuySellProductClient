@@ -26,11 +26,11 @@ const Navbar = () => {
   };
 
 
-  const intervalId = setInterval(() => {
-     if (isLoggedIn) {
-       fetchCartItemCount();
-     }
-   }, 5000);
+  // const intervalId = setInterval(() => {
+  //    if (isLoggedIn) {
+  //      fetchCartItemCount();
+  //    }
+  //  }, 5000);
   
 
   const userId = user ? user.id : null;

@@ -294,7 +294,7 @@ const Product = () => {
                   {ad.location && (
                     <div className="flex items-center text-sm text-gray-500">
                       <FaLocationDot className="text-2xl text-yellow-500 mr-1" />
-                      <span>{getFirstTwoWords(ad.location.readable)}</span>
+                      <span className="text-black">{getFirstTwoWords(ad.location.readable)}</span>
                     </div>
                   )}
 

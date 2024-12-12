@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {  Alert } from "@mui/material";
 import { Divider } from '@mui/material';
 import LetterPullup from "./LetterPullup"; 
-import axios from "axios";
+
 
 import useAxiosInstance from '../ContextAPI/AxiosInstance';
 import UserNavbar from "./UserNavbar";
@@ -10,6 +10,7 @@ import UserNavbar from "./UserNavbar";
 
 const ProductForm = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
   const [brands, setBrands] = useState([]);
   const [models, setModels] = useState([]);
   const [selectedBrand, setSelectedBrand] = useState("");
@@ -22,11 +23,44 @@ const ProductForm = () => {
   const [loading, setLoading] = useState(false);
   const [images, setImages] = useState([]);
   const [alert, setAlert] = useState("");
-  const [location, setLocation] = useState(""); // Human-readable location
-  const [suggestions, setSuggestions] = useState([]);
-  const [selectedLocation, setSelectedLocation] = useState(""); // Coordinates
   const [longitude, setLongitude] = useState(null);
+  const [showModelConfirmation, setShowModelConfirmation] = useState(false); // State to control modal visibility
+
   const [latitude, setLatitude] = useState(null);
+  const PakistaniCities = [
+    "Abbottabad", "Ahmadpur East", "Aliabad", "Arifwala", "Attock", 
+    "Badin", "Bagh", "Bahawalnagar", "Bahawalpur", "Bannu", 
+    "Basirpur", "Batkhela", "Bhakkar", "Burewala", "Chakwal", 
+    "Chaman", "Charsadda", "Chiniot", "Chishtian", "Chitral", 
+    "Dadu", "Dalbandin", "Dera Allah Yar", "Dera Bugti", "Dera Ghazi Khan", 
+    "Dera Ismail Khan", "Digri", "Dina", "Diplo", "Doaba", 
+    "Dudial", "Faisalabad", "Fateh Jang", "Ghotki", "Gilgit", 
+    "Gojra", "Gujar Khan", "Gujranwala", "Gujrat", "Gwadar", 
+    "Hafizabad", "Hangu", "Haripur", "Harnai", "Hassan Abdal", 
+    "Hub", "Hyderabad", "Islamabad", "Jacobabad", "Jamshoro", 
+    "Jaranwala", "Jatoi", "Jhang", "Jhelum", "Kabirwala", 
+    "Kamalia", "Kambar", "Kamoke", "Kandhkot", "Kandiaro", 
+    "Karachi", "Kasur", "Kashmore", "Khairpur", "Khanewal", 
+    "Khanpur", "Khaplu", "Kharan", "Khushab", "Khuzdar", 
+    "Kohat", "Kot Addu", "Kotli", "Kotri", "Kulachi", 
+    "Kundian", "Lahore", "Lakki Marwat", "Lalamusa", "Larkana", 
+    "Lasbela", "Layyah", "Lodhran", "Malakand", "Mandi Bahauddin", 
+    "Mansehra", "Mardan", "Mastung", "Mian Channu", "Mianwali", 
+    "Mingora", "Mirpur Khas", "Mirpur", "Mithi", "Multan", 
+    "Muzaffargarh", "Muzaffarabad", "Nankana Sahib", "Narowal", "Naushahro Feroze", 
+    "Nawabshah", "New Mirpur", "Nowshera", "Okara", "Ormara", 
+    "Pakpattan", "Panjgur", "Parachinar", "Pasni", "Peshawar", 
+    "Pir Mahal", "Qila Abdullah", "Qila Saifullah", "Quetta", "Rahim Yar Khan", 
+    "Rajanpur", "Rangpur", "Rawalakot", "Rawalpindi", "Sadiqabad", 
+    "Sahiwal", "Samundri", "Sanghar", "Sangla Hill", "Sargodha", 
+    "Shakargarh", "Sheikhupura", "Shikarpur", "Shingar", "Sialkot", 
+    "Sibi", "Sohbatpur", "Sukkur", "Swabi", "Swat", 
+    "Tando Adam", "Tando Allahyar", "Tando Muhammad Khan", "Tank", "Taxila", 
+    "Thatta", "Toba Tek Singh", "Turbat", "Umerkot", "Vehari", 
+    "Wah Cantt", "Warah", "Wazirabad", "Zafarwal", "Zhob", 
+    "Ziarat"
+  ].sort();
+  
 
   const token = localStorage.getItem('token');
 
@@ -35,34 +69,23 @@ const ProductForm = () => {
     console.log('Token:', token);
   }, [token]);
 
+  const handleCityChange = (event) => {
+    setSelectedCity(event.target.value);
+  };
+
+
+
+  
+  
+
+
 
 
   
 
-  // Fetch location suggestions from Nominatim API
-  const handleLocationInputChange = async (event) => {
-    const query = event.target.value;
-    setLocation(query);
+  
 
-    if (query.length > 2) {
-      try {
-        const response = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${query}`);
-        setSuggestions(response.data);
-      } catch (error) {
-        console.error("Error fetching location data:", error);
-      }
-    } else {
-      setSuggestions([]);
-    }
-  };
 
-  // When a suggestion is selected, update the input field
-  const handleSuggestionClick = (suggestion) => {
-    setLocation(suggestion.display_name);
-    setLongitude(suggestion.lon);
-    setLatitude(suggestion.lat);
-    setSuggestions([]); // Clear suggestions after selecting one
-  };
 
 
  
@@ -1856,56 +1879,65 @@ const ProductForm = () => {
  
 }
 
+const handleSubmit = async (event) => {
+  event.preventDefault();
+
+  const longitude = 72.3631; // Replace with actual value
+  const latitude = 33.7530;  // Replace with actual value
+
+  if (!validateForm()) return;
+
+  if (!selectedModel) {
+      // If model is not selected, show confirmation modal
+      setShowModelConfirmation(true);
+      return;
+  }
+
+  // Continue with form submission if model is selected
+  submitAd();
+};
+
+
   // Conditions for the dropdown
   const conditions = ["Brand New", "Used", "Refurbished"];
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    const longitude = 72.3631;
-    const latitude = 33.7530;
-  
-    if (!validateForm()) return;
-  
+  const submitAd = async () => {
     setLoading(true);
     const formData = new FormData();
-  
+
     formData.append('category', selectedCategory);
     formData.append('brand', selectedBrand);
-    formData.append('model', selectedModel);
+    formData.append('model', selectedModel);  // This will only be appended if model is selected
     formData.append('price', price);
     formData.append('description', description);
     formData.append('condition', selectedCondition);
     formData.append('MobilePhone', mobileNumber);
-    
-    formData.append('location', JSON.stringify({
-      type: "Point",
-      coordinates: [parseFloat(longitude), parseFloat(latitude)], // Ensure coordinates are in [lon, lat] format
-      readable: location // The human-readable location name
+
+    formData.append("location", JSON.stringify({
+        type: "Point",
+        coordinates: [longitude, latitude], // Valid coordinates
+        readable: selectedCity // Selected city name
     }));
-  
-  
+
     images.forEach((image) => {
-      formData.append('images', image);
+        formData.append('images', image);
     });
-  
+
     try {
-      // Use axiosInstance to post ad data
-      await axiosInstance.post('/user-ads/postads', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data', // Required for file uploads
-        },
-      });
-      
-      setAlert({ message: "Ad posted successfully!", severity: "success" });
-      
+        await axiosInstance.post('/user-ads/postads', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        setAlert({ message: "Ad posted successfully!", severity: "success" });
     } catch (error) {
-      setAlert({ message: "Failed to post ad.", severity: "error" });
+        setAlert({ message: "Failed to post ad.", severity: "error" });
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-    
-  };
+};
+
+  
   
 
   const handleCategoryChange = (event) => {
@@ -1941,10 +1973,7 @@ const ProductForm = () => {
       setAlert({ message: "Please select a brand.", severity: "error" });
       return false;
     }
-    if (!selectedModel) {
-      setAlert({ message: "Please select a model.", severity: "error" });
-      return false;
-    }
+    
     if (!mobileNumber) {
       setAlert({ message: "Mobile Phone number is required.", severity: "error" });
       return false;
@@ -1965,9 +1994,9 @@ const ProductForm = () => {
       setAlert({ message: "At least one image is required.", severity: "error" });
       return false;
     }
-    if (!location) {  // Add this to ensure the location is selected
-      setAlert({ message: "Please select a location.", severity: "error" });
-      return false;
+    if (!selectedCity) {
+      setAlert({message: "Please select a city", severity: "error"})
+      return;
     }
     return true;
   };
@@ -2147,36 +2176,30 @@ const ProductForm = () => {
 </div>
    {/* Location Input */}
    <div className="mb-6">
-  <label
-    htmlFor="location"
-    className="block text-md font-semibold text-gray-950  mb-2"
-  >
-    Location
-  </label>
-  <input
-    type="text"
-    id="location"
-    value={location}
-    onChange={handleLocationInputChange}
-    className="w-full p-4 border border-gray-300 bg-gray-50 rounded-lg shadow focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-300 ease-in-out placeholder-gray-400 "
-    placeholder="Enter location"
-  />
-  
-  {/* Suggestions dropdown */}
-  {suggestions.length > 0 && (
-    <ul className="bg-white border border-gray-300 rounded-lg shadow-lg mt-2 max-h-60 overflow-auto">
-      {suggestions.map((suggestion) => (
-        <li
-          key={suggestion.place_id}
-          className="px-4 py-3 hover:bg-yellow-100 cursor-pointer transition-colors duration-200"
-          onClick={() => handleSuggestionClick(suggestion)}
+        <label
+          htmlFor="city"
+          className="block text-md font-semibold text-gray-950 mb-2"
         >
-          {suggestion.display_name}
-        </li>
-      ))}
-    </ul>
-  )}
-</div>
+        Select a City
+        </label>
+        <select
+          id="city"
+          value={selectedCity}
+          onChange={handleCityChange}
+          className="w-full p-4 border border-gray-300 bg-gray-50 rounded-lg shadow focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-300 ease-in-out"
+        >
+          <option value="" disabled>
+            Select a city
+          </option>
+          {PakistaniCities.map((city) => (
+            <option key={city} value={city}>
+              {city}
+            </option>
+          ))}
+        </select>
+      </div>
+
+    
 
 
 
@@ -2289,10 +2312,36 @@ const ProductForm = () => {
             {alert.message}
           </Alert>
         )}
+    {showModelConfirmation && (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h3 className="text-xl font-bold mb-4">Are you sure?</h3>
+            <p className="mb-4">You haven't selected a model. Do you still want to post the ad without a model?</p>
+            <div className="flex justify-between">
+                <button 
+                    onClick={() => {
+                        setShowModelConfirmation(false);
+                        submitAd(); // Submit the ad without the model
+                    }} 
+                    className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600"
+                >
+                    Confirm
+                </button>
+                <button 
+                    onClick={() => setShowModelConfirmation(false)} 
+                    className="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400"
+                >
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+)}
 
 
       </div>
     </div>
+
     </>
   );
 };
