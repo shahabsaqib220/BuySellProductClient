@@ -11,7 +11,7 @@ import { useAuth } from '../../ContextAPI/AuthContext';
 import { TbMessageFilled } from "react-icons/tb";// Assuming you have an AuthContext for managing auth state
 
 const Navbar = () => {
-  const { isLoggedIn, logout, token } = useAuth(); 
+  const { isLoggedIn, logout } = useAuth();
   const dispatch = useDispatch();// Getting auth state and token from context
   const [profileImage, setProfileImage] = useState(null); // State to store profile image URL
   const navigate = useNavigate(); // Hook for navigation
@@ -36,11 +36,11 @@ const Navbar = () => {
   const userId = user ? user.id : null;
 
   useEffect(() => {
-    // Fetch profile image if user is logged in
+    // Fetch profile image if the user is logged in
     const fetchProfileImage = async () => {
-      if (isLoggedIn && token) {
+      if (isLoggedIn) {
         try {
-          const response = await axiosInstance.get('/userlogin/profile-image');
+          const response = await axiosInstance.get('/userlogin/profile-image'); // Axios handles auth headers
 
           if (response.status === 200) {
             const data = response.data;
@@ -55,7 +55,8 @@ const Navbar = () => {
     };
 
     fetchProfileImage();
-  }, [isLoggedIn, token, axiosInstance]);
+  }, [isLoggedIn]);
+
 
   const fetchCartItemCount = async () => {
     try {

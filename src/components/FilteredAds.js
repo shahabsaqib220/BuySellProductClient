@@ -8,6 +8,7 @@ import { FaLocationDot } from "react-icons/fa6";
 import { Link, useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import { useAuth } from '../ContextAPI/AuthContext';
 import useAxiosInstance from "../ContextAPI/AxiosInstance";
 import { FaComments } from 'react-icons/fa';
 import { RxAvatar } from 'react-icons/rx';
@@ -40,6 +41,7 @@ const AdFilterComponent = () => {
   const [categories, setCategories] = useState([]);
   const [locations, setLocations] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const { user, isLoggedIn } = useAuth();
   const [selectedLocation, setSelectedLocation] = useState('');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
@@ -98,18 +100,16 @@ const AdFilterComponent = () => {
 
 
   const handleAddToCart = async (ad) => {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
+    if (!isLoggedIn) {
       // User is not logged in
-      setSnackbarMessage("Sign in to use your cart");
-      setSnackbarSeverity("warning");
+      setSnackbarMessage('Sign in to use your cart');
+      setSnackbarSeverity('warning');
       setSnackbarOpen(true);
       return;
     }
 
     try {
-      await axiosInstance.post("/usercart/item/shopping", {
+      await axiosInstance.post('/filtering/user/cart', {
         adId: ad._id,
         brand: ad.brand,
         model: ad.model,
@@ -121,13 +121,13 @@ const AdFilterComponent = () => {
       });
 
       // User is logged in and item added to cart
-      setSnackbarMessage("Item added to cart");
-      setSnackbarSeverity("success");
+      setSnackbarMessage('Item added to cart');
+      setSnackbarSeverity('success');
       setSnackbarOpen(true);
     } catch (error) {
-      console.error("Error adding item to cart:", error);
-      setSnackbarMessage("Failed to add item to cart");
-      setSnackbarSeverity("error");
+      console.error('Error adding item to cart:', error);
+      setSnackbarMessage('Failed to add item to cart');
+      setSnackbarSeverity('error');
       setSnackbarOpen(true);
     }
   };
@@ -283,9 +283,13 @@ const AdFilterComponent = () => {
 
                 <Grid container alignItems="center">
                   <Grid item xs>
-                    <span className="text-2xl font-bold text-gray-900">
-                      Rs {ad.price}
-                    </span>
+                  <h3 className=" text-lg font-bold leading-tight tracking-tight text-gray-900 md:text-2xl lg:text-2xl">
+            <mark className="px-2 text-black bg-yellow-400 rounded">
+              Rs {ad.price}/-
+            </mark>
+          </h3>
+
+                   
                   </Grid>
 
                   <Grid item>
@@ -312,26 +316,31 @@ const AdFilterComponent = () => {
 
                 <div className="flex justify-between items-center mb-2">
                   {ad.location && (
-                    <div className="flex items-center text-sm text-gray-500">
+                    <div className="flex font-semibold items-center  text-black">
                       <FaLocationDot className="text-2xl text-yellow-500 mr-1" />
                       <span>{getFirstTwoWords(ad.location.readable)}</span>
                     </div>
                   )}
 
-                  <h5 className="text-sm text-gray-900">
-                    <span>Condition: {ad.condition}</span>
+                  <h5 className="text-sm text-black font-semibold">
+                    <span>{ad.condition}</span>
                   </h5>
                 </div>
 
                 <div className="flex justify-between items-center mt-4">
-                  <Button
-                    variant="outlined"
-                    startIcon={<FaComments />}
-                    style={{ color: "#FFC107", borderColor: "#FFC107" }}
-                    size="small"
-                  >
-                    Chat with Seller
-                  </Button>
+                <Button
+  variant="contained"
+  startIcon={<FaComments />}
+  style={{
+    color: "#000000", // Black text
+    backgroundColor: "#FFC107", // Yellow background
+    borderColor: "#FFC107", // Optional border to match background
+  }}
+  size="small"
+>
+  Chat with Seller
+</Button>
+
 
                   <div className="flex">In Stock</div>
                 </div>

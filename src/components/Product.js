@@ -148,15 +148,12 @@ const Product = () => {
 
   const handleChatClick = (ad) => {
     if (isLoggedIn && user) {
-      console.log("Logged-in user:", user.id);
-      console.log("Ad data:", ad);
+   
       
       // Dispatch Redux action
       dispatch(setUserAndAd({ user, ad }));
   
-      // Save data to localStorage to persist on reload
-      localStorage.setItem('chatUser', JSON.stringify(user));
-      localStorage.setItem('chatAd', JSON.stringify(ad));
+     
   
       // navigate(`/chat/${user.id}/${ad.userId._id}`);
       navigate(`/chat`)
@@ -253,9 +250,11 @@ const Product = () => {
 
                 <Grid container alignItems="center">
                   <Grid item xs>
-                    <span className="text-2xl font-bold text-gray-900">
-                      Rs {ad.price}
-                    </span>
+                  <h3 className=" text-lg font-bold leading-tight tracking-tight text-gray-900 md:text-2xl lg:text-2xl">
+            <mark className="px-2 text-black bg-yellow-400 rounded">
+              Rs {ad.price}/-
+            </mark>
+          </h3>
                   </Grid>
 
                   <Grid item>
@@ -294,25 +293,29 @@ const Product = () => {
                   {ad.location && (
                     <div className="flex items-center text-sm text-gray-500">
                       <FaLocationDot className="text-2xl text-yellow-500 mr-1" />
-                      <span className="text-black">{getFirstTwoWords(ad.location.readable)}</span>
+                      <span className="text-black font-semibold">{getFirstTwoWords(ad.location.readable)}</span>
                     </div>
                   )}
 
-                  <h5 className="text-sm text-gray-900">
-                    <span>Condition: {ad.condition}</span>
+                  <h5 className="text-sm font-semibold text-gray-900">
+                    <span>{ad.condition}</span>
                   </h5>
                 </div>
 
                 <div className="flex justify-between items-center mt-4">
                 <Button
-      variant="outlined"
-      startIcon={<FaComments />}
-      style={{ color: "#FFC107", borderColor: "#FFC107" }}
-      size="small"
-      onClick={() => handleChatClick(ad)}
-    >
-      Chat with Seller
-    </Button>
+                onClick={() => handleChatClick(ad)}
+  variant="contained"
+  startIcon={<FaComments />}
+  style={{
+    color: "#000000", // Black text
+    backgroundColor: "#FFC107", // Yellow background
+    borderColor: "#FFC107", // Optional border to match background
+  }}
+  size="small"
+>
+  Chat with Seller
+</Button>
 
                   <div className="flex">In Stock</div>
                 </div>

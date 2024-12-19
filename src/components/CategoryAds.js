@@ -35,7 +35,7 @@ const CategoryAds = () => {
 
     // If user is logged in, proceed to add item to cart
     try {
-      await axiosInstance.post("/usercart/item/shopping", {
+      await axiosInstance.post("/filtering/user/cart", {
         adId: ad._id,
         brand: ad.brand,
         model: ad.model,
@@ -109,11 +109,16 @@ const CategoryAds = () => {
                 <Divider className="bg-gray-400 h-0.5 mb-4" />
 
                 <div className="flex justify-between items-center mb-4">
-                  <span className="text-xl font-bold text-gray-900">
-                    Rs {ad.price}
+                  <span className="text-xl mt-2 font-bold text-gray-900">
+                  <h3 className=" text-lg font-bold leading-tight tracking-tight text-gray-900 md:text-2xl lg:text-2xl">
+            <mark className="px-2 text-black bg-yellow-400 rounded">
+              Rs {ad.price}/-
+            </mark>
+          </h3>
+                   
                   </span>
-                  <span className="text-sm text-gray-500">
-                    Condition: {ad.condition}
+                  <span className="text-sm text-black font-semibold">
+                    {ad.condition}
                   </span>
                 </div>
 
@@ -128,8 +133,8 @@ const CategoryAds = () => {
   </Button>
 
   {/* Container for Location Icon and Text */}
-  <div className="flex items-center text-sm text-gray-500">
-    <FaLocationDot className="text-2xl text-yellow-500 mr-1" />
+  <div className="flex items-center text-sm text-black font-semibold">
+    <FaLocationDot className="text-2xl  text-yellow-500 mr-1" />
     <span>{getFirstTwoWords(ad.location.readable)}</span>
   </div>
 </div>
