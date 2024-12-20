@@ -4,6 +4,7 @@ import { useAuth } from '../ContextAPI/AuthContext';
 import { useDispatch, useSelector } from 'react-redux';
 import './UserChat.css';
 import io from 'socket.io-client';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
 import Modal from 'react-modal';
 import { TextField, Button, CircularProgress, Alert } from '@mui/material';
 import { GoTrash } from "react-icons/go";
@@ -11,12 +12,16 @@ import { MdSend, MdPerson } from "react-icons/md";
 import { MdLock } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
 import { BiCheckDouble } from "react-icons/bi";
+import useAxiosInstance from '../ContextAPI/AxiosInstance';// Adjust the path based on your folder structure
+
 
 const socket = io('http://localhost:5000');
 
 const ReceiversList = () => {
+  
   const { user } = useAuth();
   const [receivers, setReceivers] = useState([]);
+  const axiosInstance = useAxiosInstance(); 
   const [messages, setMessages] = useState([]);
   const [messageContent, setMessageContent] = useState('');
   const [loading, setLoading] = useState(true);
@@ -24,6 +29,7 @@ const ReceiversList = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [sending, setSending] = useState(false);
   const [onlineStatuses, setOnlineStatuses] = useState({});
+  const [conversationStarted, setConversationStarted] = useState(false); // New state to track if conversation has started
   
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,6 +38,9 @@ const ReceiversList = () => {
   const typingTimeout = useRef(null); 
   const dispatch = useDispatch();
   const ad = useSelector((state) => state.user.ad);
+
+
+  
 
 
 
@@ -52,10 +61,13 @@ const ReceiversList = () => {
 
   useEffect(() => {
     const fetchReceivers = async () => {
+      console.log(axiosInstance);
+
       if (user?.id) {
         try {
-          const response = await axios.get(`http://localhost:5000/api/receivers/profile/image/receivers/${user.id}`);
+          const response = await axiosInstance.get(`/users-chats/receivers/${user.id}`);
           setReceivers(response.data);
+          
         } catch (error) {
           console.error("Error fetching receivers:", error);
         }
@@ -73,19 +85,28 @@ const ReceiversList = () => {
 
   useEffect(() => {
     const fetchConversationHistory = async () => {
-      if (!selectedReceiverId) return;
       try {
-        const response = await axios.get(`http://localhost:5000/api/conservation/history/${user.id}/${selectedReceiverId}`);
-        setMessages(response.data);
+        const response = await axiosInstance.get(`/users-chats/history/${user.id}/${selectedReceiverId}`);
+        
+        if (response.data.message === 'Send the first message to start a conversation.') {
+          setMessages([]);
+          setConversationStarted(false); // No conversation started
+        } else {
+          setMessages(response.data);
+          setConversationStarted(true); // Conversation has started
+        }
       } catch (error) {
-        console.error("Error fetching message history:", error);
+        console.error('Error fetching conversation history:', error);
       }
     };
-
+  
     if (selectedReceiverId) {
       fetchConversationHistory();
     }
-  }, [selectedReceiverId, user.id]);
+  }, [selectedReceiverId]);
+
+  
+  
 
   useEffect(() => {
     socket.on('receiveMessage', (message) => {
@@ -115,6 +136,7 @@ const ReceiversList = () => {
     }, 1000);
   };
 
+
   const handleMessageSent = async () => {
     if (!messageContent.trim() || !selectedReceiverId) return;
   
@@ -125,18 +147,46 @@ const ReceiversList = () => {
       message: messageContent,
     };
   
+    const tempMessage = {
+      ...messageData,
+      _id: Date.now(), // Temporary ID for optimistic UI
+      seen: false,
+      timestamp: new Date(),
+    };
+  
+    // Only add the temporary message to the state
+    setMessages((prev) => [...prev, tempMessage]);
+  
     try {
-      const response = await axios.post('http://localhost:5000/api/conservation/send', messageData);
-      setMessages((prev) => [...prev, response.data]);
+      const response = await axiosInstance.post('/users-chats/send', messageData);
+      // Emit the message to the socket
+      socket.emit('sendMessage', response.data); 
       setMessageContent('');
-      socket.emit('sendMessage', response.data);
-      socket.emit('stopTyping', { receiverId: selectedReceiverId });
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
       setSending(false);
     }
   };
+ 
+
+
+  
+  const handleReceiveMessage = (message) => {
+    if (message.senderId === selectedReceiverId || message.receiverId === selectedReceiverId) {
+      // Check if the message already exists
+      setMessages((prev) => {
+        const messageExists = prev.some(msg => msg._id === message._id);
+        if (!messageExists) {
+          return [...prev, message];
+        }
+        return prev; // Return the previous state if the message already exists
+      });
+    }
+  };
+  
+  // Add this to your socket listener
+  socket.on('receiveMessage', handleReceiveMessage);
 
   useEffect(() => {
     const markMessagesAsSeen = async () => {
@@ -146,7 +196,7 @@ const ReceiversList = () => {
         
         if (messageIds.length > 0) {
           try {
-            await axios.put('http://localhost:5000/api/conservation/markAsSeen', {
+            await axiosInstance.put('/users-chats/markAsSeen', {
               messageIds
             });
             
@@ -165,39 +215,26 @@ const ReceiversList = () => {
     
     markMessagesAsSeen();
   }, [selectedReceiverId, messages, user.id]);
-
-  const handleDeleteMessage = (messageId) => {
-    // This triggers the modal display for confirmation
-    setMessageIdToDelete(messageId); // Set the message ID to delete
-    setIsModalOpen(true); // Open the modal
-  };
   
 
-  const handleConfirmDelete = async () => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/conservation/delete/message/${messageIdToDelete}`, {
-        method: 'DELETE',
-      });
+  useEffect(() => {
+    const handleMessageSeen = (updatedMessage) => {
+      setMessages((prevMessages) =>
+        prevMessages.map((msg) =>
+          msg._id === updatedMessage._id ? { ...msg, seen: true, seenAt: updatedMessage.seenAt } : msg
+        )
+      );
+    };
   
-      if (response.ok) {
-        console.log(`Message ID to delete: ${messageIdToDelete}`);
-        
-        // Update local state after successful deletion
-        setIsModalOpen(false);
-        setMessages(prevMessages => prevMessages.filter(msg => msg._id !== messageIdToDelete));
-      } else {
-        console.error('Failed to delete the message');
-      }
-    } catch (error) {
-      console.error('Error deleting message:', error);
-    }
-  };
+    socket.on('messageSeen', handleMessageSeen);
+  
+    return () => {
+      socket.off('messageSeen', handleMessageSeen);
+    };
+  }, []);
   
 
 
-  const handleCancelDelete = () => {
-    setIsModalOpen(false);
-  };
 
   if (loading) return <div className="flex justify-center mt-10"><CircularProgress /></div>;
 
@@ -262,69 +299,66 @@ const ReceiversList = () => {
 <div className="max-h-96 overflow-y-auto p-4 border border-gray-300 rounded mb-4">
   {messages.map((msg, index) => (
     <div
-    key={index}
-    className={`flex items-center mb-2 ${msg.senderId === user.id ? 'justify-end' : 'justify-start'}`}
+      key={index}
+      className={`flex items-center mb-2 ${msg.senderId === user.id ? 'justify-end' : 'justify-start'}`}
     >
-
-     
+      {/* Receiver's profile image */}
       {msg.senderId !== user.id && selectedReceiver && (
         selectedReceiver.profileImageUrl ? (
           <img
-          src={selectedReceiver.profileImageUrl}
-          alt="Receiver"
-          className="w-8 h-8 rounded-full mr-2 object-cover"
+            src={selectedReceiver.profileImageUrl}
+            alt="Receiver"
+            className="w-8 h-8 rounded-full mr-2 object-cover"
           />
         ) : (
           <MdPerson className="w-8 h-8 text-gray-400 mr-2" />
         )
       )}
 
+      {/* Message container */}
       <div
         className={`relative p-2 rounded-lg max-w-[60%] sm:max-w-[90%] break-words ${
           msg.senderId === user.id ? 'bg-yellow-300 text-black' : 'bg-gray-200 text-gray-800'
         }`}
-        
-        >
-
-   
-        {msg.message}
-          
-        
-        {/* Display seen info if message is seen */}
+      >
+        {/* Message text */}
+        <p>{msg.message}</p>
         {msg.seen && (
-          <p className="text-xs text-gray-700 mt-1 self-start flex">
-            Seen {msg.seenAt ? `at ${new Date(msg.seenAt).toLocaleTimeString()}` : ""}
-          </p>
-        )}
+  <p
+    className={`text-xs mt-1 ${
+      msg.senderId === user.id ? 'text-right' : 'text-left'
+    } flex items-center gap-1`}
+  >
+    <DoneAllIcon style={{ color: 'green', fontSize: '16px' }} />
+    <span className="text-gray-600">
+      {msg.seenAt ? new Date(msg.seenAt).toLocaleTimeString() : ""}
+    </span>
+  </p>
+)}
 
-        {msg.senderId === user.id && (
-                   <button
-                   onClick={() => handleDeleteMessage(msg._id)}
-                   className="text-black font-light flex hover:text-red-500 mt-3 justify-center items-center cursor-pointer"
-                 >
-                  <RxCross2/>
-                   Delete Message
-                 </button>
-                 )}
-        
+
+
+       
+
+        {/* Display "Seen" info */}
       </div>
 
+      {/* Sender's profile image */}
       {msg.senderId === user.id && (
         user.profileImageUrl ? (
           <img
-          src={user.profileImageUrl}
-          alt="Sender"
-          className="w-8 h-8 rounded-full ml-2 object-cover"
+            src={user.profileImageUrl}
+            alt="Sender"
+            className="w-8 h-8 rounded-full ml-2 object-cover"
           />
         ) : (
           <MdPerson className="w-8 h-8 text-gray-400 ml-2" />
         )
       )}
-     
-    
     </div>
   ))}
 
+  {/* Typing indicator */}
   {isTyping && (
     <div className="typing-indicator flex justify-start gap-3 ml-10 mt-4">
       <span className="dot"></span>
@@ -333,6 +367,7 @@ const ReceiversList = () => {
     </div>
   )}
 </div>
+
 
       <div className="flex items-center">
         <TextField
@@ -359,30 +394,11 @@ const ReceiversList = () => {
 
 
       </div>
-{/* Modal for confirmation (Tailwind CSS) */}
-{isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h3 className="text-xl font-semibold text-gray-800 mb-4">Are you sure you want to delete this message?</h3>
-            <div className="flex items-center justify-end gap-2">
-              <button
-                onClick={handleCancelDelete}
-                className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-300 rounded-lg hover:bg-gray-400"
-              >
-                No
-              </button>
-              <button
-                onClick={handleConfirmDelete}
-                className="px-4 py-2 text-sm font-semibold text-white bg-red-500 rounded-lg hover:bg-red-600"
-              >
-                Yes, Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+
     </div>
   );
 };
 
 export default ReceiversList;
+
+
