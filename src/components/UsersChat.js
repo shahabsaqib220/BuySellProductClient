@@ -15,7 +15,8 @@ import { BiCheckDouble } from "react-icons/bi";
 import useAxiosInstance from '../ContextAPI/AxiosInstance';// Adjust the path based on your folder structure
 
 
-const socket = io('http://localhost:5000');
+const socket = io('https://ols-server-eight.vercel.app');
+
 
 const ReceiversList = () => {
   
