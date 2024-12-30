@@ -5,18 +5,18 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Divider from "@mui/material/Divider";
 import { Link, useParams } from "react-router-dom";
+import TuneIcon from '@mui/icons-material/Tune';
 import { RxAvatar } from "react-icons/rx";
-import { Button, IconButton, Grid, Tooltip, Snackbar, Alert } from "@mui/material"; // Import Snackbar and Alert
+import { Button,Skeleton ,IconButton, Grid, Tooltip, Snackbar, Alert } from "@mui/material"; // Import Snackbar and Alert
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import useAxiosInstance from "../ContextAPI/AxiosInstance";
 import { useDispatch } from 'react-redux';
 import { setUserAndAd } from '../Redux/usersChatSlice';
-
 import { FaLocationDot } from "react-icons/fa6";
 import { MdFilterNone } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from '../ContextAPI/AuthContext';
-
+import { FaCrown } from "react-icons/fa";
 
 const getFirstTwoWords = (location) => {
   if (!location) return "";
@@ -27,10 +27,10 @@ const getFirstTwoWords = (location) => {
 const Product = () => {
   const { user, isLoggedIn } = useAuth();
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
   const axiosInstance = useAxiosInstance();
   const sliderRef = useRef(null);
+  const [loading, setLoading] = useState(true); // Add this line
   const [ads, setAds] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState(""); // Snackbar message
@@ -39,16 +39,27 @@ const Product = () => {
 
   useEffect(() => {
     const fetchAds = async () => {
+      setLoading(true); // Set loading to true before fetching
       try {
         const response = await axiosInstance.get("/user-ads/all/ads");
         setAds(response.data);
       } catch (error) {
         console.error("Error fetching ads:", error);
+      } finally {
+        setLoading(false); // Set loading to false after fetching
       }
     };
-
+  
     fetchAds();
   }, []);
+
+  const sortAdsByPriority = (ads) => {
+    return ads.sort((a, b) => {
+      const aPriority = a.premium ? 3 : a.standard ? 2 : a.basic ? 1 : 0;
+      const bPriority = b.premium ? 3 : b.standard ? 2 : b.basic ? 1 : 0;
+      return bPriority - aPriority; // Sort in descending order
+    });
+  };
 
 
   const handleViewAll = (category) => {
@@ -104,7 +115,7 @@ const Product = () => {
     slidesToScroll: 4,
     autoplay: false,
     arrows: false,
-    dots:true, // We'll add custom arrows
+    dots: true, // We'll add custom arrows
     responsive: [
       {
         breakpoint: 1024,
@@ -127,16 +138,10 @@ const Product = () => {
           speed: 800,
           slidesToShow: 1,
           slidesToScroll: 1,
-
         },
       },
     ],
   };
-
-
-
- 
-
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
@@ -148,19 +153,11 @@ const Product = () => {
 
   const handleChatClick = (ad) => {
     if (isLoggedIn && user) {
-   
-      
       // Dispatch Redux action
       dispatch(setUserAndAd({ user, ad }));
-  
-     
-  
-      // navigate(`/chat/${user.id}/${ad.userId._id}`);
-      navigate(`/chat`)
-  
+      navigate(`/chat`);
       const senderId = user?._id; // assuming `user` contains the logged-in user's ID
       const receiverId = ad?.userId?._id; // assuming `ad.userId` contains an object with an `_id` field
-  
       if (!receiverId) {
         console.error("Receiver ID not found in ad.userId");
       }
@@ -170,173 +167,210 @@ const Product = () => {
       setSnackbarOpen(true);
     }
   };
-  
-  
 
   return (
     <div className="container bg-gray-50 mx-auto px-4 py-8">
       <hr className="border-t-2 border-gray-200 mb-8" />
-     
 
       <Button
-  variant="contained"
-  onClick={handleApplyCustomFilter}
-  sx={{
-    backgroundColor: '#FFC107', // Yellow color
-    color: '#000', // Black font color
-    borderRadius: '8px', // Rounded corners
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // Subtle shadow
-    '&:hover': {
-      backgroundColor: '#FFA000', // Darker yellow on hover
-      boxShadow: '0 6px 12px rgba(0, 0, 0, 0.3)', // Deeper shadow on hover
-    },
-    fontWeight: 'bold', // Bold text
-    padding: '10px 20px', // Extra padding for a larger button
-    display: 'flex', // Use flex to align icon and text
-    alignItems: 'center', // Center items vertically
-  }}
->
-  <MdFilterNone style={{ marginRight: '8px' }} /> {/* Add margin for spacing */}
-  Apply Custom Filter
-</Button>
+        variant="contained"
+        onClick={handleApplyCustomFilter}
+        sx={{
+          backgroundColor: '#FFC107', // Yellow color
+          color: '#000', // Black font color
+          borderRadius: '8px', // Rounded corners
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // Subtle shadow
+          '&:hover': {
+            backgroundColor: '#FFA000', // Darker yellow on hover
+            boxShadow: '0 6px 12px rgba(0, 0, 0, 0.3)', // Deeper shadow on hover
+          },
+          fontWeight: 'bold', // Bold text
+          padding: '10px 20px', // Extra padding for a larger button
+          display: 'flex', // Use flex to align icon and text
+          alignItems: 'center', // Center items vertically
+        }}
+      >
+       
 
 
 
-      {Object.keys(groupedAds).map((category) => (
-        <div key={category}>
-          <h3 className="mb-8 mt-10 text-lg font-bold leading-tight tracking-tight text-gray-900 md:text-2xl lg:text-3xl">
-            <mark className="px-2 text-white bg-yellow-400 rounded">
-              {category}
-            </mark>
-          </h3>
+        <TuneIcon style={{ marginRight: '8px' }} /> {/* Add margin for spacing */}
+        Apply Custom Filter
+      </Button>
 
-          <div className="flex justify-end items-center mb-4">
-          <Button
-              variant="contained"
-              color="primary"
-              onClick={() => handleViewAll(category)}
-              style={{ backgroundColor: "#FFC107" }}
-            >
-              View All
-            </Button>
-          </div>
-          <div className="relative">
-      
-
-      {/* Slider */}
-      <div className="relative">
-      {/* Custom Previous Button */}
+    
+      {loading ? (
+ <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+ {Array.from(new Array(8)).map((_, index) => (
+   <div
+     key={index}
+     className="p-4 bg-white shadow-md rounded-lg transition-transform transform hover:scale-105 duration-200"
+   >
+     {/* Skeleton for Image */}
+     <Skeleton
+       variant="rectangular"
+       width="100%"
+       height={150}
+       className="rounded-t-lg mb-4"
+     />
      
+     {/* Skeleton for Title */}
+     <Skeleton variant="text" width="70%" height={20} className="mb-2" />
 
-      {/* Slider */}
-      <Slider ref={sliderRef} {...settings}>
-        {groupedAds[category] && groupedAds[category].length > 0 ? (
-          groupedAds[category].map((ad) => (
-            <div key={ad._id} className="px-4">
-              <div className="p-6 bg-white shadow-md rounded-lg transition-transform transform hover:scale-105 duration-200">
-                <Link to={`/product/${ad._id}`}>
-                  <img
-                    src={ad.images[0]}
-                    alt={`${ad.model} image`}
-                    className="w-full h-48 object-cover rounded-t-lg mb-4"
-                  />
-                  <h5 className="text-xl font-semibold tracking-tight text-gray-900 mb-2">
-                    <span className="text-yellow-500">{ad.brand} </span>
-                    {ad.model}
-                  </h5>
-                </Link>
+     {/* Skeleton for Subtitle */}
+     <Skeleton variant="text" width="50%" height={18} className="mb-2" />
 
-                <Divider className="bg-gray-400 h-0.5 mb-6" />
+     {/* Skeleton for Additional Info */}
+     <Skeleton variant="text" width="40%" height={16} className="mb-2" />
+   </div>
+ ))}
+</div>
 
-                <Grid container alignItems="center">
-                  <Grid item xs>
-                  <h3 className=" text-lg font-bold leading-tight tracking-tight text-gray-900 md:text-2xl lg:text-2xl">
-            <mark className="px-2 text-black bg-yellow-400 rounded">
-              Rs {ad.price}/-
-            </mark>
-          </h3>
-                  </Grid>
+) : (
+  Object.keys(groupedAds).map((category) => (
+    <div key={category}>
+      <h3 className=" mt-20 text-lg font-bold leading-tight tracking-tight text-gray-900 md:text-2xl lg:text-3xl">
+        <mark className="px-6 text-gray-700 bg-yellow-400 rounded-lg">
+          {category}
+        </mark>
+      </h3>
 
-                  <Grid item>
-                    <Grid container alignItems="center" justifyContent="flex-end">
-                      <Grid item>
-                        <Tooltip title="Add to Cart">
-                          <IconButton
-                            color="primary"
-                            style={{ color: "#FFC107", fontSize: "30px" }}
-                            aria-label="add to cart"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleAddToCart(ad);
-                            }}
-                          >
-                            <AddShoppingCartIcon style={{ fontSize: "30px" }} />
-                          </IconButton>
-                        </Tooltip>
-                      </Grid>
-                      <Grid item>
-                        {ad.userId?.profileImageUrl ? (
-                          <img
-                            src={ad.userId.profileImageUrl}
-                            alt="User profile"
-                            className="w-10 h-10 rounded-full object-cover ml-2"
-                          />
-                        ) : (
-                          <RxAvatar className="w-8 h-8 text-yellow-400 ml-2" />
-                        )}
+      <div className="flex font-semibold justify-end items-center mb-4">
+        <Button
+          variant="contained"
+          color="#000000"
+          onClick={() => handleViewAll(category)}
+          style={{ backgroundColor: "#FFC107" }}
+        >
+          View All
+        </Button>
+      </div>
+
+      <div className="relative">
+        <Slider ref={sliderRef} {...settings}>
+          {groupedAds[category] && groupedAds[category].length > 0 ? (
+            sortAdsByPriority(groupedAds[category]).map((ad) => (
+              <div key={ad._id} className="px-4">
+                <div className="p-6 bg-white shadow-md rounded-lg transition-transform transform hover:scale-105 duration-200 relative">
+                  {/* Display Premium, Standard, or Basic Tag */}
+                  <div className="left-0 flex flex-col">
+                    {ad.premium && (
+                      <span className="bg-yellow-400 text-black font-semibold px-2 py-1 rounded flex items-center">
+                        <FaCrown className="mr-1" /> Premium Featured Ad
+                      </span>
+                    )}
+                    {ad.standard && (
+                      <span className="bg-blue-500 text-white font-semibold px-2 py-1 rounded flex items-center">
+                        <FaCrown className="mr-1" /> Standard Featured Ad
+                      </span>
+                    )}
+                    {ad.basic && (
+                      <span className="bg-green-500 text-white font-semibold px-2 py-1 rounded flex items-center">
+                        <FaCrown className="mr-1" /> Basic Featured Ad
+                      </span>
+                    )}
+                  </div>
+
+                  <Link to={`/product/${ad._id}`}>
+                    <img
+                      src={ad.images[0]}
+                      alt={`${ad.model} image`}
+                      className="w-full h-48 object-cover rounded-t-lg mb-4 mt-8" // Added margin-top to create space for the tag
+                    />
+                    <h5 className="text-xl font-semibold tracking-tight text-gray-900 mb-2">
+                      <span className="text-yellow-500">{ad.brand} </span>
+                      {ad.model}
+                    </h5>
+                  </Link>
+
+                  
+                  <Divider className="bg-gray-400 h-0.5 mb-6" />
+
+                  <Grid container alignItems="center">
+                    <Grid item xs>
+                      <h3 className="text-lg font-bold leading-tight tracking-tight text-gray-900 md:text-2xl lg:text-2xl">
+                        <mark className="px-2 text-black bg-yellow-400 rounded">
+                          Rs {ad.price}/-
+                        </mark>
+                      </h3>
+                    </Grid>
+
+                    <Grid item>
+                      <Grid container alignItems="center" justifyContent="flex-end">
+                        <Grid item>
+                          <Tooltip title="Add to Cart">
+                            <IconButton
+                              color="primary"
+                              style={{ color: "#FFC107", fontSize: "30px" }}
+                              aria-label="add to cart"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAddToCart(ad);
+                              }}
+                            >
+                              <AddShoppingCartIcon style={{ fontSize: "30px" }} />
+                            </IconButton>
+                          </Tooltip>
+                        </Grid>
+                        <Grid item>
+                          {ad.userId?.profileImageUrl ? (
+                            <img
+                              src={ad.userId.profileImageUrl}
+                              alt="User  profile"
+                              className="w-10 h-10 rounded-full object-cover ml-2"
+                            />
+                          ) : (
+                            <RxAvatar className="w-8 h-8 text-yellow-400 ml-2" />
+                          )}
+                        </Grid>
                       </Grid>
                     </Grid>
                   </Grid>
-                </Grid>
 
-                <div className="flex justify-between items-center mb-2">
-                  {ad.location && (
-                    <div className="flex items-center text-sm text-gray-500">
-                      <FaLocationDot className="text-2xl text-yellow-500 mr-1" />
-                      <span className="text-black font-semibold">{getFirstTwoWords(ad.location.readable)}</span>
-                    </div>
-                  )}
+                  <div className="flex justify-between items-center mb-2">
+                    {ad.location && (
+                      <div className="flex items-center text-sm text-gray-500">
+                        <FaLocationDot className="text-2xl text-yellow-500 mr-1" />
+                        <span className="text-black font-semibold">{getFirstTwoWords(ad.location.readable)}</span>
+                      </div>
+                    )}
 
-                  <h5 className="text-sm font-semibold text-gray-900">
-                    <span>{ad.condition}</span>
-                  </h5>
-                </div>
+                    <h5 className="text-sm font-semibold text-gray-900">
+                      <span>{ad.condition}</span>
+                    </h5>
+                  </div>
 
-                <div className="flex justify-between items-center mt-4">
-                <Button
-                onClick={() => handleChatClick(ad)}
-  variant="contained"
-  startIcon={<FaComments />}
-  style={{
-    color: "#000000", // Black text
-    backgroundColor: "#FFC107", // Yellow background
-    borderColor: "#FFC107", // Optional border to match background
-  }}
-  size="small"
->
-  Chat with Seller
-</Button>
+                  <div className="flex justify-between items-center mt-4">
+                    <Button
+                      onClick={() => handleChatClick(ad)}
+                      variant="contained"
+                      startIcon={<FaComments />}
+                      style={{
+                        color: "#000000", // Black text
+                        backgroundColor: "#FFC107", // Yellow background
+                        borderColor: "#FFC107", // Optional border to match background
+                      }}
+                      size="small"
+                    >
+                      Chat with Seller
+                    </Button>
 
-                  <div className="flex">In Stock</div>
+                    <div className="flex">In Stock</div>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
-        ) : (
-          <div className="text-center py-4">No ads available in this category.</div>
-        )}
-      </Slider>
-
-   
+            ))
+          ) : (
+            <div className="text-center py-4">No ads available in this category.</div>
+          )}
+        </Slider>
+      </div>
     </div>
+  ))
+)}
 
-      
-   
-    </div>
-        </div>
-      ))}
 
-      {/* Snackbar for notifications */}
+     
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
