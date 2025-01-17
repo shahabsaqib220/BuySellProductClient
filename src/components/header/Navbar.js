@@ -21,12 +21,12 @@ const Navbar = () => {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();// Getting auth state and token from context
   const [profileImage, setProfileImage] = useState(null); // State to store profile image URL
+  const ad = useSelector((state) => state.user.ad);
   const navigate = useNavigate(); // Hook for navigation
   const { isLoggedIn, logout } = useAuth();
+  const axiosInstance = useAxiosInstance();
   const [cartItemCount, setCartItemCount] = useState(0);
   const user = useSelector((state) => state.user.user);
-  const axiosInstance = useAxiosInstance();
-  const ad = useSelector((state) => state.user.ad);
 
   // Utility function to conditionally apply class names
   const classNames = (...classes) => {
