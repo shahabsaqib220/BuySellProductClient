@@ -33,16 +33,16 @@ const Product = ({ category }) => {
   const { user, isLoggedIn } = useAuth();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const axiosInstance = useAxiosInstance();
-  const { t, i18n } = useTranslation();
   const sliderRef = useRef(null);
   const [loading, setLoading] = useState(true); // Add this line
+  const [isExpanded , setIsExpanded] = useState(false);
   const [ads, setAds] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const axiosInstance = useAxiosInstance();
+  const { t, i18n } = useTranslation();
   const [snackbarMessage, setSnackbarMessage] = useState(""); // Snackbar message
   const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // Snackbar severity (success, error, etc.)
   const { adId } = useParams();
-  const [isExpanded , setIsExpanded] = useState(false);
 
 
 
