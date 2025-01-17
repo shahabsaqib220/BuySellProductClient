@@ -21,10 +21,10 @@ const socket = io('https://ols-server-eight.vercel.app');
 const ReceiversList = () => {
   
   const { user } = useAuth();
-  const [receivers, setReceivers] = useState([]);
   const axiosInstance = useAxiosInstance(); 
   const [messages, setMessages] = useState([]);
   const [messageContent, setMessageContent] = useState('');
+  const [receivers, setReceivers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedReceiverId, setSelectedReceiverId] = useState(null);
   const [isTyping, setIsTyping] = useState(false);

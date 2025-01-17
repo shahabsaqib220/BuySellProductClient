@@ -19,10 +19,10 @@ import { TbMessageFilled } from "react-icons/tb";// Assuming you have an AuthCon
 
 const Navbar = () => {
   const { t, i18n } = useTranslation();
-  const { isLoggedIn, logout } = useAuth();
   const dispatch = useDispatch();// Getting auth state and token from context
   const [profileImage, setProfileImage] = useState(null); // State to store profile image URL
   const navigate = useNavigate(); // Hook for navigation
+  const { isLoggedIn, logout } = useAuth();
   const [cartItemCount, setCartItemCount] = useState(0);
   const user = useSelector((state) => state.user.user);
   const axiosInstance = useAxiosInstance();
