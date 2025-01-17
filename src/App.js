@@ -1,5 +1,8 @@
 import './App.css';
 import Navbar from './components/header/Navbar';
+import { I18nextProvider } from 'react-i18next';
+import i18n from './i18n';
+import { useTranslation } from 'react-i18next';
 import Catagories from './components/catagories/catagories';
 import Footer from './components/footer/Footer';
 import Sign_In from './components/signin_signup/Sign_In';
@@ -35,7 +38,9 @@ import ReceiversProfileImages from "./components/ReceiversProfileImages"
 
 
 function App() {
+  const { t, i18n } = useTranslation();
   return (
+    <I18nextProvider i18n={i18n}>
     <Provider store={store}> {/* Wrap everything inside Provider */}
       <BrowserRouter>
         <Navbar />
@@ -78,6 +83,7 @@ function App() {
        
       </BrowserRouter>
     </Provider>
+    </I18nextProvider>
   );
 }
 

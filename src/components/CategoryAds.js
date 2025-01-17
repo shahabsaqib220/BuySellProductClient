@@ -17,6 +17,11 @@ const CategoryAds = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("info");
 
+
+
+  const MAX_CHARS_PER_LINE = 50; // Adjust based on your UI
+const MAX_LINES = 3;
+
   const getFirstTwoWords = (location) => {
     if (!location) return "";
     const words = location.split(" ");
@@ -90,6 +95,14 @@ const CategoryAds = () => {
     ));
   };
 
+  const truncateDescription = (description) => {
+    const maxChars = MAX_CHARS_PER_LINE * MAX_LINES;
+    return description.length > maxChars
+      ? description.substring(0, maxChars) + "..."
+      : description;
+  };
+  
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h3 className="mb-8 text-2xl font-bold">
@@ -136,6 +149,9 @@ const CategoryAds = () => {
                   </Link>
 
                   <Divider className="bg-gray-400 h-0.5 mb-4" />
+                  <p className="text-md text-gray-800 ">
+                  {truncateDescription(ad.description)}
+                    </p>
 
                   <div className="flex justify-between items-center mb-4">
                     <span className="text-xl mt-2 font-bold text-gray-900">
@@ -143,11 +159,14 @@ const CategoryAds = () => {
                         <mark className="px-2 text-black bg-yellow-400 rounded">
                           Rs {ad.price}/-
                         </mark>
+                 
                       </h3>
                     </span>
                     <span className="text-sm text-black font-semibold">
                       {ad.condition}
                     </span>
+                   
+                    
                   </div>
 
                   <div className="flex justify-between items-center">

@@ -1,45 +1,93 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { RiLogoutBoxLine } from "react-icons/ri";
-import { useAuth } from '../ContextAPI/AuthContext';
-import { NavLink } from 'react-router-dom';
+import { useAuth } from "../ContextAPI/AuthContext";
+import { NavLink } from "react-router-dom";
 
 const UserNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { logout } = useAuth(); 
+  const { logout } = useAuth();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
   return (
-    <nav className="bg-gray-200 border-gray-200 py-2.5">
-      <div className="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
-        {/* Logo Section */}
-        <a href="#" className="flex items-center">
-          <span className="self-center text-xl font-semibold whitespace-nowrap">
-            Sell Any Product
-          </span>
-        </a>
+    <nav className="bg-white shadow-lg">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center py-4">
+          {/* Logo Section */}
+          <div className="flex items-center">
+            <a href="#" className="text-xl font-bold text-gray-800">
+              Sell Any Product
+            </a>
+          </div>
 
-        {/* Desktop Menu & Hamburger */}
-        <div className="flex items-center lg:order-2">
-          {/* Logout Button */}
-          <button
-            onClick={logout}
-            className="hidden text-black bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-400 font-semibold rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0 focus:outline-none lg:inline-block"
-          >
-            Log Out
-          </button>
+          {/* Desktop Links */}
+          <div className="hidden lg:flex space-x-8">
+          <NavLink
+  to="/profile"
+  className={({ isActive }) =>
+    isActive
+      ? "text-yellow-500 bg-gray-700 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:bg-gray-600"
+      : "text-yellow-100 bg-yellow-500 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:text-black hover:bg-yellow-500"
+  }
+>
+  Profile
+</NavLink>
 
-          {/* Hamburger Menu Button */}
+            <NavLink
+              to="/postad"
+              className={({ isActive }) =>
+                isActive
+                  ? "text-yellow-500 bg-gray-700 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:bg-gray-600"
+                  : "text-yellow-100 bg-yellow-500 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:text-black hover:bg-yellow-500"
+              }
+            >
+              Post Ad
+            </NavLink>
+            <NavLink
+              to="/viewads"
+              className={({ isActive }) =>
+                isActive
+                  ? "text-yellow-500 bg-gray-700 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:bg-gray-600"
+                  : "text-yellow-100 bg-yellow-500 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:text-black hover:bg-yellow-500"
+              }
+            >
+              Posted Ads
+            </NavLink>
+            <NavLink
+              to="/soldoutproducts"
+              className={({ isActive }) =>
+                isActive
+                  ? "text-yellow-500 bg-gray-700 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:bg-gray-600"
+                  : "text-yellow-100 bg-yellow-500 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:text-black hover:bg-yellow-500"
+              }
+            >
+              Sold Products
+            </NavLink>
+            <NavLink
+              to="/security"
+              className={({ isActive }) =>
+                isActive
+                  ? "text-yellow-500 bg-gray-700 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:bg-gray-600"
+                  : "text-yellow-100 bg-yellow-500 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:text-black hover:bg-yellow-500"
+              }
+            >
+              Security
+            </NavLink>
+            <button
+              onClick={logout}
+              className="text-white space-x-4 bg-yellow-500 hover:bg-red-500 font-medium rounded-lg px-4 py-2"
+            >
+              Log Out
+            </button>
+          </div>
+
+          {/* Mobile Menu Button */}
           <button
             onClick={toggleMenu}
-            type="button"
-            className="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 "
-            aria-controls="mobile-menu-2"
-            aria-expanded={isMenuOpen}
+            className="lg:hidden text-gray-700 hover:text-gray-900 focus:outline-none"
           >
-            <span className="sr-only">Open main menu</span>
             {isMenuOpen ? (
               <svg
                 className="w-6 h-6"
@@ -69,89 +117,49 @@ const UserNavbar = () => {
             )}
           </button>
         </div>
-
-        {/* Mobile Menu */}
-        <div
-          className={`${
-            isMenuOpen ? "block" : "hidden"
-          } items-center justify-between w-full lg:flex lg:w-auto lg:order-1`}
-          id="mobile-menu-2"
-        >
-          <ul className="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
-            <li>
-              <NavLink
-                to="/profile"
-                className={({ isActive }) =>
-                  isActive
-                    ? "block py-2 pl-3 pr-4 text-yellow-500 font-bold lg:text-yellow-500 lg:p-0"
-                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-yellow-500 lg:p-0 "
-                }
-                aria-current="page"
-              >
-                Profile
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/postad"
-                className={({ isActive }) =>
-                  isActive
-                    ? "block py-2 pl-3 pr-4 text-yellow-500 font-bold lg:text-yellow-500 lg:p-0"
-                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-yellow-500 lg:p-0 "
-                }
-              >
-                Post Ad
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/viewads"
-                className={({ isActive }) =>
-                  isActive
-                    ? "block py-2 pl-3 pr-4 text-yellow-500 font-bold lg:text-yellow-500 lg:p-0"
-                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-yellow-500 lg:p-0 "
-                }
-              >
-                Posted Ads
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/soldoutproducts"
-                className={({ isActive }) =>
-                  isActive
-                    ? "block py-2 pl-3 pr-4 text-yellow-500 font-bold lg:text-yellow-500 lg:p-0"
-                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-yellow-500 lg:p-0 "
-                }
-              >
-                Sold Products
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/security"
-                className={({ isActive }) =>
-                  isActive
-                    ? "block py-2 pl-3 pr-4 text-yellow-500 font-bold lg:text-yellow-500 lg:p-0"
-                    : "block py-2 pl-3 pr-4 text-gray-700 lg:hover:text-yellow-500 lg:p-0"
-                }
-              >
-                Security
-              </NavLink>
-            </li>
-          </ul>
-        </div>
       </div>
 
-      {/* Logout Button for Small Devices */}
+      {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="block lg:hidden">
-          <button
-            onClick={logout}
-            className="w-full text-white bg-yellow-500 hover:bg-yellow-600 focus:ring-4 font-medium rounded-lg text-sm px-4 py-2.5 mt-4  focus:outline-none "
-          >
-            Log Out
-          </button>
+        <div className="lg:hidden">
+          <ul className="flex flex-col items-center space-y-4 py-4">
+            <NavLink
+              to="/profile"
+              className="text-yellow-00 bg-yellow-500 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:text-black hover:bg-yellow-500"
+            >
+              Profile
+            </NavLink>
+            <NavLink
+              to="/postad"
+              className="text-yellow-00 bg-yellow-500 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:text-black hover:bg-yellow-500"
+            >
+              Post Ad
+            </NavLink>
+            <NavLink
+              to="/viewads"
+              className="text-yellow-00 bg-yellow-500 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:text-black hover:bg-yellow-500"
+            >
+              Posted Ads
+            </NavLink>
+            <NavLink
+              to="/soldoutproducts"
+              className="text-yellow-00 bg-yellow-500 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:text-black hover:bg-yellow-500"
+            >
+              Sold Products
+            </NavLink>
+            <NavLink
+              to="/security"
+              className="text-yellow-00 bg-yellow-500 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:text-black hover:bg-yellow-500"
+            >
+              Security
+            </NavLink>
+            <button
+              onClick={logout}
+              className="text-white bg-yellow-500 hover:bg-yellow-600 font-medium rounded-lg px-4 py-2"
+            >
+              Log Out
+            </button>
+          </ul>
         </div>
       )}
     </nav>

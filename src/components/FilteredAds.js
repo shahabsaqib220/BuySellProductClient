@@ -50,6 +50,10 @@ const AdFilterComponent = () => {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [loading, setLoading] = useState(true);
 
+
+  const MAX_CHARS_PER_LINE = 50; // Adjust based on your UI
+const MAX_LINES = 3;
+
   useEffect(() => {
     setLoading(true);
     axiosInstance
@@ -132,6 +136,13 @@ const AdFilterComponent = () => {
     if (!a.standard && b.standard) return 1;
     return 0; // For basic and others, maintain original order
   });
+
+  const truncateDescription = (description) => {
+    const maxChars = MAX_CHARS_PER_LINE * MAX_LINES;
+    return description.length > maxChars
+      ? description.substring(0, maxChars) + "..."
+      : description;
+  };
 
   return (
     <FilterBox>
@@ -299,9 +310,14 @@ const AdFilterComponent = () => {
     <h5 className="text-xl font-semibold tracking-tight text-gray-900 mb-2">
       <span className="text-yellow-500">{ad.brand}</span> {ad.model}
     </h5>
+    
   </Link>
 
   <Divider className="bg-gray-400 h-0.5 mb-6" />
+  <p className="text-gray-500">
+    {truncateDescription(ad.description)}
+  </p>
+
 
   <Grid container alignItems="center">
     <Grid item xs>

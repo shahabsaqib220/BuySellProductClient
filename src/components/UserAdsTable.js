@@ -12,6 +12,8 @@ const UserAdsTable = () => {
   const [ads, setAds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+const [adToEdit, setAdToEdit] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const adsPerPage = 10; // Constant for ads per page
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
@@ -61,6 +63,14 @@ const UserAdsTable = () => {
   
     fetchUserAds();
   }, [axiosInstance]);
+
+  const sortedAds = [...ads].sort((a, b) => {
+    if (a.premium && !b.premium) return -1;
+    if (!a.premium && b.premium) return 1;
+    if (a.standard && !b.standard) return -1;
+    if (!a.standard && b.standard) return 1;
+    return 0; // For basic or no tags
+  });
   
   
   
@@ -71,29 +81,26 @@ const UserAdsTable = () => {
   // Handle actions like Edit, Sell Fast, Mark Sold, Delete
 
   const handleAction = (action, adId) => {
-  
     switch (action) {
       case 'deletead':
         setAdToDelete(adId);
         setShowDeleteModal(true);
         break;
-
-        case 'markSold':
-          setAdToMarkSold(adId);
-          setShowSoldOutModal(true); // Open modal
-          break;
-        
-        
-
-        case 'edit':
-        navigate(`/edit-ad/${adId}`);  // Navigate to Edit Ad component with adId as a parameter
+  
+      case 'markSold':
+        setAdToMarkSold(adId);
+        setShowSoldOutModal(true);
         break;
-
-        case 'sellFast':  // New action
-        navigate(`/sell-fast/${adId}`);  // Navigate to Sell Fast component with adId as a parameter
+  
+      case 'edit':
+        setAdToEdit(adId);
+        setShowEditModal(true);
         break;
-
-
+  
+      case 'sellFast':
+        navigate(`/sell-fast/${adId}`);
+        break;
+  
       default:
         break;
     }
@@ -218,9 +225,10 @@ const UserAdsTable = () => {
       {currentAds.length > 0 ? (
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
-          <thead className="text-xs text-black bg-yellow-400 uppercase bg-gray-50  ">
+          <thead className="text-xs text-black bg-yellow-400 uppercase   ">
             <tr>
               <th className="px-6 py-3">S.No</th>
+              <th className="px-6 py-3">Tag</th>
               <th className="px-6 py-3">Category</th>
               <th className="px-6 py-3">Brand</th>
               <th className="px-6 py-3">Model</th>
@@ -232,69 +240,81 @@ const UserAdsTable = () => {
             </tr>
           </thead>
           <tbody>
-
-            {currentAds.map((ad, index) => (
-              <tr key={ad._id} className="px-6 py-4 font-medium font-semibold text-gray-900 whitespace-nowrap ">
-                <td className="border px-4 py-2">{(currentPage - 1) * adsPerPage + index + 1}</td>
-                <td className="border px-4 py-2">{ad.category}</td>
-                <td className="border px-4 py-2">{ad.brand}</td>
-                <td className="border px-4 py-2">{ad.model}</td>
-                <td className="border px-4 py-2">{ad.price}</td>
-                <td className="border px-4 py-2">
-                  {expandedDescriptions[ad._id] || ad.description.split(' ').length <= 5 ? (
-                    <div>
-                      {chunkDescription(ad.description, 9).map((line, lineIndex) => (
-                        <div key={lineIndex}>{line}</div>
-                      ))}
-                    </div>
-                  ) : (
-                    `${ad.description.split(' ').slice(0, 5).join(' ')}...`
-                  )}
-                  <span className="text-blue-500 hover:underline cursor-pointer" onClick={() => toggleDescription(ad._id)}>
-                    {expandedDescriptions[ad._id] ? ' See Less' : ' See Description'}
-                  </span>
-                </td>
-                <td className="border px-4 py-2">{ad.MobilePhone}</td>
-                <td className="border px-4 py-2">{ad.condition}</td>
-                <td className="relative px-6 py-4">
-                  <a className="font-medium text-blue-600  hover:underline" onClick={() => toggleDropdown(ad._id)}>
-                    Actions
-                  </a>
-                  {activeDropdown === ad._id && (
-                    <div className="absolute z-10 mt-2 w-48 bg-white border rounded shadow-lg ">
-                      <ul className="py-1 text-sm text-gray-700 ">
-                        <li className="block px-4 py-2 hover:bg-gray-100  cursor-pointer" onClick={() => handleAction('sellFast', ad._id)}>
-                          Sell Fast
-                        </li>
-                        <li
-  className="block px-4 py-2 hover:bg-gray-100 cursor-pointer"
-  onClick={() => {
-    console.log('Mark as Sold clicked for ad:', ad._id);
-    handleAction('markSold', ad._id);
-  }}
->
-  Mark as Sold
-</li>
-
-                        <li className="block px-4 py-2 hover:bg-gray-100  cursor-pointer" onClick={() => handleAction('edit', ad._id)}>
-                          Edit Ad
-                        </li>
-                        <li className="block px-4 py-2 hover:bg-gray-100  cursor-pointer" onClick={() => handleAction('deletead', ad._id)}>
-                          Delete
-                        </li>
-           
-                      </ul>
-                    </div>
-                  )}
-                </td>
-              </tr>
+  {sortedAds.slice((currentPage - 1) * adsPerPage, currentPage * adsPerPage).map((ad, index) => (
+    <tr key={ad._id} className="px-6 py-4 font-semibold text-gray-900 whitespace-nowrap">
+      <td className="border px-4 py-2">{(currentPage - 1) * adsPerPage + index + 1}</td>
+      <td className="border px-4 py-2">
+        {ad.premium ? (
+          <span className="inline-block bg-yellow-400 text-black px-3 py-1 rounded-full text-sm font-semibold">
+            Premium Tag
+          </span>
+        ) : ad.standard ? (
+          <span className="inline-block bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+            Standard Tag
+          </span>
+        ) : ad.basic ? (
+          <span className="inline-block bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+            Basic Tag
+          </span>
+        ) : (
+          <span className="inline-block bg-gray-300 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold">
+            No Tag
+          </span>
+        )}
+      </td>
+      <td className="border px-4 py-2">{ad.category}</td>
+      <td className="border px-4 py-2">{ad.brand}</td>
+      <td className="border px-4 py-2">{ad.model}</td>
+      <td className="border px-4 py-2">{ad.price}</td>
+      <td className="border px-4 py-2">
+        {expandedDescriptions[ad._id] || ad.description.split(' ').length <= 5 ? (
+          <div>
+            {chunkDescription(ad.description, 9).map((line, lineIndex) => (
+              <div key={lineIndex}>{line}</div>
             ))}
+          </div>
+        ) : (
+          `${ad.description.split(' ').slice(0, 5).join(' ')}...`
+        )}
+        <span className="text-blue-500 hover:underline cursor-pointer" onClick={() => toggleDescription(ad._id)}>
+          {expandedDescriptions[ad._id] ? ' See Less' : ' See Description'}
+        </span>
+      </td>
+      <td className="border px-4 py-2">{ad.MobilePhone}</td>
+      <td className="border px-4 py-2">{ad.condition}</td>
+      <td className="relative px-6 py-4">
+        <a className="font-medium text-blue-600 hover:underline" onClick={() => toggleDropdown(ad._id)}>
+          Actions
+        </a>
+        {activeDropdown === ad._id && (
+          <div className=" z-10 mt-2 w-48 bg-white border rounded shadow-lg">
+            <ul className="py-1 text-sm text-gray-700">
+              <li className="block px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={() => handleAction('sellFast', ad._id)}>
+                Sell Fast
+              </li>
+              <li
+                className="block px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                onClick={() => {
+                  console.log('Mark as Sold clicked for ad:', ad._id);
+                  handleAction('markSold', ad._id);
+                }}
+              >
+                Mark as Sold
+              </li>
+              <li className="block px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={() => handleAction('edit', ad._id)}>
+                Edit Ad
+              </li>
+              <li className="block px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={() => handleAction('deletead', ad._id)}>
+                Delete
+              </li>
+            </ul>
+          </div>
+        )}
+      </td>
+    </tr>
+  ))}
+</tbody>
 
-     
-
-
-
-          </tbody>
         </table>
         </div>
       ) : (
@@ -332,7 +352,7 @@ const UserAdsTable = () => {
         <div className="fixed inset-0 z-10 overflow-y-auto">
           <div className="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
             <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-              <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+              <div className="inset-0 bg-gray-500 opacity-75"></div>
             </div>
             <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
               &#8203;
@@ -388,12 +408,75 @@ const UserAdsTable = () => {
         </div>
       )}
 
+{showEditModal && (
+  <div className="fixed inset-0 z-10 overflow-y-auto">
+    <div className="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+      <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+        <div className="inset-0 bg-gray-500 opacity-75"></div>
+      </div>
+      <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
+        &#8203;
+      </span>
+      <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+          <div className="sm:flex sm:items-start">
+            <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+              <svg
+                className="h-6 w-6 text-red-600"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M13 16h-1v-4h-1m0-4h.01M12 16h.01M8 8h8m-4-4v12"
+                />
+              </svg>
+            </div>
+            <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+              <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                Edit Ad
+              </h3>
+              <div className="mt-2">
+                <p className="text-sm text-gray-500">If this ad contains Payment, then the payment will be removed. Are you sure you want to edit this Ad?</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+          <button
+            type="button"
+            className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+            onClick={() => {
+              setShowEditModal(false);
+              navigate(`/edit-ad/${adToEdit}`);
+            }}
+          >
+            Confirm
+          </button>
+          <button
+            type="button"
+            className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+            onClick={() => setShowEditModal(false)}
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
 
 {showSoldOutModal && (
   <div className="fixed inset-0 z-10 overflow-y-auto">
     <div className="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
       <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-        <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+        <div className=" inset-0 bg-gray-500 opacity-75"></div>
       </div>
       <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">
         &#8203;

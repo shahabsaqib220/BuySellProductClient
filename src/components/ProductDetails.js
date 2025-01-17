@@ -16,6 +16,7 @@ import MuiAlert from '@mui/material/Alert';
 import ShoppingCartCheckoutIcon from '@mui/icons-material/ShoppingCartCheckout';
 import Alert from '@mui/material/Alert';
 import ViewTimelineIcon from '@mui/icons-material/ViewTimeline';
+import { Divider } from '@mui/material';
 
 const ProductDetails = () => {
     const axiosInstance = useAxiosInstance(); 
@@ -74,6 +75,7 @@ const ProductDetails = () => {
             try {
                 const response = await axiosInstance.get('/allads/ads');
                 setAds(response.data);
+               
             } catch (error) {
                 console.error("Error fetching ads:", error);
             }
@@ -81,6 +83,7 @@ const ProductDetails = () => {
 
         fetchAds();
     }, [axiosInstance]);
+    
 
     useEffect(() => {
         const fetchUserName = async () => {
@@ -115,6 +118,40 @@ const ProductDetails = () => {
 
         fetchAdDetails();
     }, [id, axiosInstance]);
+
+
+
+    const truncateDescription = (description, maxCharsPerLine = 50, maxLines = 3) => {
+        const words = description.split(' ');
+        let truncated = '';
+        let currentLine = '';
+        let lineCount = 0;
+    
+        for (let word of words) {
+            if ((currentLine + word).length > maxCharsPerLine) {
+                truncated += currentLine.trim() + '\n';
+                currentLine = word + ' ';
+                lineCount++;
+    
+                if (lineCount >= maxLines) {
+                    truncated += '...';
+                    break;
+                }
+            } else {
+                currentLine += word + ' ';
+            }
+        }
+    
+        if (lineCount < maxLines) {
+            truncated += currentLine.trim();
+        }
+    
+        return truncated.trim();
+    };
+    
+      
+
+
 
     const handleChatClick = (ad) => {
         if (isLoggedIn && user) {
@@ -303,6 +340,11 @@ const ProductDetails = () => {
                                         <ShoppingCartIcon fontSize="small" onClick={() => handleAddToCart(product)} />
                                     </div>
                                 </div>
+                                    <Divider className='text-yellow-500 font-extrabold h-5'/>
+                         
+                                    <p className="text-gray-500 font-semibold text-md line-clamp-3">
+                                    {truncateDescription(product.description, 50, 3)}
+</p>
                                 <div className="flex justify-between items-center mt-4">
                                     <p className="text-black font-semibold text-xl">
                                         <mark className="bg-yellow-400 text-black px-2 py-1 rounded">
@@ -312,6 +354,7 @@ const ProductDetails = () => {
                                     <p className="text-black font-semibold text-md">
                                         {product.condition}
                                     </p>
+                                   
                                     <div className="flex items-center ">
                                         <PlaceIcon className="text-md " />
                                         <span className="text-black font-medium">{product.location.readable}</span>
@@ -357,6 +400,11 @@ const ProductDetails = () => {
                                         <ShoppingCartIcon fontSize="small" onClick={() => handleAddToCart(product)} />
                                     </div>
                                 </div>
+                                <Divider className='text-yellow-500 font-extrabold h-5'/>
+                         
+                                <p className="text-gray-500 font-semibold text-md">
+                                {truncateDescription(product.description, 30, 3)}
+                            </p>
                                 <div className="flex justify-between items-center mt-4">
                                     <p className="text-black font-semibold text-xl">
                                         <mark className="bg-yellow-400 text-black px-2 py-1 rounded">
@@ -396,19 +444,28 @@ const ProductDetails = () => {
                                 <span className="bg-green-500 text-white font-semibold px-4 py-1 rounded flex items-center gap-2 animate-light-switch-green">
   <FaCrown className="text-lg text-white" /> Basic Featured Ad
 </span>
+
                                 <img
                                     src={product.images[0]}
                                     alt={product.model}
                                     className="w-full h-48 object-cover rounded-lg"
                                 />
+                                <Divider/>
+                                
+                             
+                                
                                 <div className="flex justify-between items-center mt-6">
                                     <h3 className="text-lg font-semibold">
                                         {product.brand} {product.model}
                                     </h3>
-                                    <div className="bg-yellow-400 flex text-black p-2 rounded-full shadow-lg hover:bg-yellow-500 transition duration-200 cursor-pointer">
+                                    <div className="bg-yellow-400 mt-3 mb-3 flex text-black p-2 rounded-full shadow-lg hover:bg-yellow-500 transition duration-200 cursor-pointer">
                                         <ShoppingCartIcon fontSize="small" onClick={() => handleAddToCart(product)} />
                                     </div>
                                 </div>
+                                <Divider/>
+                                    <p className="text-gray-500 font-semibold text-md">
+                                    {truncateDescription(product.description, 50, 2)}
+                            </p>
                                 <div className="flex justify-between items-center mt-4">
                                     <p className="text-black font-semibold text-xl">
                                         <mark className="bg-yellow-400 text-black px-2 py-1 rounded">
@@ -423,6 +480,7 @@ const ProductDetails = () => {
                                         <span className="text-black font-medium">{product.location.readable}</span>
                                     </div>
                                 </div>
+                                
                                 <button
                                     className="mt-4 w-full bg-yellow-400 py-2 rounded-lg font-semibold shadow-md flex items-center justify-center gap-2 hover:bg-yellow-500 text-black transition duration-200"
                                     onClick={() => {
@@ -458,7 +516,13 @@ const ProductDetails = () => {
                                     <div className="bg-yellow-400 flex text-black p-2 rounded-full shadow-lg hover:bg-yellow-500 transition duration-200 cursor-pointer">
                                         <ShoppingCartIcon fontSize="small" onClick={() => handleAddToCart(product)} />
                                     </div>
+                                   
                                 </div>
+                                <Divider className='text-yellow-500 font-extrabold h-5'/>
+                         <p className="text-gray-500 font-semibold text-md line-clamp-3">
+                         {truncateDescription(product.description, 50, 3)}
+</p>
+                         
                                 <div className="flex justify-between items-center mt-4">
                                     <p className="text-black font-semibold text-xl">
                                         <mark className="bg-yellow-400 text-black px-2 py-1 rounded">

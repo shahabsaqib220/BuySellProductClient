@@ -5,30 +5,36 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Divider from "@mui/material/Divider";
 import { Link, useParams } from "react-router-dom";
+
 import TuneIcon from '@mui/icons-material/Tune';
 import { RxAvatar } from "react-icons/rx";
-import { Button,Skeleton ,IconButton, Grid, Tooltip, Snackbar, Alert } from "@mui/material"; // Import Snackbar and Alert
+import { Button,Skeleton ,IconButton, Grid, Tooltip, Snackbar, Alert, Typography } from "@mui/material"; // Import Snackbar and Alert
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import useAxiosInstance from "../ContextAPI/AxiosInstance";
 import { useDispatch } from 'react-redux';
 import { setUserAndAd } from '../Redux/usersChatSlice';
 import { FaLocationDot } from "react-icons/fa6";
 import { MdFilterNone } from "react-icons/md";
+import { useTranslation, i18n } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from '../ContextAPI/AuthContext';
 import { FaCrown } from "react-icons/fa";
+import pakistanCities from "../utils/PakistanCities";
+import categoryMapping from '../utils/CategoryMapping';
 
-const getFirstTwoWords = (location) => {
-  if (!location) return "";
-  const words = location.split(" ");
-  return words.length > 1 ? `${words[0]} ${words[1]}` : words[0];
-};
 
-const Product = () => {
+  const getFirstTwoWords = (location) => {
+    if (!location) return "";
+    const words = location.split(" ");
+    return words.length > 1 ? `${words[0]} ${words[1]}` : words[0];
+  };
+
+const Product = ({ category }) => {
   const { user, isLoggedIn } = useAuth();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const axiosInstance = useAxiosInstance();
+  const { t, i18n } = useTranslation();
   const sliderRef = useRef(null);
   const [loading, setLoading] = useState(true); // Add this line
   const [ads, setAds] = useState([]);
@@ -36,6 +42,12 @@ const Product = () => {
   const [snackbarMessage, setSnackbarMessage] = useState(""); // Snackbar message
   const [snackbarSeverity, setSnackbarSeverity] = useState("success"); // Snackbar severity (success, error, etc.)
   const { adId } = useParams();
+  const [isExpanded , setIsExpanded] = useState(false);
+
+
+
+  
+
 
   useEffect(() => {
     const fetchAds = async () => {
@@ -53,6 +65,10 @@ const Product = () => {
     fetchAds();
   }, []);
 
+  
+
+
+
   const sortAdsByPriority = (ads) => {
     return ads.sort((a, b) => {
       const aPriority = a.premium ? 3 : a.standard ? 2 : a.basic ? 1 : 0;
@@ -60,6 +76,26 @@ const Product = () => {
       return bPriority - aPriority; // Sort in descending order
     });
   };
+  const translateLocation = (location) => {
+    const formattedLocation = location
+        .toLowerCase()
+        .replace(/\s+/g, "_") // Replace spaces with underscores
+        .replace(/[^\w_]/g, ""); // Remove special characters
+
+    // Check if the location exists in the list of cities
+    if (pakistanCities.includes(formattedLocation)) {
+        return t(formattedLocation); // Fetch translation from i18n
+    }
+
+    // Return original location if no match is found
+    return location;
+};
+
+
+
+
+
+  
 
 
   const handleViewAll = (category) => {
@@ -147,6 +183,21 @@ const Product = () => {
     setSnackbarOpen(false);
   };
 
+const translateCondition = (condition) => {
+  const normalizeKey = (key) => key.trim().toLowerCase().replace(/ +/g, ' ');
+  
+  const conditions = {
+    [normalizeKey("used")]: t("used"),
+    [normalizeKey("brand new")]: t("brand new"),
+    [normalizeKey("refurbished")]: t("refurbished"),
+    // Add other conditions here as needed
+  };
+
+  const normalizedCondition = normalizeKey(condition);
+  return conditions[normalizedCondition] || condition;
+};
+
+
   const handleApplyCustomFilter = () => {
     navigate('/custom-filter'); // Navigate to the custom filter component
   };
@@ -173,30 +224,26 @@ const Product = () => {
       <hr className="border-t-2 border-gray-200 mb-8" />
 
       <Button
-        variant="contained"
-        onClick={handleApplyCustomFilter}
-        sx={{
-          backgroundColor: '#FFC107', // Yellow color
-          color: '#000', // Black font color
-          borderRadius: '8px', // Rounded corners
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', // Subtle shadow
-          '&:hover': {
-            backgroundColor: '#FFA000', // Darker yellow on hover
-            boxShadow: '0 6px 12px rgba(0, 0, 0, 0.3)', // Deeper shadow on hover
-          },
-          fontWeight: 'bold', // Bold text
-          padding: '10px 20px', // Extra padding for a larger button
-          display: 'flex', // Use flex to align icon and text
-          alignItems: 'center', // Center items vertically
-        }}
-      >
-       
-
-
-
-        <TuneIcon style={{ marginRight: '8px' }} /> {/* Add margin for spacing */}
-        Apply Custom Filter
-      </Button>
+      variant="contained"
+      onClick={handleApplyCustomFilter}
+      sx={{
+        backgroundColor: "#FFC107", // Yellow color
+        color: "#000", // Black font color
+        borderRadius: "8px", // Rounded corners
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)", // Subtle shadow
+        "&:hover": {
+          backgroundColor: "#FFA000", // Darker yellow on hover
+          boxShadow: "0 6px 12px rgba(0, 0, 0, 0.3)", // Deeper shadow on hover
+        },
+        fontWeight: "bold", // Bold text
+        padding: "10px 20px", // Extra padding for a larger button
+        display: "flex", // Use flex to align icon and text
+        alignItems: "center", // Center items vertically
+      }}
+    >
+      <TuneIcon style={{ marginRight: "8px" }} /> {/* Add margin for spacing */}
+      {t("applyCustomFilter")} {/* Fetch and display the translated text */}
+    </Button>
 
     
       {loading ? (
@@ -230,23 +277,28 @@ const Product = () => {
   Object.keys(groupedAds).map((category) => (
     <div key={category}>
       <h3 className=" mt-20 text-lg font-bold leading-tight tracking-tight text-gray-900 md:text-2xl lg:text-3xl">
-        <mark className="px-6 text-gray-700 bg-yellow-400 rounded-lg">
-          {category}
+      <mark className="px-6 text-gray-700 bg-yellow-400 rounded-lg">
+            {t(`categories.${categoryMapping[category]}`)}
+            {/* {category} */}
         </mark>
       </h3>
 
       <div className="flex font-semibold justify-end items-center mb-4">
-        <Button
-          variant="contained"
-          color="#000000"
-          onClick={() => handleViewAll(category)}
-          style={{ backgroundColor: "#FFC107" }}
-        >
-          View All
-        </Button>
-      </div>
+  <Button
+    variant="contained"
+    color="#000000"
+    style={{
+      backgroundColor: "#FFC107",
+      fontFamily: "Noto Nastaliq Urdu, Arial, sans-serif",
+    }}
+    onClick={() => handleViewAll(category)}
+  >
+    {t('viewAll')}
+  </Button>
+</div>
 
       <div className="relative">
+        
         <Slider ref={sliderRef} {...settings}>
           {groupedAds[category] && groupedAds[category].length > 0 ? (
             sortAdsByPriority(groupedAds[category]).map((ad) => (
@@ -290,7 +342,7 @@ const Product = () => {
                     <Grid item xs>
                       <h3 className="text-lg font-bold leading-tight tracking-tight text-gray-900 md:text-2xl lg:text-2xl">
                         <mark className="px-2 text-black bg-yellow-400 rounded">
-                          Rs {ad.price}/-
+                        {t('price')} {ad.price}/-
                         </mark>
                       </h3>
                     </Grid>
@@ -331,31 +383,47 @@ const Product = () => {
                     {ad.location && (
                       <div className="flex items-center text-sm text-gray-500">
                         <FaLocationDot className="text-2xl text-yellow-500 mr-1" />
-                        <span className="text-black font-semibold">{getFirstTwoWords(ad.location.readable)}</span>
+                        <span className="text-black font-semibold">    {translateLocation(getFirstTwoWords(ad.location.readable))}</span>
                       </div>
                     )}
 
                     <h5 className="text-sm font-semibold text-gray-900">
-                      <span>{ad.condition}</span>
+                      <span>{translateCondition(ad.condition)}</span>
                     </h5>
                   </div>
+                  <Typography
+            variant="body1"
+            sx={{
+              display: "-webkit-box",
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              WebkitLineClamp: 3, // Limit to 4 lines
+              maxHeight: "6em", // Approximate height for 4 lines
+            }}
+          >
+            {ad.description}
+          </Typography>
 
                   <div className="flex justify-between items-center mt-4">
-                    <Button
-                      onClick={() => handleChatClick(ad)}
-                      variant="contained"
-                      startIcon={<FaComments />}
-                      style={{
-                        color: "#000000", // Black text
-                        backgroundColor: "#FFC107", // Yellow background
-                        borderColor: "#FFC107", // Optional border to match background
-                      }}
-                      size="small"
-                    >
-                      Chat with Seller
-                    </Button>
+                  <Button
+      onClick={() => handleChatClick(ad)}
+      variant="contained"
+      startIcon={<FaComments />}
+      style={{
+        color: "#000000", // Black text
+        backgroundColor: "#FFC107", // Yellow background
+        borderColor: "#FFC107", // Optional border to match background
+        fontWeight: i18n.language === "ur" ? 700 : 700, // Semi-bold for Urdu
+        borderRadius: "5px", // Rounded corners
+        fontFamily: i18n.language === "ur" ? "Noto Nastaliq Urdu, sans-serif" : "Arial, sans-serif", // Urdu-specific font
+      }}
+      size="small"
+    >
+      {t("chatWithSeller")} {/* Dynamically translate */}
+    </Button>
 
-                    <div className="flex">In Stock</div>
+    <div className="flex font-semibold"> {t("forSale")}</div>
                   </div>
                 </div>
               </div>
