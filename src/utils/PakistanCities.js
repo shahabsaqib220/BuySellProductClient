@@ -153,4 +153,5 @@ const pakistanCities = [
     'ziarat',
 ];
 
+
 export default pakistanCities;
