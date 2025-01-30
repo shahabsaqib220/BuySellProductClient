@@ -3,17 +3,23 @@ import {
   Box, Typography, TextField, MenuItem, Button,
   Grid, Tooltip, IconButton, Divider, Snackbar, Alert
 } from '@mui/material';
+import { useTranslation } from "react-i18next";
 import { FaSearch } from 'react-icons/fa';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from "react-router-dom";
 import { FaLocationDot } from "react-icons/fa6";
 import { Link } from 'react-router-dom';
+import { setUserAndAd } from '../Redux/usersChatSlice';
 import { styled } from '@mui/material/styles';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import { useAuth } from '../ContextAPI/AuthContext';
+import categoryMapping from '../utils/CategoryMapping';
+
 import { FaCrown } from 'react-icons/fa';
 import useAxiosInstance from "../ContextAPI/AxiosInstance";
 import { FaComments } from 'react-icons/fa';
 import Skeleton from '@mui/material/Skeleton';
-
+import pakistanCities from "../utils/PakistanCities";
 const FilterBox = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   padding: theme.spacing(4),
@@ -34,9 +40,15 @@ const FilterButton = styled(Button)(({ theme }) => ({
     backgroundColor: theme.palette.secondary.dark,
   },
 }));
+const getFirstTwoWords = (location) => {
+  if (!location) return "";
+  const words = location.split(" ");
+  return words.length > 1 ? `${words[0]} ${words[1]}` : words[0];
+};
 
 const AdFilterComponent = () => {
   const [ads, setAds] = useState([]);
+  const dispatch = useDispatch();
   const [categories, setCategories] = useState([]);
   const [locations, setLocations] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -49,6 +61,49 @@ const AdFilterComponent = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation(); // Translation hook
+    const navigate = useNavigate();
+
+
+
+
+  const translateCondition = (condition) => {
+    const normalizeKey = (key) => key.trim().toLowerCase().replace(/ +/g, ' ');
+    
+    const conditions = {
+      [normalizeKey("used")]: t("used"),
+      [normalizeKey("brand new")]: t("brand new"),
+      [normalizeKey("refurbished")]: t("refurbished"),
+      // Add other conditions here as needed
+    };
+  
+    const normalizedCondition = normalizeKey(condition);
+    return conditions[normalizedCondition] || condition;
+  };
+
+  
+
+
+
+
+
+
+
+  const translateLocation = (location) => {
+    const formattedLocation = location
+        .toLowerCase()
+        .replace(/\s+/g, "_") // Replace spaces with underscores
+        .replace(/[^\w_]/g, ""); // Remove special characters
+
+    // Check if the location exists in the list of cities
+    if (pakistanCities.includes(formattedLocation)) {
+        return t(formattedLocation); // Fetch translation from i18n
+    }
+
+    // Return original location if no match is found
+    return location;
+};
+
 
 
   const MAX_CHARS_PER_LINE = 50; // Adjust based on your UI
@@ -83,6 +138,8 @@ const MAX_LINES = 3;
       maxPrice
     });
 
+
+
     setLoading(true);
     axiosInstance
       .get('/filtering/filtered-ads', { params })
@@ -100,7 +157,7 @@ const MAX_LINES = 3;
 
   const handleAddToCart = async (ad) => {
     if (!isLoggedIn) {
-      setSnackbarMessage('Sign in to use your cart');
+      setSnackbarMessage(t('signInToUseCart'));
       setSnackbarSeverity('warning');
       setSnackbarOpen(true);
       return;
@@ -118,7 +175,7 @@ const MAX_LINES = 3;
         images: ad.images,
       });
 
-      setSnackbarMessage('Item added to cart');
+      setSnackbarMessage(t("itemAddedToCart"));
       setSnackbarSeverity('success');
       setSnackbarOpen(true);
     } catch (error) {
@@ -144,97 +201,122 @@ const MAX_LINES = 3;
       : description;
   };
 
+    const handleChatClick = (ad) => {
+      if (isLoggedIn && user) {
+        // Dispatch Redux action
+        dispatch(setUserAndAd({ user, ad }));
+        navigate(`/chat`);
+        const senderId = user?._id; // assuming `user` contains the logged-in user's ID
+        const receiverId = ad?.userId?._id; // assuming `ad.userId` contains an object with an `_id` field
+        if (!receiverId) {
+          console.error("Receiver ID not found in ad.userId");
+        }
+      } else {
+        setSnackbarMessage(t('signInToChat'));
+  
+        setSnackbarSeverity("warning");
+        setSnackbarOpen(true);
+      }
+    };
+
   return (
     <FilterBox>
-      <Box sx={{ textAlign: 'center', mb: 3 }}>
-        <Typography
-          variant="h4"
-          sx={{
-            color: 'black',
-            fontWeight: 400,
-            letterSpacing: '1.5px',
-            textTransform: 'none',
-            lineHeight: 1.5,
-            position: 'relative',
-            display: 'inline-block',
-          }}
-        >
-          Find What Matters Most
-        </Typography>
+  <Box sx={{ textAlign: "center", mb: 3 }}>
+      <Typography
+        variant="h4"
+        sx={{
+          color: "black",
+          fontWeight: 400,
+          letterSpacing: "1.5px",
+          textTransform: "none",
+          lineHeight: 1.5,
+          position: "relative",
+          display: "inline-block",
+        }}
+      >
+        {t("find_what_matters")}
+      </Typography>
 
-        <Box
-          sx={{
-            width: '100%',
-            height: '2px',
-            backgroundColor: '#FFC107',
-            margin: '0.5rem 0',
-          }}
-        />
+      <Box
+        sx={{
+          width: "100%",
+          height: "2px",
+          backgroundColor: "#FFC107",
+          margin: "0.5rem 0",
+        }}
+      />
 
-        <Typography
-          variant="h4"
-          sx={{
-            color: 'black',
-            fontWeight: 400,
-            letterSpacing: '1.5px',
-            textTransform: 'none',
-            lineHeight: 1.5,
-          }}
-        >
-          Refine Your Search Experience
-        </Typography>
-      </Box>
+      <Typography
+        variant="h4"
+        sx={{
+          color: "black",
+          fontWeight: 400,
+          letterSpacing: "1.5px",
+          textTransform: "none",
+          lineHeight: 1.5,
+        }}
+      >
+        {t("refine_your_search")}
+      </Typography>
+    </Box>
 
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2, width: '100%', justifyContent: 'center' }}>
-        <TextField
-          label="Category"
-          select
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
-          sx={{ flex: '1 1 200px', minWidth: '200px' }}
-          fullWidth
-          variant="outlined"
-        >
-          <MenuItem value=""><em>All Categories</em></MenuItem>
-          {categories.map((category, index) => (
-            <MenuItem key={index} value={category}>{category}</MenuItem>
-          ))}
-        </TextField>
+    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, width: "100%", justifyContent: "center" }}>
+      {/* Category Dropdown */}
+      <TextField
+        label={t("category")}
+        select
+        value={selectedCategory}
+        onChange={(e) => setSelectedCategory(e.target.value)}
+        sx={{ flex: "1 1 200px", minWidth: "200px" }}
+        fullWidth
+        variant="outlined"
+      >
+        <MenuItem value=""><em>{t("all_categories")}</em></MenuItem>
+        {categories.map((category, index) => (
+          <MenuItem key={index} value={category}> {t(`categories.${categoryMapping[category]}`)}</MenuItem>
+        ))}
+      </TextField>
 
-        <TextField
-          label="Min Price"
-          type="number"
-          value={minPrice}
-          onChange={(e) => setMinPrice(e.target.value)}
-          sx={{ flex: '1 1 100px', minWidth: '100px' }}
-          fullWidth
-          variant="outlined"
-        />
-        <TextField
-          label="Max Price"
-          type="number"
-          value={maxPrice}
-          onChange={(e) => setMaxPrice(e.target.value)}
-          sx={{ flex: '1 1 100px', minWidth: '100px' }}
-          fullWidth
-          variant="outlined"
-        />
+      {/* Min Price */}
+      <TextField
+        label={t("min_price")}
+        type="number"
+        value={minPrice}
+        onChange={(e) => setMinPrice(e.target.value)}
+        sx={{ flex: "1 1 100px", minWidth: "100px" }}
+        fullWidth
+        variant="outlined"
+      />
 
-        <TextField
-          label="Cities"
-          select
-          value={selectedLocation}
-          onChange={(e) => setSelectedLocation(e.target.value)}
-          sx={{ flex: '1 1 200px', minWidth: '200px' }}
-          fullWidth
-          variant="outlined"
-        >
-          <MenuItem value=""><em>All Cities</em></MenuItem>
-          {locations.map((location, index) => (
-            <MenuItem key={index} value={location}>{location}</MenuItem>
-          ))}
-        </TextField>
-      </Box>
+      {/* Max Price */}
+      <TextField
+        label={t("max_price")}
+        type="number"
+        value={maxPrice}
+        onChange={(e) => setMaxPrice(e.target.value)}
+        sx={{ flex: "1 1 100px", minWidth: "100px" }}
+        fullWidth
+        variant="outlined"
+      />
+
+      {/* Cities Dropdown */}
+      <TextField
+        label={t("cities")}
+        select
+        value={selectedLocation}
+        onChange={(e) => setSelectedLocation(e.target.value)}
+        sx={{ flex: "1 1 200px", minWidth: "200px" }}
+        fullWidth
+        variant="outlined"
+      >
+        <MenuItem value=""><em>{t("all_cities")}</em></MenuItem>
+        {locations.map((location, index) => (
+    <MenuItem key={index} value={location}>
+      {t(`${translateLocation(location)}`)}
+    </MenuItem>
+  ))}
+      </TextField>
+    </Box>
 
       <FilterButton
         variant="contained"
@@ -257,7 +339,7 @@ const MAX_LINES = 3;
         }}
       >
         <FaSearch style={{ marginRight: '8px' }} />
-        Search
+        {t("search")}
       </FilterButton>
 
       {loading ? (
@@ -281,7 +363,7 @@ const MAX_LINES = 3;
     {ad.premium && (
       <div className="absolute top-2 left-2 animate-light-switch-yellow bg-yellow-400 text-black py-1 px-3 rounded-full flex items-center gap-2 shadow-3xl">
         <FaCrown className="text-lg text-black" />
-        <span className="font-semibold">Premium Featured Ad</span>
+        <span className="font-semibold">{t("premiumFeaturedAd")}</span>
       </div>
     )}
 
@@ -289,7 +371,7 @@ const MAX_LINES = 3;
     {ad.standard && !ad.premium && (
       <div className="absolute top-2 left-2 animate-light-switch-blue bg-blue-500 text-white py-1 px-3 rounded-full flex items-center gap-2 shadow-3xl">
         <FaCrown className="text-lg text-white" />
-        <span className="font-semibold">Standard Featured Ad</span>
+        <span className="font-semibold">{t("standardFeaturedAd")}</span>
       </div>
     )}
 
@@ -297,7 +379,7 @@ const MAX_LINES = 3;
     {ad.basic && !ad.premium && !ad.standard && (
       <div className="absolute top-2 animate-light-switch-green left-2 bg-green-500 text-white py-1 px-3 rounded-full flex items-center gap-2 shadow-3xl">
         <FaCrown className="text-lg text-white" />
-        <span className="font-semibold">Basic Featured Ad</span>
+        <span className="font-semibold">{t("basicFeaturedAd")}</span>
       </div>
     )}
 
@@ -323,7 +405,7 @@ const MAX_LINES = 3;
     <Grid item xs>
       <h3 className="text-lg font-bold leading-tight tracking-tight text-gray-900 md:text-2xl lg:text-2xl">
         <mark className="px-2 text-black bg-yellow-400 rounded">
-          Rs {ad.price}/-
+        {t('price')} {ad.price}/-
         </mark>
       </h3>
     </Grid>
@@ -353,46 +435,51 @@ const MAX_LINES = 3;
     {ad.location && (
       <div className="flex font-semibold items-center text-black">
         <FaLocationDot className="text-2xl text-yellow-500 mr-1" />
-        <span>{getFirstTwoWords(ad.location.readable)}</span>
+        <span> {t(`${translateLocation(ad.location.readable)}`)}</span>
       </div>
     )}
     <h5 className="text-sm text-black font-semibold">
-      <span>{ad.condition}</span>
+      <span>{translateCondition(ad.condition)}</span>
     </h5>
   </div>
 
   <div className="flex justify-between items-center mt-4">
-    <Button
-      variant="contained"
-      startIcon={<FaComments />}
-      style={{
-        color: "#000000",
-        backgroundColor: "#FFC107",
-        borderColor: "#FFC107",
-      }}
-      size="small"
-    >
-      Chat with Seller
-    </Button>
+  <Button
+  variant="contained"
+  onClick={() => handleChatClick(ad)}
+  startIcon={<FaComments />}
+  style={{
+    color: "#000000",
+    backgroundColor: "#FFC107",
+    borderColor: "#FFC107",
+    fontWeight: "bold",  // Makes text bolder
+    fontSize: "16px",     // Increases font size
+    textTransform: "none" // Keeps original text case
+  }}
+  size="medium"
+>
+  {t("chatWithSeller")}
+</Button>
 
-    <div className="flex">In Stock</div>
+
+    
   </div>
 </div>
 
             </Grid>
           )) : (
             <Typography 
-              variant="h5" 
-              sx={{ 
-                color: 'text.secondary', 
-                fontWeight: 'bold', 
-                textAlign: 'center', 
-                mt: 5, 
-                mb: 3 
-              }}
-            >
-              We're sorry, but no ads matched your criteria.
-            </Typography>
+            variant="h5" 
+            sx={{ 
+              color: 'text.secondary', 
+              fontWeight: 'bold', 
+              textAlign: 'center', 
+              mt: 5, 
+              mb: 3 
+            }}
+          >
+            {t("noAdsFound")}
+          </Typography>
           )}
         </Grid>
       )}

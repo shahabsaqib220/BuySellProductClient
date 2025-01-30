@@ -2,17 +2,27 @@ const categoryMapping = {
     'Mobile Phone': 'mobilePhone',
     'Laptop': 'laptop',
     'Tablets': 'tablet',
+    'Desktop': 'desktop',
     'Camera': 'camera',
-    'Smart Watch': 'smartWatch',
-    'Headphones': 'headphones',
-    'Gaming Console': 'gamingConsole',
+    'Smartwatch': 'smartWatch',
     'Television': 'television',
-    'Speaker': 'speaker',
-    'Printer': 'printer',
-    'Keyboard': 'keyboard',
-    'Mouse': 'mouse',
-    'Drone': 'drone',
-    // Add more categories here as needed
-};
-
-export default categoryMapping;
+    'Gaming Consoles': 'gamingConsoles',
+    'Home Appliances': 'homeAppliances',
+    'Furniture': 'furniture',
+    'Vehicles': 'vehicles',
+    'Motorcycles': 'motorcycles',
+    'Bicycles': 'bicycles',
+    'Clothing': 'clothing',
+    'Shoes': 'shoes',
+    'Sport Equipment': 'sportEquipment',
+    'Musical Instruments': 'musicalInstruments',
+    'Jewelry': 'jewelry',
+    'Watches': 'watches',
+    'Health & Beauty': 'healthBeauty',
+    'Toys': 'toys',
+    'Baby Products': 'babyProducts',
+    'Pet Supplies': 'petSupplies',
+  };
+  
+  export default categoryMapping;
+  

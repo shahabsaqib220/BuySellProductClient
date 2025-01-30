@@ -5,9 +5,11 @@ import { FaTrashAlt } from 'react-icons/fa';
 import { useAuth } from '../ContextAPI/AuthContext';
 import useAxiosInstance from '../ContextAPI/AxiosInstance';
 import Swal from 'sweetalert2';
+import { useTranslation } from "react-i18next";
 
 const CartComponent = () => {
   const { isLoggedIn } = useAuth();
+  const { t } = useTranslation();
   const [cartItems, setCartItems] = useState([]);
   const axiosInstance = useAxiosInstance();
   const navigate = useNavigate();
@@ -105,88 +107,89 @@ const CartComponent = () => {
         <h1 className="text-3xl font-bold mb-6 text-gray-800">Your Shopping Cart</h1>
 
         <div className="bg-white shadow-md rounded-lg overflow-x-auto">
-          <table className="min-w-full leading-normal">
-            <thead>
-              <tr>
-                <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  Product
-                </th>
-                <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  Location
-                </th>
-                <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  Condition
-                </th>
-                <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  Price
-                </th>
-                <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  Details
-                </th>
-                <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  Delete
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {cartItems.map((item) => (
-                <tr key={item._id}>
-                  <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 w-16 h-16">
-                        {item.adDetails.images && item.adDetails.images.length > 0 ? (
-                          <img
-                            className="w-full h-full object-cover rounded-lg"
-                            src={item.adDetails.images[0]}
-                            alt={item.adDetails.images[0].alt}
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gray-200 rounded-lg">
-                            <span>No Image Available</span>
-                          </div>
-                        )}
-                      </div>
-                      <div className="ml-4">
-                        <p className="text-gray-900 font-medium whitespace-no-wrap">{item.adDetails.model}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-5 border-b border-gray-200 bg-white text-semibold text-sm">
-                    <p className="text-gray-900 whitespace-no-wrap">{item.adStatus}</p>
-                  </td>
-                  <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
-                    <p>{getFirstThreeWords(item.adDetails.location?.readable) || 'Location not specified'}</p>
-                  </td>
-                  <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
-                    <p className="text-gray-900 whitespace-no-wrap">{item.adDetails.condition}</p>
-                  </td>
-                  <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
-                    <p className="text-gray-900 whitespace-no-wrap">
-                      Rs {item.adDetails.price ? item.adDetails.price.toFixed(2) : 'N/A'}
-                    </p>
-                  </td>
-                  <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm font-medium">
-                    <button 
-                      onClick={() => handleClick(item._id)} 
-                      className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
-                      Product Details
-                    </button>
-                  </td>
-                  <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
-                    <button
-                      className="text-red-600 hover:text-red-900"
-                      onClick={() => handleDelete(item._id)}
-                    >
-                      <FaTrashAlt />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <table className="min-w-full leading-normal">
+    <thead>
+      <tr>
+        <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+          {t("product")}
+        </th>
+        <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+          {t("status")}
+        </th>
+        <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+          {t("location")}
+        </th>
+        <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+          {t("condition")}
+        </th>
+        <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+          {t("price")}
+        </th>
+        <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+          {t("details")}
+        </th>
+        <th className="px-6 py-3 border-b-2 border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+          {t("delete")}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {cartItems.map((item) => (
+        <tr key={item._id}>
+          <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
+            <div className="flex items-center">
+              <div className="flex-shrink-0 w-16 h-16">
+                {item.adDetails.images && item.adDetails.images.length > 0 ? (
+                  <img
+                    className="w-full h-full object-cover rounded-lg"
+                    src={item.adDetails.images[0]}
+                    alt={item.adDetails.images[0].alt}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gray-200 rounded-lg">
+                    <span>{t("noImage")}</span>
+                  </div>
+                )}
+              </div>
+              <div className="ml-4">
+                <p className="text-gray-900 font-medium whitespace-no-wrap">{item.adDetails.model}</p>
+              </div>
+            </div>
+          </td>
+          <td className="px-6 py-5 border-b border-gray-200 bg-white text-semibold text-sm">
+            <p className="text-gray-900 whitespace-no-wrap">{item.adStatus}</p>
+          </td>
+          <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
+            <p>{getFirstThreeWords(item.adDetails.location?.readable) || t("locationNotSpecified")}</p>
+          </td>
+          <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
+            <p className="text-gray-900 whitespace-no-wrap">{item.adDetails.condition}</p>
+          </td>
+          <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
+            <p className="text-gray-900 whitespace-no-wrap">
+              Rs {item.adDetails.price ? item.adDetails.price.toFixed(2) : "N/A"}
+            </p>
+          </td>
+          <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200 text-sm font-medium">
+            <button
+              onClick={() => handleClick(item._id)}
+              className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
+            >
+              {t("productDetails")}
+            </button>
+          </td>
+          <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
+            <button
+              className="text-red-600 hover:text-red-900"
+              onClick={() => handleDelete(item._id)}
+            >
+              <FaTrashAlt />
+            </button>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
         </div>
 
         {isModalOpen && (

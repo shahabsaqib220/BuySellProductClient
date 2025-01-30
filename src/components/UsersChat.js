@@ -22,23 +22,23 @@ const ReceiversList = () => {
   
   const { user } = useAuth();
   const axiosInstance = useAxiosInstance(); 
-  const [messages, setMessages] = useState([]);
+  const [sending, setSending] = useState(false);
   const [messageContent, setMessageContent] = useState('');
   const [receivers, setReceivers] = useState([]);
+  const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedReceiverId, setSelectedReceiverId] = useState(null);
   const [isTyping, setIsTyping] = useState(false);
-  const [sending, setSending] = useState(false);
   const [onlineStatuses, setOnlineStatuses] = useState({});
   const [conversationStarted, setConversationStarted] = useState(false); // New state to track if conversation has started
   
+  const ad = useSelector((state) => state.user.ad);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [messageIdToDelete, setMessageIdToDelete] = useState(null); 
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const typingTimeout = useRef(null); 
   const dispatch = useDispatch();
-  const ad = useSelector((state) => state.user.ad);
 
 
   

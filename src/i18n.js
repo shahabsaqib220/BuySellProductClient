@@ -10,6 +10,26 @@ const resources = {
       search: "Search",
       viewAll: "VIEW ALL",
       chatWithSeller: "Chat with Seller",
+      "noAdsFound": "We're sorry, but no ads matched your criteria.",
+      "allAdsIn": "All Ads in",
+      "signInToUseCart": "Sign in to use your cart",
+       "premiumFeaturedAd": "Premium Featured Ad",
+
+        "find_what_matters": "Find What Matters Most",
+  "refine_your_search": "Refine Your Search Experience",
+   "signInToChat": "Sign in to chat with the seller",
+    "standardFeaturedAd": "Standard Featured Ad",
+  "basicFeaturedAd": "Basic Featured Ad",
+  "product": "Product",
+  "status": "Status",
+  "location": "Location",
+  "condition": "Condition",
+  "price": "Price",
+  "details": "Details",
+  "delete": "Delete",
+  "noImage": "No Image Available",
+  "locationNotSpecified": "Location not specified",
+  "productDetails": "Product Details",
     
       used: "Used",
       "brand new": "Brand New",
@@ -20,7 +40,24 @@ const resources = {
       signUp: "Sign Up",
       applyCustomFilter: "Apply Custom Filter", 
       dashboard: "Dashboard",
+      price: "Price",
       logout: "Log Out",
+      mobilePhone: "Mobile Phone",
+      category: "Category",
+      location: "Location",
+      description: "Description",
+      condition: "Condition",
+      contactSeller: "Contact Seller",  // Add Contact Seller button translation
+      addToCart: "Add to Cart",        // Add Add to Cart button translation
+      othersProducts: "Other Products",      // Add translation for Other Products
+      youMayLike: "You May Like",      
+      viewDetails: "View Details", 
+      "all_categories": "All Categories",
+      "min_price": "Min Price",
+      "max_price": "Max Price",
+      "cities": "Cities",
+      "all_cities": "All Cities",
+       "itemAddedToCart": "Item added to cart",
 
       // Pakistan CIties
       attock: "Attock",
@@ -185,12 +222,30 @@ const resources = {
 
 
 
-      categories: {
-        mobilePhone: "Mobile Phone", // Added under categories
-        laptop: "Laptop",
-        tablet: "Tablets",
-        camera: "Camera",
-        // Add other categories here as needed
+      "categories": {
+        "mobilePhone": "Mobile Phone",
+        "laptop": "Laptop",
+        "tablet": "Tablets",
+        "desktop": "Desktop",
+        "camera": "Camera",
+        "smartWatch": "Smartwatch",
+        "television": "Television",
+        "gamingConsoles": "Gaming Consoles",
+        "homeAppliances": "Home Appliances",
+        "furniture": "Furniture",
+        "vehicles": "Vehicles",
+        "motorcycles": "Motorcycles",
+        "bicycles": "Bicycles",
+        "clothing": "Clothing",
+        "shoes": "Shoes",
+        "sportEquipment": "Sport Equipment",
+        "musicalInstruments": "Musical Instruments",
+        "jewelry": "Jewelry",
+        "watches": "Watches",
+        "healthBeauty": "Health & Beauty",
+        "toys": "Toys",
+        "babyProducts": "Baby Products",
+        "petSupplies": "Pet Supplies"
       },
       english: "English",
       urdu: "اردو",
@@ -198,12 +253,26 @@ const resources = {
   },
   ur: {
     translation: {
+      "all_categories": "تمام زمرے",
+      "min_price": "کم از کم قیمت",
+      "max_price": "زیادہ سے زیادہ قیمت",
+      "cities": "شہر",
+      "all_cities": "تمام شہر",
+      "allAdsIn": "تمام اشتہارات",
       chat: "چیٹ",
       cart: "کارٹ",
       viewAll: "تمام دیکھیں",
       price: "قیمت",
       search: "تلاش",
+      price: "قیمت",
+       "find_what_matters": "جو سب سے زیادہ اہم ہے اسے تلاش کریں",
+  "refine_your_search": "اپنے تلاش کے تجربے کو بہتر بنائیں",
+      
       chatWithSeller: "بیچنے والے سے بات کریں",
+      othersProducts: "دیگر مصنوعات",  // Urdu translation for Other Products
+      youMayLike: "آپ کو پسند آ سکتا ہے", 
+      viewDetails: "تفصیل دیکھیں",
+      "noAdsFound": "معذرت چاہتے ہیں، لیکن کوئی اشتہار آپ کے معیار پر پورا نہیں اترا۔",
     
       used: "استعمال شدہ",
       "brand new": "برینڈ نیو",
@@ -214,6 +283,61 @@ const resources = {
       dashboard: "ڈیش بورڈ",
       forSale: "فور سیل",
       logout: "لاگ آؤٹ",
+      description: "تفصیل",
+      mobilePhone: "موبائل فون",
+      category: "زمرہ",
+      location: "مقام",
+      condition: "حالت", 
+      "signInToUseCart": "اپنے کارٹ کو استعمال کرنے کے لئے سائن ان کریں",
+      contactSeller: "فروخت کنندہ سے رابطہ کریں",  // Urdu translation for Contact Seller
+      addToCart: "کارت میں شامل کریں",
+
+      "product": "پروڈکٹ",
+      "status": "حالت",
+      "location": "مقام",
+      "condition": "کنڈیشن",
+      "price": "قیمت",
+      "details": "تفصیلات",
+      "delete": "حذف کریں",
+      "noImage": "کوئی تصویر دستیاب نہیں",
+      "locationNotSpecified": "مقام درج نہیں",
+      "productDetails": "مصنوعات کی تفصیلات",
+
+
+
+      "categories": {
+        "mobilePhone": "موبائل فون",
+        "laptop": "لیپ ٹاپ",
+        "tablet": "ٹیبلٹس",
+        "desktop": "ڈیسک ٹاپ",
+        "camera": "کیمرہ",
+        "smartWatch": "سمارٹ واچ",
+        "television": "ٹیلیویژن",
+        "gamingConsoles": "گیمنگ کنسولز",
+        "homeAppliances": "گھریلو آلات",
+        "furniture": "فرنیچر",
+        "vehicles": "گاڑیاں",
+        "motorcycles": "موٹر سائیکلیں",
+        "bicycles": "سائیکلیں",
+        "clothing": "کپڑے",
+        "shoes": "جوتے",
+        "sportEquipment": "کھیلوں کا سامان",
+        "musicalInstruments": "موسیقی کے آلات",
+        "jewelry": "زیورات",
+        "watches": "گھڑیاں",
+        "healthBeauty": "صحت اور خوبصورتی",
+        "toys": "کھلونے",
+        "babyProducts": "بچوں کی اشیاء",
+        "petSupplies": "پالتو جانوروں کی اشیاء"
+      },
+      "signInToChat": "بیچنے والے سے چیٹ کرنے کے لئے سائن ان کریں",
+        "itemAddedToCart": "آئٹم کارٹ میں شامل کر دیا گیا",
+         "premiumFeaturedAd": "پریمیم نمایاں اشتہار",
+           "standardFeaturedAd": "معیاری نمایاں اشتہار",
+  "basicFeaturedAd": "بنیادی نمایاں اشتہار",
+
+
+
 
       // Pakistan CIties
       attock: "اٹک",
@@ -375,13 +499,7 @@ const resources = {
 
 
 
-      categories: {
-        mobilePhone: "موبائل فون", // Added translation for Urdu
-        laptop: "لیپ ٹاپ",
-         tablet: "ٹیبلٹس",
-        camera: "کیمرہ",
-        // Add other categories here as needed
-      },
+
       english: "English",
       urdu: "اردو",
     },
