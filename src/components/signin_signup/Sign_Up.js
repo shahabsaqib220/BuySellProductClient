@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { useTranslation } from "react-i18next";
 
 import { useDispatch } from 'react-redux';
 import { setUserDetails } from '../../Redux/userSlice'; // Import the action
@@ -9,6 +10,7 @@ import  useAxiosInstance  from '../../ContextAPI/AxiosInstance'
 
 function SignUpForm() {
   const navigate = useNavigate();
+  const { t } = useTranslation()
 
 
   const [name, setName] = useState('');
@@ -30,57 +32,54 @@ function SignUpForm() {
     e.preventDefault();
     setNameError(false);
     setAlertMessage(''); // Clear previous alert
+
   
-    
     // Input validation
     if (!name) {
       setNameError(true);
-      showAlert('Name is required');
+      showAlert(t('nameRequired'));
       return;
     }
   
     if (!email || !password || !reEnterPassword) {
-      showAlert('All fields are required');
+      showAlert(t('allFieldsRequired'));
       return;
     }
   
     if (!/\S+@\S+\.\S+/.test(email)) {
-      showAlert('Invalid email format');
+      showAlert(t('invalidEmail'));
       return;
     }
   
     if (password.length < 8 || !/[A-Z]/.test(password) || !/[!@#$%^&*]/.test(password)) {
-      showAlert('Password must be at least 8 characters long, include a capital letter, and a special symbol');
+      showAlert(t('passwordRequirements'));
       return;
     }
   
     if (password !== reEnterPassword) {
-      showAlert('Passwords do not match');
+      showAlert(t('passwordsNotMatch'));
       return;
     }
   
     setLoading(true);
-    setButtonText('Sending OTP...');
+    setButtonText(t('sendingOtp')); // Translate "Sending OTP..."
   
     try {
       // Make the request using Axios instance
-      const response = await axiosInstance.post('/auth/send-otp', {
-        email,
-      });
+      const response = await axiosInstance.post('/auth/send-otp', { email });
   
       // If successful, proceed with the next steps
       dispatch(setUserDetails({ name, email, password }));
-      showAlert('OTP sent successfully!', 'success');
+      showAlert(t('otpSent'), 'success'); // Translate "OTP sent successfully!"
       navigate('/verify-otp');
     } catch (error) {
       console.error('Error sending OTP:', error); // Log error for debugging
-      showAlert(error.response?.data?.message || 'Failed to send OTP');
+      showAlert(error.response?.data?.message || t('otpError'));
     } finally {
       setLoading(false);
-      setButtonText('Continue');
+      setButtonText(t('continue')); // Translate "Continue"
     }
   };
-
   const fetchWithTimeout = (url, options, timeout = 8000) => {
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
@@ -117,10 +116,9 @@ function SignUpForm() {
   };
 
   const steps = [
-    'Basic Information',
-    'Verify the OTP',
-    'Setup Security Question',
-    
+    t("basicInformation"),
+    t("verifyOTP"),
+    t("setupSecurityQuestion"),
   ];
 
   return (
@@ -128,7 +126,7 @@ function SignUpForm() {
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
       <Stepper activeStep={0} alternativeLabel>
       {steps.map((label, index) => (
-        <Step key={label}>
+        <Step key={index}>
           <StepLabel>{label}</StepLabel>
         </Step>
       ))}
@@ -136,7 +134,7 @@ function SignUpForm() {
         <div className="text-center mb-6">
           <img src="/path-to-your-logo.png" alt="Logo" className="mx-auto mb-4" />
         </div>
-        <h2 className="text-center text-2xl font-bold">Create Your Account</h2>
+        <h2 className="text-center text-2xl font-bold">{t("createAccount")}</h2>
 
         {alertMessage && (
           <Alert severity={alertSeverity} className="mb-4">{alertMessage}</Alert>
@@ -144,7 +142,7 @@ function SignUpForm() {
 
         <form onSubmit={handleSubmit}>
           <div className={`mb-8`}>
-            <label htmlFor="name" className="block text-gray-700 font-bold">Your Name</label>
+            <label htmlFor="name" className="block text-gray-700 font-bold"> {t("yourName")}</label>
             <input
               type="text"
               id="name"
@@ -155,7 +153,7 @@ function SignUpForm() {
             />
           </div>
           <div className="mb-8">
-            <label htmlFor="email" className="block text-gray-700 font-bold">Email</label>
+            <label htmlFor="email" className="block text-gray-700 font-bold">{t("email")}</label>
             <input
               type="email"
               id="email"
@@ -166,7 +164,7 @@ function SignUpForm() {
             />
           </div>
           <div className="mb-8 relative">
-            <label htmlFor="password" className="block text-gray-700 font-bold">Password</label>
+            <label htmlFor="password" className="block text-gray-700 font-bold"> {t("password")}</label>
             <input
               type={passwordVisible ? 'text' : 'password'}
               id="password"
@@ -184,7 +182,7 @@ function SignUpForm() {
             </button>
           </div>
           <div className="mb-8 relative">
-            <label htmlFor="reEnterPassword" className="block text-gray-700 font-bold">Re-enter Password</label>
+            <label htmlFor="reEnterPassword" className="block text-gray-700 font-bold"> {t("reEnterPassword")}</label>
             <input
               type={reEnterPasswordVisible ? 'text' : 'password'}
               id="reEnterPassword"
@@ -206,13 +204,14 @@ function SignUpForm() {
             className={`w-full font-bold py-2 px-4 bg-yellow-400 text-black rounded-lg hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 ${loading ? 'cursor-not-allowed opacity-50' : ''}`}
             disabled={loading}
           >
-            {buttonText}
+                    {loading ? t("loading") : t("continue")}
+
           </button>
           <div className="my-4 border-t border-gray-300"></div>
           <div className="text-center">
-            Already have an account?{' '}
+          {t("alreadyHaveAccount")}
             <NavLink to="/login" className="text-yellow-500 hover:underline">
-              Log in
+            {t("login")}
             </NavLink>
           </div>
         </form>

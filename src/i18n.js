@@ -5,6 +5,38 @@ import { initReactI18next } from 'react-i18next';
 const resources = {
   en: {
     translation: {
+
+      "securityQuestions": {
+        "firstPet": "What was the name of your first pet?",
+        "mothersMaidenName": "What is your mother’s maiden name?",
+        "firstSchool": "What was the name of your first school?",
+        "birthCity": "What city were you born in?",
+        "favoriteFood": "What is your favorite food?",
+      },
+
+      serialNo: "S.No",
+      tag: "Tag",
+      brand: "Brand",
+      adRemovedIn: "Ad Removed In",
+      action: "Action",
+
+      "profile": "Profile",
+      "postedAds": "Posted Ads",
+      "postAd": "Post Ad",
+      "soldProducts": "Sold Products",
+      "security": "Security",
+      "logout": "Log Out",
+
+
+
+      signIn: "Sign In",
+      email: "Email",
+      password: "Password",
+      continue: "Continue",
+      loading: "Loading...",
+      forgetPassword: "Forget Password?",
+      newHere: "New Here?",
+      createAccount: "Create your Account",
       chat: "Chat",
       cart: "Cart",
       search: "Search",
@@ -26,12 +58,106 @@ const resources = {
   "condition": "Condition",
   "price": "Price",
   "details": "Details",
+  controlAds: "Control Your Ads: <mark class='px-2 text-gray-900 bg-yellow-400 rounded'>Edit, Sell, or</mark> Mark as Sold",
   "delete": "Delete",
   "noImage": "No Image Available",
   "locationNotSpecified": "Location not specified",
   "productDetails": "Product Details",
+  yourName: "Your Name",
+  reEnterPassword: "Re-enter Password",
+  alreadyHaveAccount: "Already have an account?",
+  login: "Log in",
+  basicInformation: "Basic Information",
+  "verifyOTP": "Verify OTP",
+  "setupSecurityQuestion": "Setup Security Question",
+  "enterOtp": "Enter OTP",
+  "otpLabel": "OTP",
+  "otpExpiresIn": "OTP expires in {countdown} seconds",
+  "otpExpiredRequestNew": "OTP has expired. Please request a new one.",
+  "enter6DigitOtp": "Enter 6-digit OTP",
+  "otpMustBe6Digits": "OTP must be 6 digits",
+  "otpVerifiedSuccessfully": "OTP verified successfully!",
+  "invalidOtp": "Invalid OTP",
+  "incorrectOtpTryAgain": "Incorrect OTP. Please try again.",
+  "verifying": "Verifying...",
+  "verifyOtp": "Verify OTP",
+  "ChangeImage": "Change Image",
+    "Your Live Ads": "Your Live Ads",
+    "selectCategory": "Select Category",
+    "selectBrand": "Select Brand",
+    "selectModel": "Select Model",
+    "mobilePhoneNumber": "Mobile Phone Number",
+    "selectCity": "Select a City",
+    "description": "Description",
+    "price": "Price",
+    "selectCondition": "Select Condition",
+    "uploadImages": "Upload Images (up to 5)",
+    "adPostedSuccess": "Ad posted successfully!",
+    "invalidFiles": "Invalid files: {{files}}",
+    "posting": "Posting...",
+  "postAd": "Post Ad",
+  your: "Your",
+  soldOut: "Sold Out",
+  products: "Products",
+
+    "errors": {
+      "selectCategory": "Please select a category.",
+      "selectBrand": "Please select a brand.",
+      "mobileRequired": "Mobile Phone number is required.",
+      "selectCondition": "Please select a condition.",
+      "provideDescription": "Please provide a description.",
+      "validPrice": "Please enter a valid price.",
+      "atLeastOneImage": "At least one image is required.",
+      "selectCity": "Please select a city."
+    },
+
+
+    "modelConfirmation": {
+      "title": "Are you sure?",
+      "message": "You haven't selected a model. Do you still want to post the ad without a model?",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+
+    },
+
+    "sellFast": "Sell Fast",
+    "markAsSold": "Mark as Sold",
+    "delete": "Delete",
+    "editAd": "Edit Ad",
+    "modal": {
+      "markAsSold": "Mark Ad as Sold",
+      "markAsSoldConfirmation": "Are you sure you want to mark this Ad as Soldout? This action cannot be undone.",
+      "editAd": "Edit Ad",
+      "editAdConfirmation": "If this ad contains Payment, then the payment will be removed. Are you sure you want to edit this Ad?",
+      "deleteAd": "Delete Ad",
+      "deleteAdConfirmation": "Are you sure you want to delete this ad? This action cannot be undone."
+    },
+
+
+
+    
+      "error": {
+        "invalidFileType": "Please select an image file.",
+        "fileSizeExceeded": "File size should not exceed 1MB."
+      },
+      "premiumTag": "Premium Tag",
+      "seeLess": "See Less",
+      "seeDescription": "See Description",
+      "editAd": "Edit Ad",
+  "editAdConfirmMessage": "If this ad contains Payment, then the payment will be removed. Are you sure you want to edit this Ad?",
+  "editAdConfirm": "Confirm",
+  "actions": "Actions",
+  
+    
+
+      
+
+    
+  
+  
     
       used: "Used",
+      model: "Model",
       "brand new": "Brand New",
       refurbished: "Refurbished",
       forSale: "For Sale",
@@ -58,6 +184,49 @@ const resources = {
       "cities": "Cities",
       "all_cities": "All Cities",
        "itemAddedToCart": "Item added to cart",
+       verifyOTP: "Verify the OTP",
+        setupSecurityQuestion: "Setup Security Question",
+        nameRequired: "Name is required",
+        allFieldsRequired: "All fields are required",
+        invalidEmail: "Invalid email format",
+        passwordRequirements: "Password must be at least 8 characters long, include a capital letter, and a special symbol",
+        passwordsNotMatch: "Passwords do not match",
+        otpSent: "OTP sent successfully!",
+        otpError: "Failed to send OTP",
+          "You don't have any ads to display.": "You don't have any ads to display.",
+        sendingOtp: "Sending OTP...",
+        "security_questions_heading": "Security Questions",
+  "step_basic_info": "Basic Information",
+  "step_verify_otp": "Verify the OTP",
+  "step_security_questions": "Setup Security Question",
+  "question_label": "Question",
+  "select_question": "Select a question",
+  "answer_placeholder": "Your answer",
+  "error_empty_questions": "Please answer all questions.",
+  "error_duplicate_questions": "Both questions cannot be the same. Choose a different one.",
+  "error_duplicate_answers": "Both answers cannot be the same. Please provide different answers.",
+  "registration_success": "Registration completed successfully!",
+  "registration_failed": "Failed to complete registration",
+  "button_submit": "Finish Registration",
+  "button_loading": "Finishing...",
+  "noImage": "No Image",
+      "updateProfileImage": "Update Your Profile Image",
+      "updateImage": "Update Image",
+      "changeUsername": "Change your Username",
+      "edit": "Edit",
+      "save": "Save",
+      "uploading": "Uploading...",
+      "noTag": "No Tag",
+       "adPostedSuccess": "Ad posted successfully!",
+  "adPostedError": "Failed to post ad.",
+  "confirmMarkAsSold": "Are you sure you want to mark this Ad as Soldout? This action cannot be undone.",
+   "markSoldout": "Mark Soldout",
+  "cancel": "Cancel",
+  "deleteAd": "Delete Ad",
+  "deleteAdConfirmMessage": "Are you sure you want to delete this ad? This action cannot be undone.",
+  "delete": "Delete",
+   noSoldOutProduct: "You don’t have a Sold Out Product",
+  
 
       // Pakistan CIties
       attock: "Attock",
@@ -253,6 +422,23 @@ const resources = {
   },
   ur: {
     translation: {
+      "securityQuestions": {
+        "firstPet": "آپ کے پہلے پالتو جانور کا نام کیا تھا؟",
+        "mothersMaidenName": "آپ کی والدہ کا شادی سے پہلے کا نام کیا تھا؟",
+        "firstSchool": "آپ کے پہلے اسکول کا نام کیا تھا؟",
+        "birthCity": "آپ کس شہر میں پیدا ہوئے؟",
+        "favoriteFood": "آپ کا پسندیدہ کھانا کیا ہے؟",
+      },
+
+      "sellFast": "جلدی بیچیں",
+  "markAsSold": "فروخت شدہ کے طور پر نشان زد کریں",
+  "delete": "حذف کریں",
+  "editAd": "اشتہار میں ترمیم کریں",
+   "markAsSold": "Mark Ad as Sold",
+   "deleteAd": "اشتہار حذف کریں",
+  "deleteAdConfirmMessage": "کیا آپ واقعی اس اشتہار کو حذف کرنا چاہتے ہیں؟ یہ عمل واپس نہیں لیا جا سکتا۔",
+  "delete": "حذف کریں",
+ 
       "all_categories": "تمام زمرے",
       "min_price": "کم از کم قیمت",
       "max_price": "زیادہ سے زیادہ قیمت",
@@ -267,12 +453,31 @@ const resources = {
       price: "قیمت",
        "find_what_matters": "جو سب سے زیادہ اہم ہے اسے تلاش کریں",
   "refine_your_search": "اپنے تلاش کے تجربے کو بہتر بنائیں",
+  yourName: "آپ کا نام",
+        reEnterPassword: "پاس ورڈ دوبارہ درج کریں",
+        alreadyHaveAccount: "کیا پہلے ہی اکاؤنٹ ہے؟",
+        login: "لاگ ان کریں",
+        basicInformation: "بنیادی معلومات",
+        verifyOTP: "او ٹی پی کی تصدیق کریں",
+        setupSecurityQuestion: "سیکیورٹی سوال مرتب کریں",
+
       
       chatWithSeller: "بیچنے والے سے بات کریں",
       othersProducts: "دیگر مصنوعات",  // Urdu translation for Other Products
       youMayLike: "آپ کو پسند آ سکتا ہے", 
       viewDetails: "تفصیل دیکھیں",
       "noAdsFound": "معذرت چاہتے ہیں، لیکن کوئی اشتہار آپ کے معیار پر پورا نہیں اترا۔",
+      serialNo: "سیریل نمبر",
+      tag: "ٹیگ",
+      brand: "برانڈ",
+      adRemovedIn: "اشتہار ختم ہونے میں",
+      action: "عمل",
+      model: "ماڈل",
+      "markSoldout": "فروخت شدہ کے طور پر نشان زد کریں",
+  "cancel": "منسوخ کریں",
+  your: "آپ کے",
+  soldOut: "فروخت شدہ",
+  products: "مصنوعات",
     
       used: "استعمال شدہ",
       "brand new": "برینڈ نیو",
@@ -291,6 +496,29 @@ const resources = {
       "signInToUseCart": "اپنے کارٹ کو استعمال کرنے کے لئے سائن ان کریں",
       contactSeller: "فروخت کنندہ سے رابطہ کریں",  // Urdu translation for Contact Seller
       addToCart: "کارت میں شامل کریں",
+      "security_questions_heading": "سیکیورٹی سوالات",
+      "step_basic_info": "بنیادی معلومات",
+      "step_verify_otp": "او ٹی پی کی تصدیق کریں",
+      "step_security_questions": "سیکیورٹی سوالات سیٹ کریں",
+      "question_label": "سوال",
+      "select_question": "سوال منتخب کریں",
+      "answer_placeholder": "آپ کا جواب",
+      "error_empty_questions": "براہ کرم تمام سوالات کے جوابات دیں۔",
+      "error_duplicate_questions": "دونوں سوالات ایک جیسے نہیں ہو سکتے۔ ایک مختلف انتخاب کریں۔",
+      "error_duplicate_answers": "دونوں جوابات ایک جیسے نہیں ہو سکتے۔ مختلف جوابات دیں۔",
+      "registration_success": "رجسٹریشن کامیابی سے مکمل ہو گئی!",
+      "registration_failed": "رجسٹریشن مکمل کرنے میں ناکام",
+      "button_submit": "رجسٹریشن مکمل کریں",
+      "button_loading": "مکمل ہو رہا ہے...",
+      "noImage": "کوئی تصویر نہیں",
+      "updateProfileImage": "اپنا پروفائل امیج اپ ڈیٹ کریں",
+      "updateImage": "امیج اپ ڈیٹ کریں",
+      "changeUsername": "اپنا یوزر نیم تبدیل کریں",
+      "edit": "ترمیم کریں",
+      "save": "محفوظ کریں",
+      "uploading": "اپ لوڈ ہو رہا ہے...",
+      "Change Image": "تصویر تبدیل کریں",
+       "confirmMarkAsSold": "کیا آپ واقعی اس اشتہار کو فروخت شدہ کے طور پر نشان زد کرنا چاہتے ہیں؟ اس کارروائی کو واپس نہیں لیا جا سکتا۔",
 
       "product": "پروڈکٹ",
       "status": "حالت",
@@ -302,6 +530,15 @@ const resources = {
       "noImage": "کوئی تصویر دستیاب نہیں",
       "locationNotSpecified": "مقام درج نہیں",
       "productDetails": "مصنوعات کی تفصیلات",
+      "profile": "پروفائل",
+      "postedAds": "پوسٹ کردہ اشتہارات",
+      "postAd": "اشتہار پوسٹ کریں",
+      "soldProducts": "بیچی ہوئی مصنوعات",
+      "security": "سیکیورٹی",
+      "logout": "لاگ آؤٹ",
+       "seeLess": "کم دیکھیں",
+  "seeDescription": "تفصیل دیکھیں",
+      controlAds: "اپنے اشتہارات کو کنٹرول کریں: <mark class='px-2 text-gray-900 bg-yellow-400 rounded'>ترمیم کریں، بیچیں، یا</mark> فروخت کے طور پر نشان زد کریں",
 
 
 
@@ -330,11 +567,93 @@ const resources = {
         "babyProducts": "بچوں کی اشیاء",
         "petSupplies": "پالتو جانوروں کی اشیاء"
       },
+
+      
+        "error": {
+          "invalidFileType": "براہ کرم ایک تصویر فائل منتخب کریں۔",
+          "fileSizeExceeded": "فائل کا سائز 1MB سے زیادہ نہیں ہونا چاہئے۔"
+        },
+      
       "signInToChat": "بیچنے والے سے چیٹ کرنے کے لئے سائن ان کریں",
         "itemAddedToCart": "آئٹم کارٹ میں شامل کر دیا گیا",
          "premiumFeaturedAd": "پریمیم نمایاں اشتہار",
            "standardFeaturedAd": "معیاری نمایاں اشتہار",
+            "posting": "پوسٹ ہو رہا ہے...",
+  "postAd": "اشتہار پوسٹ کریں",
   "basicFeaturedAd": "بنیادی نمایاں اشتہار",
+  "verifyOTP": "او ٹی پی کی تصدیق کریں",
+  "setupSecurityQuestion": "سیکیورٹی سوال ترتیب دیں",
+  "enterOtp": "او ٹی پی درج کریں",
+  "otpLabel": "او ٹی پی",
+  "otpExpiresIn": "او ٹی پی {countdown} سیکنڈ میں ختم ہو جائے گا",
+  "otpExpiredRequestNew": "او ٹی پی کی میعاد ختم ہو چکی ہے۔ براہ کرم نیا طلب کریں۔",
+  "enter6DigitOtp": "6 ہندسوں کا او ٹی پی درج کریں",
+  "otpMustBe6Digits": "او ٹی پی 6 ہندسوں پر مشتمل ہونا ضروری ہے",
+  "otpVerifiedSuccessfully": "او ٹی پی کامیابی سے تصدیق ہو گیا!",
+  "invalidOtp": "غلط او ٹی پی",
+  "incorrectOtpTryAgain": "غلط او ٹی پی۔ براہ کرم دوبارہ کوشش کریں۔",
+  "verifying": "تصدیق ہو رہی ہے...",
+  "verifyOtp": "او ٹی پی کی تصدیق کریں",
+  signIn: "سائن ان کریں",
+  email: "ای میل",
+  password: "پاس ورڈ",
+  continue: "جاری رکھیں",
+  loading: "لوڈ ہو رہا ہے...",
+  forgetPassword: "پاس ورڈ بھول گئے؟",
+  newHere: "کیا آپ نئے ہیں؟",
+  createAccount: "اپنا اکاؤنٹ بنائیں",
+  nameRequired: "نام درکار ہے",
+  allFieldsRequired: "تمام فیلڈز درکار ہیں",
+  invalidEmail: "غلط ای میل فارمیٹ",
+  passwordRequirements: "پاس ورڈ کم از کم 8 حروف پر مشتمل ہو، ایک بڑا حرف اور ایک خاص علامت شامل ہو",
+  passwordsNotMatch: "پاس ورڈز مماثل نہیں ہیں",
+  otpSent: "او ٹی پی کامیابی سے بھیج دیا گیا!",
+  otpError: "او ٹی پی بھیجنے میں ناکام",
+  sendingOtp: "او ٹی پی بھیجا جا رہا ہے...",
+   "Your Live Ads": "آپ کے جاری اشتہارات",
+   "You don't have any ads to display.": "آپ کے دکھانے کے لیے کوئی اشتہارات نہیں ہیں۔",
+    "selectCategory": "زمرہ منتخب کریں",
+  "selectBrand": "برانڈ منتخب کریں",
+  "selectModel": "ماڈل منتخب کریں",
+  "mobilePhoneNumber": "موبائل فون نمبر",
+  "selectCity": "شہر منتخب کریں",
+  "description": "تفصیل",
+  "price": "قیمت",
+  "selectCondition": "حالت منتخب کریں",
+  "uploadImages": "تصاویر اپلوڈ کریں (زیادہ سے زیادہ 5)",
+  "adPostedSuccess": "اشتہار کامیابی سے پوسٹ ہو گیا!",
+  "invalidFiles": "غلط فائلیں: {{files}}",
+  "premiumTag": "پریمیم ٹیگ",
+
+   "errors": {
+    "selectCategory": "براہ کرم ایک زمرہ منتخب کریں۔",
+    "selectBrand": "براہ کرم ایک برانڈ منتخب کریں۔",
+    "mobileRequired": "موبائل فون نمبر درکار ہے۔",
+    "selectCondition": "براہ کرم ایک حالت منتخب کریں۔",
+    "provideDescription": "براہ کرم تفصیل فراہم کریں۔",
+    "validPrice": "براہ کرم درست قیمت درج کریں۔",
+    "atLeastOneImage": "کم از کم ایک تصویر درکار ہے۔",
+    "selectCity": "براہ کرم ایک شہر منتخب کریں۔"
+  },
+
+  "modelConfirmation": {
+    "title": "کیا آپ یقین رکھتے ہیں؟",
+    "message": "آپ نے ماڈل منتخب نہیں کیا ہے۔ کیا آپ ماڈل کے بغیر اشتہار پوسٹ کرنا چاہتے ہیں؟",
+    "confirm": "تصدیق کریں",
+    "cancel": "منسوخ کریں"
+  },
+   "actions": "اختیارات",
+
+  "noTag": "کوئی ٹیگ نہیں",
+  "adPostedSuccess": "اشتہار کامیابی سے پوسٹ کر دیا گیا!",
+  "adPostedError": "اشتہار پوسٹ کرنے میں ناکام رہا۔",
+  "markAsSold": "اشتہار کو فروخت شدہ کے طور پر نشان زد کریں",
+  "editAd": "اشتہار میں ترمیم کریں",
+  "editAdConfirmMessage": "اگر اس اشتہار میں ادائیگی شامل ہے، تو ادائیگی ہٹا دی جائے گی۔ کیا آپ واقعی اس اشتہار میں ترمیم کرنا چاہتے ہیں؟",
+  "editAdConfirm": "تصدیق کریں",
+  noSoldOutProduct: "آپ کے پاس کوئی فروخت شدہ مصنوعات نہیں ہیں",
+   
+
 
 
 

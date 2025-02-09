@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import useAxiosInstance from '../ContextAPI/AxiosInstance'; // Use your custom hook
 import { Container, Grid, Card, CardContent, Typography, Pagination, CardMedia, Box, Skeleton } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import categoryMapping from '../utils/CategoryMapping';
 
 const AdsList = () => {
+const { t } = useTranslation();
   const axiosInstance = useAxiosInstance(); // Call the custom Axios instance hook
   const [ads, setAds] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,7 +42,7 @@ const AdsList = () => {
         gutterBottom
         sx={{ fontWeight: 400, color: '#333', textAlign: 'left', marginBottom: 10, marginLeft: 3 }}
       >
-        Your Live Ads
+        {t('Your Live Ads')}
       </Typography>
 
       {loading ? (
@@ -52,7 +55,7 @@ const AdsList = () => {
         </Grid>
       ) : ads.length === 0 ? (
         <Typography variant="h6" align="center" color="text.secondary">
-          You don't have any ads to display.
+          {t("You don't have any ads to display.")}
         </Typography>
       ) : (
         <>
@@ -102,7 +105,7 @@ const AdsList = () => {
                         textOverflow: 'ellipsis',
                       }}
                     >
-                     Catagory: {ad.category}
+                      {t("category")}: {t(`categories.${categoryMapping[ad.category]}`)}
                     </Typography>
                     <Typography
                       variant="h6"
@@ -128,7 +131,7 @@ const AdsList = () => {
                       variant="body2"
                       sx={{ fontSize: '1rem', color: '#00796b', fontWeight: 600, marginTop: 1 }}
                     >
-                      Rs. {ad.price}
+                       {t("price")}: {ad.price}
                     </Typography>
                   </CardContent>
                 </Card>

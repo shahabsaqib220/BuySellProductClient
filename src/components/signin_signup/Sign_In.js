@@ -3,8 +3,10 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { Alert, Collapse } from '@mui/material'; // MUI components
 import useAxiosInstance from '../../ContextAPI/AxiosInstance';
 import { useAuth } from '../../ContextAPI/AuthContext'; // Import AuthContext
+import { useTranslation } from "react-i18next";
 
 function SignIn() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [alertMessage, setAlertMessage] = useState('');
@@ -95,11 +97,11 @@ function SignIn() {
           )}
         </Collapse>
 
-        <h2 className="text-2xl font-semibold mb-6 text-center">Sign In</h2>
+        <h2 className="text-2xl font-semibold mb-6 text-center">{t("signIn")}</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-8">
             <label htmlFor="email" className="block font-bold text-sm text-black mb-1">
-              Email
+            {t("email")}
             </label>
             <input
               type="text"
@@ -114,7 +116,7 @@ function SignIn() {
 
           <div className="mb-6">
             <label htmlFor="password" className="block text-sm font-bold text-black mb-1">
-              Password
+            {t("password")}
             </label>
             <input
               type="password"
@@ -132,7 +134,7 @@ function SignIn() {
             disabled={loading} // Disable the button while loading
             className="w-full py-2 bg-yellow-400 text-black rounded-lg font-semibold hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-500"
           >
-            {loading ? 'Loading...' : 'Continue'} {/* Change button text based on loading state */}
+             {loading ? t("loading") : t("continue")} {/* Change button text based on loading state */}
           </button>
         </form>
 
@@ -140,15 +142,15 @@ function SignIn() {
         className="text-sm text-gray-600 cursor-pointer mt-3"
         onClick={handleForgetPasswordClick}
       >
-        Forget Password?
+         {t("forgetPassword")}
       </p>
         <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">New Here?</p>
+          <p className="text-sm text-gray-600">{t("newHere")}?</p>
           <NavLink
             to="/register"
             className="inline-block mt-2 px-4 py-2 bg-yellow-400 text-black rounded-lg font-semibold hover:bg-yellow-400"
           >
-            Create your Account
+             {t("createAccount")}
           </NavLink>
         </div>
       </div>

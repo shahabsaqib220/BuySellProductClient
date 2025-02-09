@@ -1,3 +1,5 @@
+
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../src/ContextAPI/AuthContext';
 import { FaEdit } from 'react-icons/fa';
@@ -7,8 +9,10 @@ import { FaSpinner } from 'react-icons/fa'; // Import spinner icon
 import UserNavbar from './UserNavbar';
 import LetterPullup from "./LetterPullup";
 import UserLiveAds from "./UserLiveAds";
+import { useTranslation } from 'react-i18next';
 
 const ProfileImage = () => {
+  const { t } = useTranslation();
   const { user, isLoggedIn } = useAuth(); // Check if user is logged in
   const [profileImage, setProfileImage] = useState(null);
   const [file, setFile] = useState(null);
@@ -18,6 +22,7 @@ const ProfileImage = () => {
   const [loading, setLoading] = useState(true); // Initial loading when fetching profile data
   const [newName, setNewName] = useState(username);
   const [uploading, setUploading] = useState(false); // Loading state for image upload
+  const [error, setError] = useState(''); // State for error messages
   const axiosInstance = useAxiosInstance(); 
 
   // Redirect to login if not logged in
@@ -72,13 +77,27 @@ const ProfileImage = () => {
   };
 
   const handleImageChange = (e) => {
-    setFile(e.target.files[0]);
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setProfileImage(reader.result); // Preview selected image
-    };
-    if (e.target.files[0]) {
-      reader.readAsDataURL(e.target.files[0]); // Read file as data URL
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      if (!selectedFile.type.startsWith('image/')) {
+        setError(t('error.invalidFileType'));
+        setFile(null);
+        setProfileImage(null);
+        return;
+      }
+      if (selectedFile.size > 1024 * 1024) { // 1MB limit
+        setError(t('error.fileSizeExceeded'));
+        setFile(null);
+        setProfileImage(null);
+        return;
+      }
+      setError('');
+      setFile(selectedFile);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImage(reader.result); // Preview selected image
+      };
+      reader.readAsDataURL(selectedFile); // Read file as data URL
     }
   };
 
@@ -96,7 +115,6 @@ const ProfileImage = () => {
       if (response.status === 200) {
         const data = response.data;
         setProfileImage(data.profileImageUrl); // Update the profile image
-        
       } else {
         console.error('Error updating profile image:', response.data.message);
       }
@@ -125,7 +143,7 @@ const ProfileImage = () => {
         </h1>
         
         <h6 className="text-lg space-x-20 mt-9 mb-5 font-bold">
-          <LetterPullup text="Update Your Profile Image" delay={0.05} />
+          <LetterPullup text='Update Your Profile Image' delay={0.05} />
         </h6>
 
         <div className="relative mb-6">
@@ -144,21 +162,23 @@ const ProfileImage = () => {
           </div>
         </div>
 
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
         <button
           onClick={handleImageUpload}
-          disabled={!file || uploading} // Disable the button when there's no file or during uploading
-          className={`w-full py-2 px-4 rounded-lg text-white ${file && !uploading ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed'} transition-colors font-semibold`}
+          disabled={!file || uploading || !!error} // Disable the button when there's no file, during uploading, or if there's an error
+          className={`w-full py-2 px-4 rounded-lg text-white ${file && !uploading && !error ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed'} transition-colors font-semibold`}
         >
           {uploading ? (
             <div className="flex items-center justify-center">
               <FaSpinner className="animate-spin mr-2" /> Uploading...
             </div>
           ) : (
-            'Update Image'
+            t('updateImage')
           )}
         </button>
 
-        <h6 className="text-lg -ml-32 mt-9 font-bold">Change your Username</h6>
+        <h6 className="text-lg -ml-32 mt-9 font-bold">{t('changeUsername')}</h6>
 
         <div className="flex items-center mt-7 space-x-2">
           <div className="relative w-full">
@@ -176,9 +196,9 @@ const ProfileImage = () => {
           </div>
           <button
             onClick={() => (isEditing ? handleEdit() : setIsEditing(true))}
-            className={`px-4 py-2 text-white rounded-lg transition-colors duration-300 ease-in-out ${isEditing ? 'bg-blue-500 hover:bg-blue-600' : 'bg-yellow-400 hover:bg-yellow-500'}`}
+            className={`px-4 py-2 text-black rounded-lg transition-colors duration-300 ease-in-out ${isEditing ? 'bg-blue-500 hover:bg-blue-600' : 'bg-yellow-400 hover:bg-yellow-500'}`}
           >
-            {isEditing ? 'Save' : 'Edit'}
+            {isEditing ? t('save') : t('edit')}
           </button>
         </div>
       </div>

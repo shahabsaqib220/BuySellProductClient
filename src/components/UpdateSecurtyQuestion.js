@@ -1,254 +1,310 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { useAuth } from '../../src/ContextAPI/AuthContext';
 import useAxiosInstance from '../ContextAPI/AxiosInstance';
-import { TextField, Button, Typography, Box, MenuItem, Container } from '@mui/material';
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Typography,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  Snackbar,
+  Alert,
+  Container,
+  Box,
+} from "@mui/material";
+
+// Security Questions List
+const newSecurityQuestions = [
+  { value: "first-pet", label: "What was the name of your first pet?" },
+  { value: "favorite-teacher", label: "Who was your favorite teacher?" },
+  { value: "birthplace", label: "In which city were you born?" },
+  { value: "mother-maiden", label: "What is your mother’s maiden name?" },
+  { value: "first-job", label: "What was your first job?" },
+];
 
 const UpdateSecurityQuestions = () => {
   const { user } = useAuth();
   const axiosInstance = useAxiosInstance();
 
-  const [loadingQuestions, setLoadingQuestions] = useState(false);
+  const [step, setStep] = useState(1);
+  const [open, setOpen] = useState(false);
+  const [password, setPassword] = useState("");
   const [securityQuestions, setSecurityQuestions] = useState([]);
-  const [password, setPassword] = useState('');
-  const [passwordVerified, setPasswordVerified] = useState(false);
-  const [securityVerified, setSecurityVerified] = useState(false);
-  const [newQuestions, setNewQuestions] = useState({ question1: '', question2: '' });
-  
+  const [securityAnswers, setSecurityAnswers] = useState({});
+  const [newQuestions, setNewQuestions] = useState([
+    { question: "", answer: "" },
+    { question: "", answer: "" },
+  ]);
 
-  const [answers, setAnswers] = useState({});
-  const [newAnswers, setNewAnswers] = useState({ answer1: '', answer2: '' });
-  const [oldAnswers, setOldAnswers] = useState({ answer1: '', answer2: '' });
-  const [existingQuestions, setExistingQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
-  const [loadingVerifyAnswers, setLoadingVerifyAnswers] = useState(false);
+  const [error, setError] = useState("");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("info");
 
-  // Sample new security questions for the user to choose from
-  const newSecurityQuestions = [
-    { value: 'first-pet', label: 'What was the name of your first pet?' },
-    { value: 'favorite-teacher', label: 'Who was your favorite teacher?' },
-    { value: 'birthplace', label: 'In which city were you born?' },
-    { value: 'mother-maiden', label: 'What is your mother’s maiden name?' },
-    { value: 'first-job', label: 'What was your first job?' },
-  ];
+  // Open modal
+  const handleOpen = () => {
+    setStep(1);
+    setOpen(true);
+  };
 
-  // Fetch existing security questions after password is verified
+  // Close modal
+  const handleClose = () => {
+    setOpen(false);
+    setError("");
+    setPassword("");
+    setSecurityAnswers({});
+    setNewQuestions([
+      { question: "", answer: "" },
+      { question: "", answer: "" },
+    ]);
+  };
+
+  // Show snackbar message
+  const showSnackbar = (message, severity = "info") => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+
+  // Close snackbar
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
+  // 🔹 Step 1: Verify Password
+  const handleVerifyPassword = async () => {
+    setLoading(true);
+    try {
+      const response = await axiosInstance.post("/security/options/verify-old-password", {
+        email: user.email,
+        oldPassword: password,
+      });
+      setStep(2);
+      fetchSecurityQuestions();
+    } catch (err) {
+      setError(err.response?.data?.message || "Password verification failed.");
+      showSnackbar(err.response?.data?.message || "Password verification failed.", "error");
+    }
+    setLoading(false);
+  };
+
+  // 🔹 Step 2: Fetch Security Questions
   const fetchSecurityQuestions = async () => {
-    setLoadingQuestions(true);
-    try {
-      const securityQuestionsResponse = await axiosInstance.get('/security/options/security-questions');
-      setSecurityQuestions(securityQuestionsResponse.data.questions);
-      setMessage('Answer the security questions to proceed.');
-      setError('');
-    } catch (err) {
-      setError('Failed to load security questions. Please try again.');
-      console.log(err);
-    } finally {
-      setLoadingQuestions(false);
-    }
-  };
-
-  // Verify password function
-  const verifyPassword = async () => {
     setLoading(true);
     try {
-      const response = await axiosInstance.post('/security/options/verify-old-password', { 
-        email: user.email, 
-        oldPassword: password
-      });
-      
-      if (response.data.success) {
-        setPasswordVerified(true);
-        setError('');
-        setMessage('Password verified. Please answer the security questions.');
-        fetchSecurityQuestions();
-      } else {
-        setError('Incorrect password.');
-      }
+      const response = await axiosInstance.get(`/security/options/security-questions/${user.email}`);
+      setSecurityQuestions(response.data.securityQuestions);
     } catch (err) {
-      setError('Failed to verify password.');
-    } finally {
-      setLoading(false);
+      setError("Failed to fetch security questions.");
+      showSnackbar("Failed to fetch security questions.", "error");
     }
+    setLoading(false);
   };
 
-  // Verify old security answers
-  const verifySecurityAnswers = async () => {
+  // 🔹 Step 2: Verify Security Answers
+  const handleVerifyAnswers = async () => {
     setLoading(true);
     try {
-      const payload = {
+      const answersArray = Object.values(securityAnswers);
+      const response = await axiosInstance.post("/security/options/verify-security-answers", {
         email: user.email,
-        answers, // Dynamically constructed answers object
-      };
-      console.log('Payload sent to server:', payload); // Log the payload for debugging
-  
-      const response = await axiosInstance.post('/security/options/verify-security-answers', payload);
-  
-      if (response.data.success) {
-        setSecurityVerified(true);
-        setError('');
-        setMessage('Security answers verified. Now you can set new security questions.');
-      } else {
-        setError('Incorrect security answers.');
-      }
+        answers: answersArray,
+      });
+      setStep(3); // Move to the next step if successful
     } catch (err) {
-      console.error('Error verifying security answers:', err);
-      setError('Failed to verify security answers.');
-    } finally {
-      setLoading(false);
+      setError(err.response?.data?.message || "Security answers verification failed.");
+      showSnackbar(err.response?.data?.message || "Security answers verification failed.", "error");
     }
+    setLoading(false);
   };
-  
 
-  // Update new security questions
-  const updateSecurityQuestions = async () => {
-    if (newQuestions.question1 === newQuestions.question2) {
-      setError('Security questions must not be the same.');
-      return;
-    }
-    if (!newAnswers.answer1 || !newAnswers.answer2) {
-      setError('Answers to new security questions must not be empty.');
-      return;
-    }
-
+  // 🔹 Step 3: Update Security Questions
+  const handleUpdateQuestions = async () => {
     setLoading(true);
     try {
-      const response = await axiosInstance.post('/security/options/update-user-answers', {
+      // Validate questions and answers
+      const questions = newQuestions.map((q) => q.question);
+      const answers = newQuestions.map((q) => q.answer);
+
+      if (new Set(questions).size !== questions.length) {
+        showSnackbar("Please select unique security questions.", "error");
+        return;
+      }
+
+      if (new Set(answers).size !== answers.length) {
+        showSnackbar("Please provide unique answers for each question.", "error");
+        return;
+      }
+
+      await axiosInstance.post("/security/options/update-user-answers", {
         email: user.email,
-        newQuestions,
-        newAnswers
+        securityQuestions: newQuestions,
       });
-      setMessage('Security questions updated successfully.');
-      setError('');
+      showSnackbar("Security questions updated successfully!", "success");
+      handleClose();
     } catch (err) {
-      setError('Failed to update security questions.');
-    } finally {
-      setLoading(false);
+      setError("Failed to update security questions.");
+      showSnackbar("Failed to update security questions.", "error");
     }
+    setLoading(false);
+  };
+
+  // Check if questions and answers are unique
+  const isFormValid = () => {
+    const questions = newQuestions.map((q) => q.question);
+    const answers = newQuestions.map((q) => q.answer);
+
+    const areQuestionsUnique = new Set(questions).size === questions.length;
+    const areAnswersUnique = new Set(answers).size === answers.length;
+
+    return areQuestionsUnique && areAnswersUnique;
   };
 
   return (
     <Container maxWidth="sm" className="p-6 bg-white rounded-lg shadow-lg mt-10">
-      <Typography variant="h4" align="center" gutterBottom>
-        Update Your Security Questions
-      </Typography>
-      <Typography variant="body1" align="center" gutterBottom>
-        Follow the steps below to update your security questions.
-      </Typography>
 
-      {!passwordVerified && (
-        <Box mt={4}>
+
+
+
+      
+      <Box mt={4} textAlign="center">
+        <Typography variant="h4" gutterBottom>
+          Update Your Security Questions
+        </Typography>
+        <Typography variant="body1" color="textSecondary" gutterBottom>
+          Security questions help protect your account. Make sure to set unique answers that only you know.
+        </Typography>
+        <Button variant="contained" color="primary"  onClick={handleOpen}>
+          Update Security Questions
+        </Button>
+      </Box>
+
+      {/* 🔹 Modal: Password Verification */}
+      <Dialog open={open && step === 1} onClose={handleClose}>
+        <DialogTitle>Enter Your Password</DialogTitle>
+        <DialogContent>
           <TextField
-            type="password"
             fullWidth
-            label="Old Password"
-            variant="outlined"
+            type="password"
+            label="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+          
+            margin="normal"
           />
-          <Button
-            onClick={verifyPassword}
-            disabled={loading}
-            fullWidth
-            variant="contained"
-            color="primary"
-          >
-            {loading ? 'Verifying Password...' : 'Verify Password'}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="secondary">
+            Cancel
           </Button>
-        </Box>
-      )}
+          <Button onClick={handleVerifyPassword} color="primary" disabled={loading}>
+            {loading ? "Verifying..." : "Next"}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-      {passwordVerified && !securityVerified && (
-        <Box mt={4}>
-          <Typography variant="body1">Answer the security questions below:</Typography>
+      {/* 🔹 Modal: Security Questions Verification */}
+      <Dialog open={open && step === 2} onClose={handleClose}>
+        <DialogTitle>Verify Security Answers</DialogTitle>
+        <DialogContent>
           {securityQuestions.map((question, index) => (
-           <TextField
-           key={question._id}
-           fullWidth
-           margin="normal"
-           label={`Answer for: ${question.question}`}
-           variant="outlined"
-           value={answers[question._id] || ''} // Use the answer for this question ID
-           onChange={(e) =>
-             setAnswers({ ...answers, [question._id]: e.target.value }) // Update the answer dynamically
-           }
-         />
+            <TextField
+              key={index}
+              fullWidth
+              label={question}
+              value={securityAnswers[question] || ""}
+              onChange={(e) =>
+                setSecurityAnswers({ ...securityAnswers, [question]: e.target.value })
+              }
+              margin="normal"
+            />
           ))}
-         <Button
-  onClick={verifySecurityAnswers}
-  disabled={loading}
-  fullWidth
-  variant="contained"
-  color="primary"
->
-  {loading ? 'Verifying Answers...' : 'Verify Security Answers'}
-</Button>
-
-        </Box>
-      )}
-
-      {securityVerified && (
-        <Box mt={4}>
-          <Typography variant="body1">Choose new security questions:</Typography>
-          <TextField
-            select
-            fullWidth
-            label="New Security Question 1"
-            margin="normal"
-            value={newQuestions.question1}
-            onChange={(e) => setNewQuestions({ ...newQuestions, question1: e.target.value })}
-          >
-            {newSecurityQuestions.map((question) => (
-              <MenuItem key={question.value} value={question.value}>
-                {question.label}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            select
-            fullWidth
-            label="New Security Question 2"
-            margin="normal"
-            value={newQuestions.question2}
-            onChange={(e) => setNewQuestions({ ...newQuestions, question2: e.target.value })}
-          >
-            {newSecurityQuestions.map((question) => (
-              <MenuItem key={question.value} value={question.value}>
-                {question.label}
-              </MenuItem>
-            ))}
-          </TextField>
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Answer for Question 1"
-            variant="outlined"
-            value={newAnswers.answer1}
-            onChange={(e) => setNewAnswers({ ...newAnswers, answer1: e.target.value })}
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Answer for Question 2"
-            variant="outlined"
-            value={newAnswers.answer2}
-            onChange={(e) => setNewAnswers({ ...newAnswers, answer2: e.target.value })}
-          />
-          <Button
-            onClick={updateSecurityQuestions}
-            disabled={loading}
-            fullWidth
-            variant="contained"
-            color="primary"
-          >
-            {loading ? 'Updating Questions...' : 'Update Security Questions'}
+          
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="secondary">
+            Cancel
           </Button>
-        </Box>
-      )}
+          <Button onClick={handleVerifyAnswers} color="primary" disabled={loading}>
+            {loading ? "Verifying..." : "Next"}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-      {message && <Typography className="mt-4 text-green-600">{message}</Typography>}
-      {error && <Typography className="mt-4 text-red-600">{error}</Typography>}
+      {/* 🔹 Modal: Update Security Questions */}
+      <Dialog open={open && step === 3} onClose={handleClose}>
+  <DialogTitle>Update Security Questions</DialogTitle>
+  <DialogContent>
+    {/* 🔹 Instruction Paragraph */}
+    <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+      Select unique questions and provide answers to enable the save button.
+    </Typography>
+
+    {/* 🔹 Security Questions Selection */}
+    {newQuestions.map((item, index) => (
+      <Box key={index} mb={2}>
+        <FormControl fullWidth margin="normal">
+          <InputLabel>Security Question {index + 1}</InputLabel>
+          <Select
+            value={item.question}
+            onChange={(e) => {
+              const updated = [...newQuestions];
+              updated[index].question = e.target.value;
+              setNewQuestions(updated);
+            }}
+          >
+            {newSecurityQuestions.map((q) => (
+              <MenuItem key={q.value} value={q.label}>
+                {q.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <TextField
+          fullWidth
+          label="Answer"
+          margin="normal"
+          value={item.answer}
+          onChange={(e) => {
+            const updated = [...newQuestions];
+            updated[index].answer = e.target.value;
+            setNewQuestions(updated);
+          }}
+        />
+      </Box>
+    ))}
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleClose} color="secondary">Cancel</Button>
+    <Button
+      onClick={handleUpdateQuestions}
+      color="primary"
+      disabled={loading || !isFormValid()} // ✅ Save button disabled until valid
+    >
+      {loading ? "Updating..." : "Save"}
+    </Button>
+  </DialogActions>
+</Dialog>
+
+
+      {/* Snackbar for messages */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };

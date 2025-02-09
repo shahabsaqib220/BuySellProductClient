@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { RiLogoutBoxLine } from "react-icons/ri";
 import { useAuth } from "../ContextAPI/AuthContext";
 import { NavLink } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
 
 const UserNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { logout } = useAuth();
+  const { t } = useTranslation();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -32,7 +34,7 @@ const UserNavbar = () => {
       : "text-yellow-100 bg-yellow-500 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:text-black hover:bg-yellow-500"
   }
 >
-  Profile
+{t('profile')}
 </NavLink>
 
             <NavLink
@@ -43,7 +45,7 @@ const UserNavbar = () => {
                   : "text-yellow-100 bg-yellow-500 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:text-black hover:bg-yellow-500"
               }
             >
-              Post Ad
+             {t('postAd')}
             </NavLink>
             <NavLink
               to="/viewads"
@@ -53,7 +55,7 @@ const UserNavbar = () => {
                   : "text-yellow-100 bg-yellow-500 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:text-black hover:bg-yellow-500"
               }
             >
-              Posted Ads
+               {t('postedAds')}
             </NavLink>
             <NavLink
               to="/soldoutproducts"
@@ -63,7 +65,7 @@ const UserNavbar = () => {
                   : "text-yellow-100 bg-yellow-500 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:text-black hover:bg-yellow-500"
               }
             >
-              Sold Products
+               {t('soldProducts')}
             </NavLink>
             <NavLink
               to="/security"
@@ -73,13 +75,13 @@ const UserNavbar = () => {
                   : "text-yellow-100 bg-yellow-500 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:text-black hover:bg-yellow-500"
               }
             >
-              Security
+               {t('security')}
             </NavLink>
             <button
               onClick={logout}
               className="text-white space-x-4 bg-yellow-500 hover:bg-red-500 font-medium rounded-lg px-4 py-2"
             >
-              Log Out
+               {t('logout')}
             </button>
           </div>
 

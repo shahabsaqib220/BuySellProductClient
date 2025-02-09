@@ -3,7 +3,8 @@ import useAxiosInstance from '../ContextAPI/AxiosInstance';
 import UserNavbar from './UserNavbar';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../src/ContextAPI/AuthContext';
-
+import categoryMapping from '../utils/CategoryMapping';
+import { useTranslation } from "react-i18next";
 
 
 
@@ -24,6 +25,9 @@ const [adToEdit, setAdToEdit] = useState(null);
   const [adToDelete, setAdToDelete] = useState(null);
   const axiosInstance = useAxiosInstance(); 
   const { user, isLoggedIn } = useAuth(); 
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const { t, i18n } = useTranslation();
+  const isUrdu = i18n.language === "ur"; 
 
 
   useEffect(() => {
@@ -63,6 +67,31 @@ const [adToEdit, setAdToEdit] = useState(null);
   
     fetchUserAds();
   }, [axiosInstance]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(interval); // Cleanup interval on unmount
+  }, []);
+
+  const remainingTime = (expiresAt) => {
+    const expirationDate = new Date(expiresAt);
+    const timeDiff = expirationDate - new Date(); // Use current time
+  
+    if (timeDiff <= 0) {
+      return "Ad has expired";
+    }
+  
+    const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+  
+    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+  };
+
 
   const sortedAds = [...ads].sort((a, b) => {
     if (a.premium && !b.premium) return -1;
@@ -133,6 +162,8 @@ const [adToEdit, setAdToEdit] = useState(null);
       console.error('Error:', error);
     }
   };
+
+  
   
   
   
@@ -192,6 +223,9 @@ const [adToEdit, setAdToEdit] = useState(null);
 
 
 
+
+
+
   if (loading) {
     return (
       <div>
@@ -205,6 +239,8 @@ const [adToEdit, setAdToEdit] = useState(null);
     );
   }
 
+  
+
  
   return (
     <>
@@ -212,9 +248,10 @@ const [adToEdit, setAdToEdit] = useState(null);
     <div>
       
     <div className="flex justify-between items-center mb-4 ml-4 mt-4">
-        <h3 className="text-xl font-semibold leading-none tracking-tight text-gray-900 md:text-xl lg:text-xl ">
-          Control Your Ads: <mark className="px-2 text-gray-900 bg-yellow-400 rounded ">Edit, Sell, or</mark> Mark as Sold
-        </h3>
+    <h3 
+      className={`text-xl font-semibold leading-none tracking-tight text-gray-900 md:text-xl lg:text-xl ${isUrdu ? "rtl text-right" : "ltr text-left"}`}
+      dangerouslySetInnerHTML={{ __html: t("controlAds") }} 
+    />
       </div>
       
 
@@ -225,18 +262,19 @@ const [adToEdit, setAdToEdit] = useState(null);
       {currentAds.length > 0 ? (
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
-          <thead className="text-xs text-black bg-yellow-400 uppercase   ">
+          <thead className="text-xs text-black bg-yellow-400">
             <tr>
-              <th className="px-6 py-3">S.No</th>
-              <th className="px-6 py-3">Tag</th>
-              <th className="px-6 py-3">Category</th>
-              <th className="px-6 py-3">Brand</th>
-              <th className="px-6 py-3">Model</th>
-              <th className="px-6 py-3">Price</th>
-              <th className="px-6 py-3">Description</th>
-              <th className="px-6 py-3">Mobile Number</th>
-              <th className="px-6 py-3">Condition</th>
-              <th className="px-6 py-3">Action</th>
+              <th className="px-6 py-3">{t("serialNo")}</th>
+              <th className="px-6 py-3">{t("tag")}</th>
+              <th className="px-6 py-3">{t("category")}</th>
+              <th className="px-6 py-3">{t("brand")}</th>
+              <th className="px-6 py-3">{t("model")}</th>
+              <th className="px-6 py-3">{t("price")}</th>
+              <th className="px-6 py-3">{t("description")}</th>
+              <th className="px-6 py-3">{t("mobilePhone")}</th>
+              <th className="px-6 py-3">{t("condition")}</th>
+              <th className="px-4 py-2">{t("adRemovedIn")}</th>
+              <th className="px-6 py-3">{t("action")}</th>
             </tr>
           </thead>
           <tbody>
@@ -246,7 +284,7 @@ const [adToEdit, setAdToEdit] = useState(null);
       <td className="border px-4 py-2">
         {ad.premium ? (
           <span className="inline-block bg-yellow-400 text-black px-3 py-1 rounded-full text-sm font-semibold">
-            Premium Tag
+             {t("premiumTag")}
           </span>
         ) : ad.standard ? (
           <span className="inline-block bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
@@ -258,7 +296,7 @@ const [adToEdit, setAdToEdit] = useState(null);
           </span>
         ) : (
           <span className="inline-block bg-gray-300 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold">
-            No Tag
+             {t("noTag")}
           </span>
         )}
       </td>
@@ -266,31 +304,39 @@ const [adToEdit, setAdToEdit] = useState(null);
       <td className="border px-4 py-2">{ad.brand}</td>
       <td className="border px-4 py-2">{ad.model}</td>
       <td className="border px-4 py-2">{ad.price}</td>
+      
       <td className="border px-4 py-2">
-        {expandedDescriptions[ad._id] || ad.description.split(' ').length <= 5 ? (
-          <div>
-            {chunkDescription(ad.description, 9).map((line, lineIndex) => (
-              <div key={lineIndex}>{line}</div>
-            ))}
-          </div>
-        ) : (
-          `${ad.description.split(' ').slice(0, 5).join(' ')}...`
-        )}
-        <span className="text-blue-500 hover:underline cursor-pointer" onClick={() => toggleDescription(ad._id)}>
-          {expandedDescriptions[ad._id] ? ' See Less' : ' See Description'}
-        </span>
-      </td>
+  {expandedDescriptions[ad._id] || ad.description.split(" ").length <= 5 ? (
+    <div>
+      {chunkDescription(ad.description, 9).map((line, lineIndex) => (
+        <div key={lineIndex}>{line}</div>
+      ))}
+    </div>
+  ) : (
+    `${ad.description.split(" ").slice(0, 5).join(" ")}...`
+  )}
+  <span
+    className="text-blue-500 hover:underline cursor-pointer"
+    onClick={() => toggleDescription(ad._id)}
+  >
+    {expandedDescriptions[ad._id] ? t("seeLess") : t("seeDescription")}
+  </span>
+</td>
       <td className="border px-4 py-2">{ad.MobilePhone}</td>
       <td className="border px-4 py-2">{ad.condition}</td>
+      <td className="border px-4 py-2">
+      {remainingTime(ad.expiresAt)}
+            </td>
       <td className="relative px-6 py-4">
-        <a className="font-medium text-blue-600 hover:underline" onClick={() => toggleDropdown(ad._id)}>
-          Actions
-        </a>
+      <a className="font-medium text-blue-600 hover:underline" onClick={() => toggleDropdown(ad._id)}>
+  {t("actions")}
+</a>
+
         {activeDropdown === ad._id && (
           <div className=" z-10 mt-2 w-48 bg-white border rounded shadow-lg">
             <ul className="py-1 text-sm text-gray-700">
               <li className="block px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={() => handleAction('sellFast', ad._id)}>
-                Sell Fast
+              {t("sellFast")}
               </li>
               <li
                 className="block px-4 py-2 hover:bg-gray-100 cursor-pointer"
@@ -299,13 +345,13 @@ const [adToEdit, setAdToEdit] = useState(null);
                   handleAction('markSold', ad._id);
                 }}
               >
-                Mark as Sold
+                {t("markAsSold")}
               </li>
               <li className="block px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={() => handleAction('edit', ad._id)}>
-                Edit Ad
+                {t("editAd")}
               </li>
               <li className="block px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={() => handleAction('deletead', ad._id)}>
-                Delete
+              {t("delete")}
               </li>
             </ul>
           </div>
@@ -379,10 +425,10 @@ const [adToEdit, setAdToEdit] = useState(null);
                   </div>
                   <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                     <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                      Delete Ad
+                    {t("deleteAd")}
                     </h3>
                     <div className="mt-2">
-                      <p className="text-sm text-gray-500">Are you sure you want to delete this ad? This action cannot be undone.</p>
+                      <p className="text-sm text-gray-500">{t("deleteAdConfirmMessage")}</p>
                     </div>
                   </div>
                 </div>
@@ -393,7 +439,7 @@ const [adToEdit, setAdToEdit] = useState(null);
                   className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
                   onClick={handleDeleteAd}
                 >
-                  Delete
+                  {t("delete")}
                 </button>
                 <button
                   type="button"
@@ -439,10 +485,10 @@ const [adToEdit, setAdToEdit] = useState(null);
             </div>
             <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
               <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                Edit Ad
+              {t("editAd")}
               </h3>
               <div className="mt-2">
-                <p className="text-sm text-gray-500">If this ad contains Payment, then the payment will be removed. Are you sure you want to edit this Ad?</p>
+                <p className="text-sm text-gray-500">{t("editAdConfirmMessage")}</p>
               </div>
             </div>
           </div>
@@ -456,14 +502,14 @@ const [adToEdit, setAdToEdit] = useState(null);
               navigate(`/edit-ad/${adToEdit}`);
             }}
           >
-            Confirm
+            {t("editAdConfirm")}
           </button>
           <button
             type="button"
             className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
             onClick={() => setShowEditModal(false)}
           >
-            Cancel
+            {t("cancel")}
           </button>
         </div>
       </div>
@@ -503,10 +549,10 @@ const [adToEdit, setAdToEdit] = useState(null);
             </div>
             <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
               <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                Mark Ad as Sold
+              {t("markAsSold")}
               </h3>
               <div className="mt-2">
-                <p className="text-sm text-gray-500">Are you sure you want to mark this Ad as Soldout? This action cannot be undone.</p>
+                <p className="text-sm text-gray-500">{t("confirmMarkAsSold")}</p>
               </div>
             </div>
           </div>
@@ -517,14 +563,14 @@ const [adToEdit, setAdToEdit] = useState(null);
             className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
             onClick={() => markAsSold(adToMarkSold)}  // Call the function here after confirmation
           >
-            Mark Soldout
+           {t("markSoldout")}
           </button>
           <button
             type="button"
             className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
             onClick={() => setShowSoldOutModal(false)}
           >
-            Cancel
+            {t("cancel")}
           </button>
         </div>
       </div>

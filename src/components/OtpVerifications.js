@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import { useSelector } from 'react-redux';
-import axios from 'axios';
+import { useTranslation } from "react-i18next";
 import { Alert, Step, StepLabel, Stepper } from '@mui/material';
 import { toast } from 'react-toastify';
 import useAxiosInstance from '../ContextAPI/AxiosInstance';
 
 function VerifyOtp() {
-
+  const { t } = useTranslation();
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
   const [countdown, setCountdown] = useState(120); // 2 minutes
   const [timerExpired, setTimerExpired] = useState(false);
-  const axiosInstance = useAxiosInstance(); // Use your Axios instance
+  const axiosInstance = useAxiosInstance(); 
 
   const navigate = useNavigate();
   const { email } = useSelector((state) => state.userreg);
@@ -32,32 +31,26 @@ function VerifyOtp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    
-    // Basic validation to check OTP length
     if (otp.length !== 6) {
-      toast.error('OTP must be 6 digits');
+      toast.error(t('otpMustBe6Digits'));
       return;
     }
   
     setLoading(true);
     try {
-      // Call API to verify OTP using the custom Axios instance
       const response = await axiosInstance.post('/auth/verify-otp', { email, otp });
       
-      // If OTP is verified successfully
-      toast.success('OTP verified successfully!');
+      toast.success(t('otpVerifiedSuccessfully'));
       navigate('/security-questions');
     } catch (error) {
-      // Handle errors related to OTP
       const errorResponse = error.response?.data || {};
-      const errorMessage = errorResponse.message || 'Invalid OTP';
+      const errorMessage = errorResponse.message || t('invalidOtp');
       toast.error(errorMessage);
   
-      // Specific cases for expired or invalid OTPs
       if (errorResponse.code === 'OTP_EXPIRED') {
-        toast.error('OTP has expired. Please request a new one.');
+        toast.error(t('otpExpiredRequestNew'));
       } else if (errorResponse.code === 'INVALID_OTP') {
-        toast.error('Incorrect OTP. Please try again.');
+        toast.error(t('incorrectOtpTryAgain'));
       }
     } finally {
       setLoading(false);
@@ -65,50 +58,50 @@ function VerifyOtp() {
   };
 
   const steps = [
-    'Basic Information',
-    'Verify the OTP',
-    'Setup Security Question',
-    
+    t("basicInformation"),
+    t("verifyOTP"),
+    t("setupSecurityQuestion"),
   ];
 
   return (
     <div className="flex flex-col gap-5 items-center justify-center min-h-screen bg-gray-100 p-4">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-      <Stepper activeStep={1} alternativeLabel>
-      {steps.map((label, index) => (
-        <Step key={label}>
-          <StepLabel>{label}</StepLabel>
-        </Step>
-      ))}
-    </Stepper>
-        <h2 className="text-center text-2xl font-bold">Enter OTP</h2>
+        <Stepper activeStep={1} alternativeLabel>
+          {steps.map((label, index) => (
+            <Step key={label}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+        <h2 className="text-center text-2xl font-bold">{t('enterOtp')}</h2>
         <div className="mb-4">
           {timerExpired ? (
-            <Alert severity="error">OTP has expired. Please request a new one.</Alert>
+            <Alert severity="error">{t('otpExpiredRequestNew')}</Alert>
           ) : (
-            <Alert severity="info">OTP expires in {countdown} seconds</Alert>
+            <Alert severity="info">{`و ٹی پی ${countdown} سیکنڈ میں ختم ہو جائے گا`}</Alert>
+
           )}
         </div>
         <form onSubmit={handleSubmit}>
           <div className="mb-8">
-            <label htmlFor="otp" className="block text-gray-700 font-bold">OTP</label>
+            <label htmlFor="otp" className="block text-gray-700 font-bold">{t('otpLabel')}</label>
             <input
               type="text"
               id="otp"
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-lg"
-              placeholder="Enter 6-digit OTP"
+              placeholder={t('enter6DigitOtp')}
               maxLength={6}
-              disabled={timerExpired} // Disable input if timer expired
+              disabled={timerExpired}
             />
           </div>
           <button
             type="submit"
             className={`w-full font-bold py-2 px-4 bg-yellow-400 text-black rounded-lg hover:bg-yellow-500 ${loading || timerExpired ? 'cursor-not-allowed opacity-50' : ''}`}
-            disabled={loading || timerExpired} // Disable button if loading or timer expired
+            disabled={loading || timerExpired}
           >
-            {loading ? 'Verifying...' : 'Verify OTP'}
+            {loading ? t('verifying') : t('verifyOtp')}
           </button>
         </form>
       </div>
