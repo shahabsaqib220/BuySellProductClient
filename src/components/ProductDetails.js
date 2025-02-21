@@ -314,7 +314,7 @@ const ProductDetails = () => {
                 <mark className="px-3 py-1 text-gray-900 bg-yellow-400 rounded text-lg font-bold mr-3">
                     <strong>{t("mobilePhone")}:</strong>
                 </mark>
-                <span className="text-gray-700 font-medium">{ad.MobilePhone}</span>
+                <span className="text-gray-700 font-medium">{ad.mobilePhone}</span>
             </div>
 
             {/* Category */}
@@ -331,7 +331,7 @@ const ProductDetails = () => {
                     <strong>{t("location")}:</strong>
                 </mark>
                 <span className="text-gray-700 font-medium">
-                    {translateLocation(getFirstTwoWords(ad.location.readable))}
+                    {translateLocation(getFirstTwoWords(ad.location))}
                 </span>
             </div>
         </div>
@@ -429,7 +429,7 @@ const ProductDetails = () => {
                   </div>
                   <div className="mt-4 flex items-center text-gray-600">
                     <PlaceIcon className="mr-2" />
-                    <span>{translateLocation(getFirstTwoWords(product.location.readable))}</span>
+                    <span>{translateLocation(getFirstTwoWords(product.location))}</span>
                   </div>
                   <button
                     className="mt-6 w-full bg-gradient-to-r from-yellow-400 to-yellow-500 py-3 rounded-lg font-bold text-black shadow-md hover:from-yellow-500 hover:to-yellow-600 transition-all duration-300 flex items-center justify-center"
@@ -494,7 +494,7 @@ const ProductDetails = () => {
                   </div>
                   <div className="mt-4 flex items-center text-gray-600">
                     <PlaceIcon className="mr-2" />
-                    <span>{translateLocation(getFirstTwoWords(product.location.readable))}</span>
+                    <span>{translateLocation(getFirstTwoWords(product.location))}</span>
                   </div>
                   <button
                     className="mt-6 w-full bg-gradient-to-r from-yellow-400 to-yellow-500 py-3 rounded-lg font-bold text-black shadow-md hover:from-yellow-500 hover:to-yellow-600 transition-all duration-300 flex items-center justify-center"
@@ -558,7 +558,7 @@ const ProductDetails = () => {
                   </div>
                   <div className="mt-4 flex items-center text-gray-600">
                     <PlaceIcon className="mr-2" />
-                    <span>{translateLocation(getFirstTwoWords(product.location.readable))}</span>
+                    <span>{translateLocation(getFirstTwoWords(product.location))}</span>
                   </div>
                   <button
                     className="mt-6 w-full bg-gradient-to-r from-yellow-400 to-yellow-500 py-3 rounded-lg font-bold text-black shadow-md hover:from-yellow-500 hover:to-yellow-600 transition-all duration-300 flex items-center justify-center"
@@ -619,7 +619,7 @@ const ProductDetails = () => {
                   </div>
                   <div className="mt-4 flex items-center text-gray-600">
                     <PlaceIcon className="mr-2" />
-                    <span>{translateLocation(getFirstTwoWords(product.location.readable))}</span>
+                    <span>{translateLocation(getFirstTwoWords(product.location))}</span>
                   </div>
                   <button
                     className="mt-6 w-full bg-gradient-to-r from-yellow-400 to-yellow-500 py-3 rounded-lg font-bold text-black shadow-md hover:from-yellow-500 hover:to-yellow-600 transition-all duration-300 flex items-center justify-center"

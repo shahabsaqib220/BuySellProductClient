@@ -3,31 +3,42 @@ import { TextField, Button, Typography, Box, CircularProgress, Stepper, Step, St
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { MdOutlineDomainVerification } from "react-icons/md";
+import useAxiosInstance from "../ContextAPI/AxiosInstance";
+
 function SecurityQuestionVerification() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const email = useSelector((state) => state.auth.userEmail); // Accessing userEmail from Redux
+  const email = useSelector((state) => state.auth.userEmail); // Get user email from Redux
 
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState([]);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const [loading,setLoading]= useState(false)
+  const [loading, setLoading] = useState(false);
+  const axiosInstance = useAxiosInstance();
 
-  const steps = ["Find Your Account", "Verify the OTP", "Verify Answers", "Reset Password"];
+  const steps = ["Find Your Account", "Verify Answers", "Reset Password"];
 
   // Fetch security questions
   useEffect(() => {
     async function fetchQuestions() {
+      if (!email) return; // Prevent unnecessary API calls if email is not available
+
+      setLoading(true); // Start loading state
+      setError(""); // Clear previous errors
+
       try {
-        const response = await axios.get(
-          `http://localhost:5000/api/user/forgetpassword/fetch-security-questions?email=${email}`
-        );
-        setQuestions(response.data.questions);
-        setAnswers(new Array(response.data.questions.length).fill(""));
+        const response = await axiosInstance.get(`/user/passowrd/get-questions/${email}`);
+        if (response.data.securityQuestions) {
+          setQuestions(response.data.securityQuestions);
+          setAnswers(new Array(response.data.securityQuestions.length).fill(""));
+        } else {
+          setError("No security questions found.");
+        }
       } catch (error) {
-        setError("Failed to load security questions");
+        setError("Failed to load security questions. Please try again.");
+      } finally {
+        setLoading(false); // Stop loading
       }
     }
 
@@ -43,103 +54,92 @@ function SecurityQuestionVerification() {
 
   // Submit answers
   const handleSubmit = async () => {
+    setLoading(true);
+    setError("");
+    setSuccess(false);
+  
     try {
-      const response = await axios.post("http://localhost:5000/api/user/forgetpassword/verify-security-answers", {
+      const response = await axiosInstance.post("/user/passowrd/verify/answers", {
         email,
         answers,
       });
+  
       if (response.data.message === "Security answers verified successfully") {
         setSuccess(true);
-        setError(""); // Clear any previous error
-        navigate("/new-user-password"); // Navigate to the next page upon successful verification
+        navigate("/new-user-password"); // Navigate on success
+      } else {
+        setError("Incorrect answers. Please try again.");
       }
     } catch (error) {
       setError("Incorrect answers. Please try again.");
-      setSuccess(false); // Clear any previous success message
+    } finally {
+      setLoading(false);
     }
   };
+  
 
   return (
     <Box sx={{ maxWidth: 400, mx: "auto", mt: 4 }}>
-      <div>
-        <Typography variant="h6" gutterBottom>
-          Step 3: Verify Answers
-        </Typography>
-        <Stepper activeStep={2} alternativeLabel>
-          {steps.map((label) => (
-            <Step key={label}>
-              <StepLabel>{label}</StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-      </div>
+      <Typography variant="h6" gutterBottom>
+        Step 3: Verify Answers
+      </Typography>
+
+      <Stepper activeStep={2} alternativeLabel>
+        {steps.map((label) => (
+          <Step key={label}>
+            <StepLabel>{label}</StepLabel>
+          </Step>
+        ))}
+      </Stepper>
 
       <Typography variant="h5" marginTop={3} gutterBottom>
         Verify Security Questions
       </Typography>
 
-      {questions.map((q, index) => (
-        <Box key={index} sx={{ mb: 2 }}>
-         
+      {loading ? (
+        <div className="flex justify-center my-4">
+          <CircularProgress />
+        </div>
+      ) : questions.length > 0 ? (
+        questions.map((q, index) => (
+          <Box key={index} sx={{ mb: 2 }}>
+            <div className="mb-4">
+              <label htmlFor={`answer-${index}`} className="block font-bold text-sm text-black mb-1">
+                {q}
+              </label>
+              <input
+                id={`answer-${index}`}
+                placeholder="Enter your answer"
+                value={answers[index]}
+                onChange={(e) => handleAnswerChange(index, e.target.value)}
+                type="text"
+                className="w-full px-4 py-2 border border-yellow-500 rounded-lg focus:border-yellow-500 focus:ring-yellow-500"
+                required
+              />
+            </div>
+          </Box>
+        ))
+      ) : (
+        <Alert severity="warning">No security questions found for this account.</Alert>
+      )}
 
-          <div className="mb-8">
-            <label htmlFor="email" className="block font-bold text-sm text-black mb-1">
-            {q.question}
-            </label>
-            <input
-            placeholder="Enter your answer"
-            value={answers[index]}
-            onChange={(e) => handleAnswerChange(index, e.target.value)}
-
-              type="text"
-              
-              
-              
-              className="w-full px-4 py-2 border border-yellow-500 rounded-lg focus:border-yellow-500 focus:ring-yellow-500"
-              required
-            />
+      <button
+        type="button"
+        onClick={handleSubmit}
+        disabled={loading || questions.length === 0}
+        className="w-full py-2 bg-yellow-400 text-black rounded-lg mt-4 font-semibold hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 flex items-center justify-center"
+      >
+        {loading ? (
+          <div className="flex items-center space-x-2">
+            <CircularProgress size={20} color="inherit" />
+            <span>Verifying...</span>
           </div>
+        ) : (
+          <span>Continue</span>
+        )}
+      </button>
 
-
-
-
-
-         
-        </Box>
-      ))}
-
-      
-<button
-  type="button"
-  onClick={handleSubmit}
-  disabled={loading}
-  className="w-full py-2 mb-4 bg-yellow-400 text-black rounded-lg mt-4 font-semibold hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 flex items-center justify-center"
->
-  {loading ? (
-    <div className="flex items-center space-x-2">
-      <CircularProgress size={20} color="inherit" />
-      <span>Verifying...</span>
-    </div>
-  ) : (
-    <span>Continue</span>
-  )}
-</button>
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-      {/* Display alert below the button */}
+      {/* Display alert messages */}
       {error && (
         <Alert severity="error" sx={{ mt: 2 }}>
           {error}

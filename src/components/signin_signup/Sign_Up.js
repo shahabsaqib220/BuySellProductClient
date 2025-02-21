@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
-
 import { useDispatch } from 'react-redux';
 import { setUserDetails } from '../../Redux/userSlice'; // Import the action
-import { Alert,  Stepper, Step, StepLabel, } from '@mui/material';
-import  useAxiosInstance  from '../../ContextAPI/AxiosInstance'
+import { Alert, Stepper, Step, StepLabel } from '@mui/material';
+import useAxiosInstance from '../../ContextAPI/AxiosInstance';
 
 function SignUpForm() {
   const navigate = useNavigate();
-  const { t } = useTranslation()
-
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const axiosInstance = useAxiosInstance(); // Use your Axios instance
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -24,89 +24,67 @@ function SignUpForm() {
   const [alertMessage, setAlertMessage] = useState('');
   const [alertSeverity, setAlertSeverity] = useState('error');
   const [nameError, setNameError] = useState(false);
-  const axiosInstance = useAxiosInstance(); // Use your Axios instance
 
-  
-  const dispatch = useDispatch();
   const handleSubmit = async (e) => {
     e.preventDefault();
     setNameError(false);
     setAlertMessage(''); // Clear previous alert
 
-  
     // Input validation
     if (!name) {
       setNameError(true);
       showAlert(t('nameRequired'));
       return;
     }
-  
+
     if (!email || !password || !reEnterPassword) {
       showAlert(t('allFieldsRequired'));
       return;
     }
-  
+
     if (!/\S+@\S+\.\S+/.test(email)) {
       showAlert(t('invalidEmail'));
       return;
     }
-  
+
     if (password.length < 8 || !/[A-Z]/.test(password) || !/[!@#$%^&*]/.test(password)) {
       showAlert(t('passwordRequirements'));
       return;
     }
-  
+
     if (password !== reEnterPassword) {
       showAlert(t('passwordsNotMatch'));
       return;
     }
-  
+
     setLoading(true);
-    setButtonText(t('sendingOtp')); // Translate "Sending OTP..."
-  
+    setButtonText(t('checkingEmail')); // Translate "Checking email..."
+
     try {
-      // Make the request using Axios instance
-      const response = await axiosInstance.post('/auth/send-otp', { email });
-  
-      // If successful, proceed with the next steps
-      dispatch(setUserDetails({ name, email, password }));
-      showAlert(t('otpSent'), 'success'); // Translate "OTP sent successfully!"
-      navigate('/verify-otp');
+      // Make the request using Axios instance to check if email exists
+      const response = await axiosInstance.post('/auth/check-email', { email });
+
+      if (response.data.exists) {
+        showAlert(response.data.message, 'error');
+      } else {
+        dispatch(setUserDetails({ name, email, password }));
+        navigate('/security-questions');
+      }
     } catch (error) {
-      console.error('Error sending OTP:', error); // Log error for debugging
-      showAlert(error.response?.data?.message || t('otpError'));
+      console.error('Error checking email:', error); // Log error for debugging
+      showAlert(error.response?.data?.message || 'Something went wrong! Please Try again later');
     } finally {
       setLoading(false);
       setButtonText(t('continue')); // Translate "Continue"
     }
   };
-  const fetchWithTimeout = (url, options, timeout = 8000) => {
-    return new Promise((resolve, reject) => {
-      const timer = setTimeout(() => {
-        reject(new Error('Request timed out'));
-      }, timeout);
-  
-      fetch(url, options)
-        .then(response => {
-          clearTimeout(timer);
-          resolve(response);
-        })
-        .catch(err => {
-          clearTimeout(timer);
-          reject(err);
-        });
-    });
-  };
-  
-  
-  
+
   // Helper function to show alerts
   const showAlert = (message, severity = 'error') => {
     setAlertMessage(message);
     setAlertSeverity(severity); // You can define alert severity if needed
     setTimeout(() => setAlertMessage(''), 3000); // Clear after 3 seconds
   };
-  
 
   const handleNameChange = (e) => {
     setName(e.target.value);
@@ -117,20 +95,19 @@ function SignUpForm() {
 
   const steps = [
     t("basicInformation"),
-    t("verifyOTP"),
     t("setupSecurityQuestion"),
   ];
 
   return (
     <div className="flex flex-col gap-5 items-center justify-center min-h-screen bg-gray-100 p-4">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-      <Stepper activeStep={0} alternativeLabel>
-      {steps.map((label, index) => (
-        <Step key={index}>
-          <StepLabel>{label}</StepLabel>
-        </Step>
-      ))}
-    </Stepper>
+        <Stepper activeStep={0} alternativeLabel>
+          {steps.map((label, index) => (
+            <Step key={index}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
         <div className="text-center mb-6">
           <img src="/path-to-your-logo.png" alt="Logo" className="mx-auto mb-4" />
         </div>
@@ -204,14 +181,13 @@ function SignUpForm() {
             className={`w-full font-bold py-2 px-4 bg-yellow-400 text-black rounded-lg hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 ${loading ? 'cursor-not-allowed opacity-50' : ''}`}
             disabled={loading}
           >
-                    {loading ? t("loading") : t("continue")}
-
+            {loading ? t("loading") : t("continue")}
           </button>
           <div className="my-4 border-t border-gray-300"></div>
           <div className="text-center">
-          {t("alreadyHaveAccount")}
+            {t("alreadyHaveAccount")}
             <NavLink to="/login" className="text-yellow-500 hover:underline">
-            {t("login")}
+              {t("login")}
             </NavLink>
           </div>
         </form>

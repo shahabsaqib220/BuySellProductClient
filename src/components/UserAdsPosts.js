@@ -3,6 +3,7 @@ import {  Alert } from "@mui/material";
 import { Divider } from '@mui/material';
 import LetterPullup from "./LetterPullup"; 
 import categoriesData from "../utils/categories"; 
+import  pakistanCities  from '../utils/PakistanCities';
 import { useTranslation } from "react-i18next";
 
 
@@ -26,54 +27,17 @@ const ProductForm = () => {
   const [loading, setLoading] = useState(false);
   const [images, setImages] = useState([]);
   const [alert, setAlert] = useState("");
-  const [longitude, setLongitude] = useState(null);
   const [showModelConfirmation, setShowModelConfirmation] = useState(false); // State to control modal visibility
 
-  const [latitude, setLatitude] = useState(null);
-  const PakistaniCities = [
-    "Abbottabad", "Ahmadpur East", "Aliabad", "Arifwala", "Attock", 
-    "Badin", "Bagh", "Bahawalnagar", "Bahawalpur", "Bannu", 
-    "Basirpur", "Batkhela", "Bhakkar", "Burewala", "Chakwal", 
-    "Chaman", "Charsadda", "Chiniot", "Chishtian", "Chitral", 
-    "Dadu", "Dalbandin", "Dera Allah Yar", "Dera Bugti", "Dera Ghazi Khan", 
-    "Dera Ismail Khan", "Digri", "Dina", "Diplo", "Doaba", 
-    "Dudial", "Faisalabad", "Fateh Jang", "Ghotki", "Gilgit", 
-    "Gojra", "Gujar Khan", "Gujranwala", "Gujrat", "Gwadar", 
-    "Hafizabad", "Hangu", "Haripur", "Harnai", "Hassan Abdal", 
-    "Hub", "Hyderabad", "Islamabad", "Jacobabad", "Jamshoro", 
-    "Jaranwala", "Jatoi", "Jhang", "Jhelum", "Kabirwala", 
-    "Kamalia", "Kambar", "Kamoke", "Kandhkot", "Kandiaro", 
-    "Karachi", "Kasur", "Kashmore", "Khairpur", "Khanewal", 
-    "Khanpur", "Khaplu", "Kharan", "Khushab", "Khuzdar", 
-    "Kohat", "Kot Addu", "Kotli", "Kotri", "Kulachi", 
-    "Kundian", "Lahore", "Lakki Marwat", "Lalamusa", "Larkana", 
-    "Lasbela", "Layyah", "Lodhran", "Malakand", "Mandi Bahauddin", 
-    "Mansehra", "Mardan", "Mastung", "Mian Channu", "Mianwali", 
-    "Mingora", "Mirpur Khas", "Mirpur", "Mithi", "Multan", 
-    "Muzaffargarh", "Muzaffarabad", "Nankana Sahib", "Narowal", "Naushahro Feroze", 
-    "Nawabshah", "New Mirpur", "Nowshera", "Okara", "Ormara", 
-    "Pakpattan", "Panjgur", "Parachinar", "Pasni", "Peshawar", 
-    "Pir Mahal", "Qila Abdullah", "Qila Saifullah", "Quetta", "Rahim Yar Khan", 
-    "Rajanpur", "Rangpur", "Rawalakot", "Rawalpindi", "Sadiqabad", 
-    "Sahiwal", "Samundri", "Sanghar", "Sangla Hill", "Sargodha", 
-    "Shakargarh", "Sheikhupura", "Shikarpur", "Shingar", "Sialkot", 
-    "Sibi", "Sohbatpur", "Sukkur", "Swabi", "Swat", 
-    "Tando Adam", "Tando Allahyar", "Tando Muhammad Khan", "Tank", "Taxila", 
-    "Thatta", "Toba Tek Singh", "Turbat", "Umerkot", "Vehari", 
-    "Wah Cantt", "Warah", "Wazirabad", "Zafarwal", "Zhob", 
-    "Ziarat"
-  ].sort();
+
+ 
   
 
-  const token = localStorage.getItem('token');
 
-  useEffect(() => {
-    // Log the token on initial render
-    console.log('Token:', token);
-  }, [token]);
+
 
   const handleCityChange = (event) => {
-    setSelectedCity(event.target.value);
+    setSelectedCity(event.target.value); // Ensure this is a string
   };
 
 
@@ -100,8 +64,7 @@ const ProductForm = () => {
 const handleSubmit = async (event) => {
   event.preventDefault();
 
-  const longitude = 72.3631; // Replace with actual value
-  const latitude = 33.7530;  // Replace with actual value
+
 
   if (!validateForm()) return;
 
@@ -122,38 +85,33 @@ const handleSubmit = async (event) => {
   const submitAd = async () => {
     setLoading(true);
     const formData = new FormData();
-
+  
     formData.append('category', selectedCategory);
     formData.append('brand', selectedBrand);
     formData.append('model', selectedModel);  // This will only be appended if model is selected
     formData.append('price', price);
     formData.append('description', description);
     formData.append('condition', selectedCondition);
-    formData.append('MobilePhone', mobileNumber);
-
-    formData.append("location", JSON.stringify({
-        type: "Point",
-        coordinates: [longitude, latitude], // Valid coordinates
-        readable: selectedCity // Selected city name
-    }));
-
+    formData.append('mobilePhone', mobileNumber);
+    formData.append('location', selectedCity); // Ensure this is a string
+  
     images.forEach((image) => {
-        formData.append('images', image);
+      formData.append('images', image);
     });
-
+  
     try {
-        await axiosInstance.post('/user-ads/postads', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
-        setAlert({ message: t("adPostedSuccess"), severity: "success" });
+      await axiosInstance.post('/user-ads/postads', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      setAlert({ message: t("adPostedSuccess"), severity: "success" });
     } catch (error) {
       setAlert({ message: t("adPostedError"), severity: "error" });
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
+  };
 
   
   
@@ -433,28 +391,28 @@ const handleImageUpload = (event) => {
 </div>
    {/* Location Input */}
    <div className="mb-6">
-        <label
-          htmlFor="city"
-          className="block text-md font-semibold text-gray-950 mb-2"
-        >
+      <label
+        htmlFor="city"
+        className="block text-md font-semibold text-gray-950 mb-2"
+      >
         {t("selectCity")}
-        </label>
-        <select
-          id="city"
-          value={selectedCity}
-          onChange={handleCityChange}
-          className="w-full p-4 border border-gray-300 bg-gray-50 rounded-lg shadow focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-300 ease-in-out"
-        >
-          <option value="" disabled>
+      </label>
+      <select
+        id="city"
+        value={selectedCity}
+        onChange={handleCityChange}
+        className="w-full p-4 border border-gray-300 bg-gray-50 rounded-lg shadow focus:ring-2 focus:ring-yellow-400 focus:border-transparent transition duration-300 ease-in-out"
+      >
+        <option value="" disabled>
           {t("selectCity")}
+        </option>
+        {pakistanCities.map((city) => (
+          <option key={city} value={city}>
+            {city}
           </option>
-          {PakistaniCities.map((city) => (
-            <option key={city} value={city}>
-              {city}
-            </option>
-          ))}
-        </select>
-      </div>
+        ))}
+      </select>
+    </div>
 
     
 

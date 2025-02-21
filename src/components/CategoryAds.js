@@ -239,7 +239,7 @@ const translateCondition = (condition) => {
 
                     <div className="flex items-center text-sm text-black font-semibold">
                       <FaLocationDot className="text-2xl text-yellow-500 mr-1" />
-                      <span>{t(`${translateLocation(ad.location.readable)}`)}</span>
+                      <span>{t(`${translateLocation(ad.location)}`)}</span>
                     </div>
                   </div>
                   <button  onClick={() => handleChatClick(ad)}  className="focus:outline-none text-black mt-5 w-full text-semibold bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 ">{t("contactSeller")}</button>

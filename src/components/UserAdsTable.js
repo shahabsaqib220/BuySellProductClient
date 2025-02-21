@@ -282,24 +282,17 @@ const [adToEdit, setAdToEdit] = useState(null);
     <tr key={ad._id} className="px-6 py-4 font-semibold text-gray-900 whitespace-nowrap">
       <td className="border px-4 py-2">{(currentPage - 1) * adsPerPage + index + 1}</td>
       <td className="border px-4 py-2">
-        {ad.premium ? (
-          <span className="inline-block bg-yellow-400 text-black px-3 py-1 rounded-full text-sm font-semibold">
-             {t("premiumTag")}
-          </span>
-        ) : ad.standard ? (
-          <span className="inline-block bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-            Standard Tag
-          </span>
-        ) : ad.basic ? (
-          <span className="inline-block bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-            Basic Tag
-          </span>
-        ) : (
-          <span className="inline-block bg-gray-300 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold">
-             {t("noTag")}
-          </span>
-        )}
-      </td>
+    {ad.premium ? (
+      <span className="inline-block bg-yellow-400 text-black px-3 py-1 rounded-full text-sm font-semibold">
+         {t("premiumTag")}
+      </span>
+    ) : (
+      <span className="inline-block bg-gray-300 text-gray-700 px-3 py-1 rounded-full text-sm font-semibold">
+         {t("noTag")}
+      </span>
+    )}
+  </td>
+
       <td className="border px-4 py-2">{ad.category}</td>
       <td className="border px-4 py-2">{ad.brand}</td>
       <td className="border px-4 py-2">{ad.model}</td>
@@ -322,7 +315,7 @@ const [adToEdit, setAdToEdit] = useState(null);
     {expandedDescriptions[ad._id] ? t("seeLess") : t("seeDescription")}
   </span>
 </td>
-      <td className="border px-4 py-2">{ad.MobilePhone}</td>
+      <td className="border px-4 py-2">{ad.mobilePhone}</td>
       <td className="border px-4 py-2">{ad.condition}</td>
       <td className="border px-4 py-2">
       {remainingTime(ad.expiresAt)}

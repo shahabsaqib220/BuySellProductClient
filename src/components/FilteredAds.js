@@ -53,16 +53,40 @@ const AdFilterComponent = () => {
   const [locations, setLocations] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const { user, isLoggedIn } = useAuth();
-  const [selectedLocation, setSelectedLocation] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState([]);
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const axiosInstance = useAxiosInstance();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [uniqueLocations, setUniqueLocations] = useState([]);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [loading, setLoading] = useState(true);
-  const { t } = useTranslation(); // Translation hook
+  const { t } = useTranslation(); 
     const navigate = useNavigate();
+
+    const getUniqueLocations = (ads) => {
+      const uniqueLocations = new Set();
+      return ads
+        .map((ad) => ad.location) // Extract the location field from each ad
+        .filter((location) => {
+          const isDuplicate = uniqueLocations.has(location);
+          uniqueLocations.add(location);
+          return !isDuplicate;
+        });
+    };
+
+    useEffect(() => {
+      // Assuming locations is an array of strings coming from the backend
+      setUniqueLocations(locations);
+    }, [locations]);
+
+
+    const handleLocationChange = (e) => {
+      setSelectedLocation(e.target.value);
+      // Here you can also trigger any search or filtering logic if needed
+    };
+
 
 
 
@@ -301,21 +325,23 @@ const MAX_LINES = 3;
 
       {/* Cities Dropdown */}
       <TextField
-        label={t("cities")}
-        select
-        value={selectedLocation}
-        onChange={(e) => setSelectedLocation(e.target.value)}
-        sx={{ flex: "1 1 200px", minWidth: "200px" }}
-        fullWidth
-        variant="outlined"
-      >
-        <MenuItem value=""><em>{t("all_cities")}</em></MenuItem>
-        {locations.map((location, index) => (
-    <MenuItem key={index} value={location}>
-      {t(`${translateLocation(location)}`)}
-    </MenuItem>
-  ))}
-      </TextField>
+      label={t("cities")}
+      select
+      value={selectedLocation}
+      onChange={handleLocationChange}
+      sx={{ flex: "1 1 200px", minWidth: "200px" }}
+      fullWidth
+      variant="outlined"
+    >
+      <MenuItem value="">
+        <em>{t("all_cities")}</em>
+      </MenuItem>
+      {uniqueLocations.map((location, index) => (
+        <MenuItem key={index} value={location}>
+          {t(`${translateLocation(location)}`)}
+        </MenuItem>
+      ))}
+    </TextField>
     </Box>
 
       <FilterButton
@@ -435,7 +461,7 @@ const MAX_LINES = 3;
     {ad.location && (
       <div className="flex font-semibold items-center text-black">
         <FaLocationDot className="text-2xl text-yellow-500 mr-1" />
-        <span> {t(`${translateLocation(ad.location.readable)}`)}</span>
+        <span> {t(`${translateLocation(ad.location)}`)}</span>
       </div>
     )}
     <h5 className="text-sm text-black font-semibold">

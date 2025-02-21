@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { TextField, Button, Alert, Box, Typography, Stepper, Step, StepLabel, } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { updatePassword } from '../Redux/authSlice'; // Import your Redux action
-import axios from 'axios';
+import useAxiosInstance from "../ContextAPI/AxiosInstance";
+
 
 
 
 const PasswordUpdateComponent = () => {
+  const axiosInstance = useAxiosInstance();
   const dispatch = useDispatch();
   const userEmail = useSelector((state) => state.auth.userEmail); // Fetch user email from Redux state
   const [password, setPassword] = useState('');
@@ -21,46 +23,38 @@ const PasswordUpdateComponent = () => {
   };
 
   const handleUpdatePassword = async () => {
-    setError('');
-    setSuccess('');
-
+    setError("");
+    setSuccess("");
+  
     if (!validatePassword(password)) {
       return setError(
-        'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.'
+        "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character."
       );
     }
-
-    if (password !== confirmPassword) {
-      return setError('Passwords do not match.');
-    }
-
-
   
-
-    try {
-        const response = await fetch('http://localhost:5000/api/user/forgetpassword/update-password', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email: userEmail, newPassword: password }),
-        });
-    
-        if (response.ok) {
-          setSuccess('Password updated successfully!');
-        } else {
-          const errorData = await response.json();
-          setError(errorData.error || 'Failed to update password. Please try again.');
-        }
-      } catch (error) {
-        console.error('Error updating password:', error);
-        setError('Failed to update password. Please try again.');
-      }
+    if (password !== confirmPassword) {
+      return setError("Passwords do not match.");
     }
+  
+    try {
+      const response = await axiosInstance.put("/user/passowrd/update-password", {
+        email: userEmail,
+        newPassword: password,
+      });
+  
+      setSuccess("Password updated successfully!");
+    } catch (error) {
+      console.error("Error updating password:", error);
+      setError(
+        error.response?.data?.error || "Failed to update password. Please try again."
+      );
+    }
+  };
+  
 
     const steps = [
         'Find Your Account',
-        'Verify the OTP',
+   
         'Verify Answers',
         'Reset Password'
       ];

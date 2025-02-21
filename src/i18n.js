@@ -226,6 +226,16 @@ const resources = {
   "deleteAdConfirmMessage": "Are you sure you want to delete this ad? This action cannot be undone.",
   "delete": "Delete",
    noSoldOutProduct: "You don’t have a Sold Out Product",
+   "changeCategory": "Change Category",
+   "changeBrand": "Change Brand",
+   "changeModel": "Change Model",
+   "updateMobilePhoneNumber": "Update Mobile Phone Number",
+   "updateCity": "Update City",
+   "updateDescription": "Update Description",
+   "updatePricePkr": "Update Price (Pkr)",
+   "updateCondition": "Update Condition",
+   "uploadImages": "Upload Images (up to 5)",
+   "update": "Update",
   
 
       // Pakistan CIties
@@ -438,6 +448,16 @@ const resources = {
    "deleteAd": "اشتہار حذف کریں",
   "deleteAdConfirmMessage": "کیا آپ واقعی اس اشتہار کو حذف کرنا چاہتے ہیں؟ یہ عمل واپس نہیں لیا جا سکتا۔",
   "delete": "حذف کریں",
+  "changeCategory": "زمرہ تبدیل کریں",
+  "changeBrand": "برانڈ تبدیل کریں",
+  "changeModel": "ماڈل تبدیل کریں",
+  "updateMobilePhoneNumber": "موبائل فون نمبر اپ ڈیٹ کریں",
+  "updateCity": "شہر اپ ڈیٹ کریں",
+  "updateDescription": "تفصیل اپ ڈیٹ کریں",
+  "updatePricePkr": "قیمت اپ ڈیٹ کریں (پاکستانی روپے)",
+  "updateCondition": "حالت اپ ڈیٹ کریں",
+  "uploadImages": "تصاویر اپ لوڈ کریں (زیادہ سے زیادہ 5)",
+  "update": "اپ ڈیٹ کریں",
  
       "all_categories": "تمام زمرے",
       "min_price": "کم از کم قیمت",

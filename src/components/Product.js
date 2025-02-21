@@ -363,7 +363,7 @@ const Product = ({ category }) => {
                           {ad.location && (
                             <div className="flex items-center text-sm text-gray-500">
                               <FaLocationDot className="text-2xl text-yellow-500 mr-1" />
-                              <span className="text-black font-semibold">    {translateLocation(getFirstTwoWords(ad.location.readable))}</span>
+                              <span className="text-black font-semibold"><span> {t(`${(ad.location)}`)}</span></span>
                             </div>
                           )}
 

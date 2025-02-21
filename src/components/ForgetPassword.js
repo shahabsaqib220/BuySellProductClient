@@ -5,11 +5,13 @@ import { RiMailSendFill } from "react-icons/ri";
 import { useDispatch } from 'react-redux';
 import { setUserEmail } from '../Redux/authSlice';
 import { useNavigate } from 'react-router-dom';
+import useAxiosInstance from "../ContextAPI/AxiosInstance";
 
 
 
 const FindAccount = () => {
   const navigate = useNavigate();
+  const axiosInstance = useAxiosInstance();
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [user, setUser] = useState(null);
@@ -21,20 +23,9 @@ const FindAccount = () => {
   const handleFindAccount = async () => {
     setFindLoading(true); // Set loading to true
     try {
-      const response = await fetch('http://localhost:5000/api/user/forgetpassword/find', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
+      const response = await axiosInstance.post('/user/passowrd/forget-password', { email });
   
-      if (!response.ok) {
-        throw new Error('User not found');
-      }
-  
-      const data = await response.json();
-      setUser(data.user);
+      setUser(response.data.user);
       setAlert({ show: true, type: 'success', message: 'Account found successfully!' });
     } catch (error) {
       setAlert({ show: true, type: 'error', message: 'User not found. Please try again.' });
@@ -43,40 +34,34 @@ const FindAccount = () => {
       setFindLoading(false); // Set loading to false
     }
   };
+  
 
   const steps = [
     'Find Your Account',
-    'Verify the OTP',
+   
     'Verify Answers',
     'Reset Password'
   ];
-  
-  const handleSendOtp = async () => {
+
+  const handleVerifyAnswers = async () => {
     setOtpLoading(true); // Set loading to true
     try {
-      const response = await fetch('http://localhost:5000/api/user/forgetpassword/send-reset-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
+      const response = await axiosInstance.get(`/user/passowrd/get-questions/${email}`);
   
-      if (!response.ok) {
-        throw new Error('Failed to send OTP');
-      }
-  
+      // Handle response
       setOtpSent(true);
-      setAlert({ show: true, type: 'success', message: 'OTP sent to your email!' });
-      dispatch(setUserEmail(email)); 
-      navigate("/password-reset-optp-verfication")
-      
+      setAlert({ show: true, type: "success", message: "Security questions retrieved successfully!" });
+      dispatch(setUserEmail(email)); // Store email in Redux
+  
+      navigate("/password-reset-questions-verfication"); // Navigate to next step
     } catch (error) {
-      setAlert({ show: true, type: 'error', message: 'Failed to send OTP. Please try again.' });
+      setAlert({ show: true, type: "error", message: "Failed to fetch security questions. Please try again." });
     } finally {
       setOtpLoading(false); // Set loading to false
     }
   };
+  
+
 
   return (
     <>
@@ -226,7 +211,7 @@ const FindAccount = () => {
 
 <button
   type="button"
-  onClick={handleSendOtp}
+  onClick={handleVerifyAnswers}
   disabled={otploading}
   className="w-1/3 py-2 bg-yellow-400 text-black rounded-lg mt-4 font-semibold hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 flex items-center justify-center"
 >

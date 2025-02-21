@@ -80,7 +80,7 @@ function SecurityQuestions() {
 
   const steps = [
     t('step_basic_info'),
-    t('step_verify_otp'),
+   
     t('step_security_questions'),
   ];
 

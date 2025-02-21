@@ -160,7 +160,7 @@ const CartComponent = () => {
             <p className="text-gray-900 whitespace-no-wrap">{item.adStatus}</p>
           </td>
           <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
-            <p>{getFirstThreeWords(item.adDetails.location?.readable) || t("locationNotSpecified")}</p>
+            <p>{getFirstThreeWords(item.adDetails.location) || t("locationNotSpecified")}</p>
           </td>
           <td className="px-6 py-5 border-b border-gray-200 bg-white text-sm">
             <p className="text-gray-900 whitespace-no-wrap">{item.adDetails.condition}</p>

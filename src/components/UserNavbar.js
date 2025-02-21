@@ -1,170 +1,112 @@
 import React, { useState } from "react";
-import { RiLogoutBoxLine } from "react-icons/ri";
-import { useAuth } from "../ContextAPI/AuthContext";
+import { AppBar, Toolbar, IconButton, Button, Drawer, List, ListItem, ListItemText, Typography, Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import { Menu as MenuIcon, Logout as LogoutIcon, AccountCircle, PostAdd, Visibility, Security, ShoppingCart } from "@mui/icons-material";
 import { NavLink } from "react-router-dom";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
+import { useAuth } from "../ContextAPI/AuthContext";
 
 const UserNavbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const { logout } = useAuth();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+  const toggleDrawer = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
+
+  const handleLogout = () => {
+    logout();
+    setIsLogoutDialogOpen(false);
   };
 
   return (
-    <nav className="bg-white shadow-lg">
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
-          {/* Logo Section */}
-          <div className="flex items-center">
-            <a href="#" className="text-xl font-bold text-gray-800">
-              Sell Any Product
-            </a>
-          </div>
+    <AppBar position="static" color="default" sx={{ boxShadow: 3 }}>
+      <Toolbar>
+        {/* Mobile Menu Button */}
+        <IconButton edge="start" color="inherit" onClick={toggleDrawer} sx={{ display: { xs: "block", md: "none" } }}>
+          <MenuIcon />
+        </IconButton>
+        
+        {/* Logo */}
+        <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: "bold" }}>
+          Sell Any Product
+        </Typography>
 
-          {/* Desktop Links */}
-          <div className="hidden lg:flex space-x-8">
-          <NavLink
-  to="/profile"
-  className={({ isActive }) =>
-    isActive
-      ? "text-yellow-500 bg-gray-700 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:bg-gray-600"
-      : "text-yellow-100 bg-yellow-500 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:text-black hover:bg-yellow-500"
-  }
->
-{t('profile')}
-</NavLink>
-
-            <NavLink
-              to="/postad"
-              className={({ isActive }) =>
-                isActive
-                  ? "text-yellow-500 bg-gray-700 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:bg-gray-600"
-                  : "text-yellow-100 bg-yellow-500 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:text-black hover:bg-yellow-500"
-              }
-            >
-             {t('postAd')}
-            </NavLink>
-            <NavLink
-              to="/viewads"
-              className={({ isActive }) =>
-                isActive
-                  ? "text-yellow-500 bg-gray-700 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:bg-gray-600"
-                  : "text-yellow-100 bg-yellow-500 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:text-black hover:bg-yellow-500"
-              }
-            >
-               {t('postedAds')}
-            </NavLink>
-            <NavLink
-              to="/soldoutproducts"
-              className={({ isActive }) =>
-                isActive
-                  ? "text-yellow-500 bg-gray-700 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:bg-gray-600"
-                  : "text-yellow-100 bg-yellow-500 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:text-black hover:bg-yellow-500"
-              }
-            >
-               {t('soldProducts')}
-            </NavLink>
-            <NavLink
-              to="/security"
-              className={({ isActive }) =>
-                isActive
-                  ? "text-yellow-500 bg-gray-700 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:bg-gray-600"
-                  : "text-yellow-100 bg-yellow-500 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:text-black hover:bg-yellow-500"
-              }
-            >
-               {t('security')}
-            </NavLink>
-            <button
-              onClick={logout}
-              className="text-white space-x-4 bg-yellow-500 hover:bg-red-500 font-medium rounded-lg px-4 py-2"
-            >
-               {t('logout')}
-            </button>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            onClick={toggleMenu}
-            className="lg:hidden text-gray-700 hover:text-gray-900 focus:outline-none"
+        {/* Desktop Navigation Links */}
+        <Box sx={{ display: { xs: "none", md: "flex" }, gap: 2 }}>
+          <Button component={NavLink} to="/profile" startIcon={<AccountCircle />}>
+            {t("Profile")}
+          </Button>
+          <Button component={NavLink} to="/postad" startIcon={<PostAdd />}>
+            {t("postAd")}
+          </Button>
+          <Button component={NavLink} to="/viewads" startIcon={<Visibility />}>
+            {t("postedAds")}
+          </Button>
+          <Button component={NavLink} to="/soldoutproducts" startIcon={<ShoppingCart />}>
+            {t("soldProducts")}
+          </Button>
+          <Button component={NavLink} to="/security" startIcon={<Security />}>
+            {t("security")}
+          </Button>
+          <Button
+            startIcon={<LogoutIcon />}
+            onClick={() => setIsLogoutDialogOpen(true)}
+            color="error"
+            variant="contained"
           >
-            {isMenuOpen ? (
-              <svg
-                className="w-6 h-6"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            ) : (
-              <svg
-                className="w-6 h-6"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            )}
-          </button>
-        </div>
-      </div>
+            {t("logout")}
+          </Button>
+        </Box>
+      </Toolbar>
 
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="lg:hidden">
-          <ul className="flex flex-col items-center space-y-4 py-4">
-            <NavLink
-              to="/profile"
-              className="text-yellow-00 bg-yellow-500 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:text-black hover:bg-yellow-500"
-            >
-              Profile
-            </NavLink>
-            <NavLink
-              to="/postad"
-              className="text-yellow-00 bg-yellow-500 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:text-black hover:bg-yellow-500"
-            >
-              Post Ad
-            </NavLink>
-            <NavLink
-              to="/viewads"
-              className="text-yellow-00 bg-yellow-500 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:text-black hover:bg-yellow-500"
-            >
-              Posted Ads
-            </NavLink>
-            <NavLink
-              to="/soldoutproducts"
-              className="text-yellow-00 bg-yellow-500 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:text-black hover:bg-yellow-500"
-            >
-              Sold Products
-            </NavLink>
-            <NavLink
-              to="/security"
-              className="text-yellow-00 bg-yellow-500 font-semibold px-4 py-2 rounded-lg transition duration-200 ease-in-out hover:text-black hover:bg-yellow-500"
-            >
-              Security
-            </NavLink>
-            <button
-              onClick={logout}
-              className="text-white bg-yellow-500 hover:bg-yellow-600 font-medium rounded-lg px-4 py-2"
-            >
-              Log Out
-            </button>
-          </ul>
-        </div>
-      )}
-    </nav>
+      {/* Mobile Drawer */}
+      <Drawer anchor="left" open={isDrawerOpen} onClose={toggleDrawer}>
+        <List sx={{ width: 250 }}>
+          <ListItem button component={NavLink} to="/profile" onClick={toggleDrawer}>
+            <AccountCircle />
+            <ListItemText primary={t("Profile")} secondary={i18n.language === "ur" ? "پروفائل" : ""} sx={{ marginLeft: 2 }} />
+          </ListItem>
+          <ListItem button component={NavLink} to="/postad" onClick={toggleDrawer}>
+            <PostAdd />
+            <ListItemText primary={t("postAd")} secondary={i18n.language === "ur" ? "اشتہار لگائیں" : ""} sx={{ marginLeft: 2 }} />
+          </ListItem>
+          <ListItem button component={NavLink} to="/viewads" onClick={toggleDrawer}>
+            <Visibility />
+            <ListItemText primary={t("postedAds")} secondary={i18n.language === "ur" ? "اشتہارات دیکھیں" : ""} sx={{ marginLeft: 2 }} />
+          </ListItem>
+          <ListItem button component={NavLink} to="/soldoutproducts" onClick={toggleDrawer}>
+            <ShoppingCart />
+            <ListItemText primary={t("soldProducts")} secondary={i18n.language === "ur" ? "فروخت شدہ مصنوعات" : ""} sx={{ marginLeft: 2 }} />
+          </ListItem>
+          <ListItem button component={NavLink} to="/security" onClick={toggleDrawer}>
+            <Security />
+            <ListItemText primary={t("security")} secondary={i18n.language === "ur" ? "سیکیورٹی" : ""} sx={{ marginLeft: 2 }} />
+          </ListItem>
+          <ListItem button onClick={() => setIsLogoutDialogOpen(true)}>
+            <LogoutIcon />
+            <ListItemText primary={t("logout")} secondary={i18n.language === "ur" ? "لاگ آؤٹ" : ""} sx={{ marginLeft: 2 }} />
+          </ListItem>
+        </List>
+      </Drawer>
+
+      {/* Logout Confirmation Dialog */}
+      <Dialog open={isLogoutDialogOpen} onClose={() => setIsLogoutDialogOpen(false)}>
+        <DialogTitle>{t("logout")}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>{t("Are you sure you want to logout?")}</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsLogoutDialogOpen(false)} color="primary">
+            {t("Cancel")}
+          </Button>
+          <Button onClick={handleLogout} color="error" variant="contained">
+            {t("Logout")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </AppBar>
   );
 };
 

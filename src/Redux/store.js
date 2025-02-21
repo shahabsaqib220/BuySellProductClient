@@ -5,6 +5,8 @@ import otpReducer from '../Redux/otpSlice';
 import authReducer from './authSlice'; // Corrected import
 import ChatReducer from "./usersChatSlice"
 import messageReducer from './messageSlice';
+import searchReducer from './searchSlice';
+
 
 const store = configureStore({
   reducer: {
@@ -12,7 +14,8 @@ const store = configureStore({
     otp: otpReducer,
     auth: authReducer, // Corrected reducer assignment
     user: ChatReducer,
-    messages: messageReducer
+    messages: messageReducer,
+    search: searchReducer
   },
 });
 

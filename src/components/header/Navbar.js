@@ -7,9 +7,12 @@ import { FaCartArrowDown } from 'react-icons/fa';
 import { RxAvatar } from 'react-icons/rx';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {  useSelector } from 'react-redux';
+import { TextField, IconButton, InputAdornment } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 import useAxiosInstance from '../../ContextAPI/AxiosInstance';
 import { RiLogoutBoxRFill } from "react-icons/ri";
 import { useDispatch } from 'react-redux';
+import { setSearchTerm } from '../../Redux/searchSlice';
 import { setUserAndAd } from '../../Redux/usersChatSlice';
 import { MdSpaceDashboard } from "react-icons/md";
 import { useAuth } from '../../ContextAPI/AuthContext'; 
@@ -27,10 +30,17 @@ const Navbar = () => {
   const { isLoggedIn, logout } = useAuth();
   const [cartItemCount, setCartItemCount] = useState(0);
   const user = useSelector((state) => state.user.user);
+  const searchTerm = useSelector((state) => state.search.term); 
 
   // Utility function to conditionally apply class names
   const classNames = (...classes) => {
     return classes.filter(Boolean).join(' ');
+  };
+
+  const handleSearchChange = (event) => {
+    const term = event.target.value;
+    dispatch(setSearchTerm(term)); // Dispatch the search term to Redux
+   
   };
 
   const changeLanguage = () => {
@@ -134,7 +144,9 @@ const Navbar = () => {
                   <input
                     type="search"
                     className="block w-full p-3 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder={t("search")} 
+                    placeholder={t("search")}
+                    value={searchTerm}
+                    onChange={handleSearchChange}
                   />
                   <button
                     type="submit"
